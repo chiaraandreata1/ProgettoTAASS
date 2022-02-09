@@ -1,0 +1,29 @@
+<h3>Create Reservation</h3>
+<div [hidden]="submitted" style="width: 300px;">
+  <form (ngSubmit)="onSubmit()">
+
+    <div>
+      <input type="radio" id="tennis" required [(ngModel)]="reservation.sporttype" name="selectsport" value="TENNIS">
+      <label for="tennis">tennis</label><br>
+      <input type="radio" id="padel" required [(ngModel)]="reservation.sporttype" name="selectsport" value="PADEL">
+      <label for="padel">padel</label><br>
+    </div>
+
+    <div>
+      <label for="dateReservation">Date Reservation: </label>
+      <input type="text" id="dateReservation" required [(ngModel)]="reservation.dateReservation" name="dateReservation">
+    </div>
+
+    <div>
+      <label for="hoursReservation">Hours Reservation: </label>
+      <input type="number" id="hoursReservation" required [(ngModel)]="reservation.hoursReservation" name="hoursReservation">
+    </div>
+
+    <button type="submit">Submit</button>
+  </form>
+</div>
+
+<div [hidden]="!submitted">
+  <h4>You submitted successfully!</h4>
+  <button (click)="newReservation()">Add new</button>
+</div>
