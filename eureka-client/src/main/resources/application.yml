@@ -1,0 +1,42 @@
+server:
+  port: 8080
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
+
+logging:
+  level:
+    org:
+      springframework:
+        cloud.gateway: DEBUG
+        http.server.reactive: DEBUG
+        web.reactive: DEBUG
+
+spring:
+  application:
+    name: tennispadel-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: reservationservice
+          uri: http://localhost:8083/
+          predicates:
+            - Path=/api/v1/reservations/**,/api/v1/courts/**
+        - id: userservice
+          uri: http://localhost:8085/
+          predicates:
+            - Path=/api/v1/reservations/**
+        - id: lessonservice
+          uri: http://localhost:8082/
+          predicates:
+            - Path=/api/v1/lessons/**
+        - id: tournamentservice
+          uri: http://localhost:8084/
+          predicates:
+            - Path=/api/v1/tournaments/**
+        - id: boardservice
+          uri: http://localhost:8081/
+          predicates:
+            - Path=/api/v1/boards/**

@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    image: eurekaclient
+    container_name: eurekaclient
+    ports:
+      - "8080:8080"
+

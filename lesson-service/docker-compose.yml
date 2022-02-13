@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  dblessons:
+    image: "postgres"
+    ports:
+      - "5432"
+    environment:
+      POSTGRES_DB: lessons
+      POSTGRES_USER: peppe
+      POSTGRES_PASSWORD: asd
+      restart: unless-stopped
+  app:
+    build: .
+    image: lessons-service
+    container_name: lessons-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dblessons:5432/lessons
+      - SPRING_DATASOURCE_USERNAME=peppe
+      - SPRING_DATASOURCE_PASSWORD=asd
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    ports:
+      - "8082:8082"
+    depends_on:
+      - dblessons
+
