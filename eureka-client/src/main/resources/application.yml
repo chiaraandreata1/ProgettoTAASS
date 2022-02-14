@@ -27,7 +27,7 @@ spring:
         - id: userservice
           uri: http://localhost:8085/
           predicates:
-            - Path=/api/v1/reservations/**
+            - Path=/api/v1/users/**
         - id: lessonservice
           uri: http://localhost:8082/
           predicates:
