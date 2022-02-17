@@ -11,7 +11,7 @@ public class Reservation {
 
     private String sporttype;
     private String dateReservation;
-    private Integer hoursReservation;
+    private Integer hourReservation;
 
     public String getSporttype() {
         return sporttype;
@@ -29,12 +29,12 @@ public class Reservation {
         this.dateReservation = dateReservation;
     }
 
-    public Integer getHoursReservation() {
-        return hoursReservation;
+    public Integer getHourReservation() {
+        return hourReservation;
     }
 
-    public void setHoursReservation(Integer hoursReservation) {
-        this.hoursReservation = hoursReservation;
+    public void setHourReservation(Integer hourReservation) {
+        this.hourReservation = hourReservation;
     }
 
     public Long getId() {

@@ -11,7 +11,9 @@ services:
       POSTGRES_PASSWORD: asd
       restart: unless-stopped
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: tournaments-service
     container_name: tournaments-service
     environment:
