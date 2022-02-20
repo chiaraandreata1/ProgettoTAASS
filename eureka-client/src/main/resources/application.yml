@@ -19,7 +19,7 @@ ribbon:
 server:
   port: 8080
 
-#per provare con intellij sostituire "***-service" con "localhost"
+#per provare con intellij sostituire "***-service" nell'url con "localhost"
 zuul:
   routes:
     reservation-service:
