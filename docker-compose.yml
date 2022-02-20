@@ -1,0 +1,166 @@
+version: '3'
+
+services:
+  eureka-client:
+    build:
+      context: ./eureka-client
+      dockerfile: Dockerfile
+    image: eurekaclient
+    container_name: eurekaclient
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-server
+    environment:
+      eureka.client.serviceUrl.defaultZone: http://eureka-server:8761/eureka/
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    image: eurekaserver
+    container_name: eurekaserver
+    ports:
+      - "8761:8761"
+    environment:
+      eureka.instance.hostname: eureka-server
+      eureka.client.serviceUrl.defaultZone: http://eureka-server:8761/eureka/
+
+  #SERVICE: RESERVATION
+  dbreservations:
+    image: "postgres"
+    ports:
+      - "5432"
+    environment:
+      POSTGRES_DB: reservations
+      POSTGRES_USER: peppe
+      POSTGRES_PASSWORD: asd
+      restart: unless-stopped
+  reservation-service:
+    build:
+      context: ./reservation-service
+      dockerfile: Dockerfile
+    image: reservation-service
+    container_name: reservation-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbreservations:5432/reservations
+      - SPRING_DATASOURCE_USERNAME=peppe
+      - SPRING_DATASOURCE_PASSWORD=asd
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+    ports:
+      - "8083:8083"
+    depends_on:
+    - dbreservations
+    - eureka-server
+
+  #SERVICE BOARD
+  dbboards:
+    image: "postgres"
+    ports:
+      - "5432"
+    environment:
+      POSTGRES_DB: boards
+      POSTGRES_USER: peppe
+      POSTGRES_PASSWORD: asd
+      restart: unless-stopped
+  board-service:
+    build:
+      context: ./board-service
+      dockerfile: Dockerfile
+    image: board-service
+    container_name: board-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbboards:5432/boards
+      - SPRING_DATASOURCE_USERNAME=peppe
+      - SPRING_DATASOURCE_PASSWORD=asd
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+    ports:
+      - "8081:8081"
+    depends_on:
+      - dbboards
+      - eureka-server
+
+  #SERVICE LESSON
+  dblessons:
+    image: "postgres"
+    ports:
+      - "5432"
+    environment:
+      POSTGRES_DB: lessons
+      POSTGRES_USER: peppe
+      POSTGRES_PASSWORD: asd
+      restart: unless-stopped
+  lesson-service:
+    build:
+      context: ./lesson-service
+      dockerfile: Dockerfile
+    image: lesson-service
+    container_name: lesson-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dblessons:5432/lessons
+      - SPRING_DATASOURCE_USERNAME=peppe
+      - SPRING_DATASOURCE_PASSWORD=asd
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+    ports:
+      - "8082:8082"
+    depends_on:
+      - dblessons
+      - eureka-server
+
+  #SERVICE TOURNAMENT
+  dbtournaments:
+    image: "postgres"
+    ports:
+      - "5432"
+    environment:
+      POSTGRES_DB: tournaments
+      POSTGRES_USER: peppe
+      POSTGRES_PASSWORD: asd
+      restart: unless-stopped
+  tournaments-service:
+    build:
+      context: ./tournament-service
+      dockerfile: Dockerfile
+    image: tournament-service
+    container_name: tournament-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbtournaments:5432/tournaments
+      - SPRING_DATASOURCE_USERNAME=peppe
+      - SPRING_DATASOURCE_PASSWORD=asd
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+    ports:
+      - "8084:8084"
+    depends_on:
+      - dbtournaments
+      - eureka-server
+
+  #SERVICE USER
+  dbusers:
+    image: "postgres"
+    ports:
+      - "5432"
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: peppe
+      POSTGRES_PASSWORD: asd
+      restart: unless-stopped
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    image: user-service
+    container_name: user-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbusers:5432/users
+      - SPRING_DATASOURCE_USERNAME=peppe
+      - SPRING_DATASOURCE_PASSWORD=asd
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+    ports:
+      - "8085:8085"
+    depends_on:
+      - dbusers
+      - eureka-server
