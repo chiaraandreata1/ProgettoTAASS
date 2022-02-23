@@ -19,30 +19,31 @@ ribbon:
 server:
   port: 8080
 
-#per provare con intellij sostituire "***-service" nell'url con "localhost"
+#con intellij utilizzare localhost:port nell'url
+#con docker utilizzare ***-service:port nell'url
 zuul:
   routes:
     reservation-service:
       path: /reservations/**
-      url: http://reservation-service:8083/api/v1/reservations/
+      url: http://localhost:8083/api/v1/reservations/
       service-id: reservation-service
     lesson-service:
-      url: http://lesson-service:8082/api/v1/lessons/
+      url: http://localhost:8082/api/v1/lessons/
       path: /lessons/**
       service-id: lesson-service
     tournament-service:
       path: /tournaments/**
       service-id: tournament-service
-      url: http://tournament-service:8084/api/v1/tournaments/
+      url: http://localhost:8084/api/v1/tournaments/
     reservation-service2:
-      url: http://reservation-service:8083/api/v1/courts/
+      url: http://localhost:8083/api/v1/courts/
       service-id: reservation-service2
       path: /courts/**
     board-service:
-      url: http://board-service:8081/api/v1/boards/
+      url: http://localhost:8081/api/v1/boards/
       path: /boards/**
       service-id: board-service
     user-service:
-      url: http://user-service:8085/api/v1/users/
+      url: http://localhost:8085/api/v1/users/
       service-id: user-service
       path: /users/**

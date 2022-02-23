@@ -1,5 +1,7 @@
 package com.example.reservationservice.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,6 +14,11 @@ public class Reservation {
     private String sporttype;
     private String dateReservation;
     private Integer hourReservation;
+
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "court", referencedColumnName = "id")
+    private Court courtReservation;
+
 
     public String getSporttype() {
         return sporttype;
@@ -45,4 +52,11 @@ public class Reservation {
         this.id = id;
     }
 
+
+    public Court getCourtReservation() {
+        return courtReservation;
+    }
+    public void setCourtReservation(Court court) {
+        this.courtReservation = court;
+    }
 }
