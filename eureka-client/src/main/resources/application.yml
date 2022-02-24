@@ -31,6 +31,10 @@ zuul:
       url: http://localhost:8082/api/v1/lessons/
       path: /lessons/**
       service-id: lesson-service
+    lesson-service2:
+      url: http://localhost:8082/api/v1/courses/
+      path: /courses/**
+      service-id: lesson-service2
     tournament-service:
       path: /tournaments/**
       service-id: tournament-service
