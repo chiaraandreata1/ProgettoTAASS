@@ -11,22 +11,12 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String sporttype;
     private String dateReservation;
     private Integer hourReservation;
 
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "court", referencedColumnName = "id")
     private Court courtReservation;
-
-
-    public String getSporttype() {
-        return sporttype;
-    }
-
-    public void setSporttype(String sporttype) {
-        this.sporttype = sporttype;
-    }
 
     public String getDateReservation() {
         return dateReservation;
