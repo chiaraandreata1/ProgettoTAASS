@@ -21,10 +21,9 @@ public class ReservationController {
         return reservationRepository.findAll();
     }
 
-    @GetMapping(value = "reservations/date/{date}")
-    public List<Reservation> findByDate(@PathVariable String date) {
-
-        List<Reservation> reservations = reservationRepository.findByDateReservation(date);
+    @GetMapping(value = "reservations/date/{date}/sport/{sport}")
+    public List<Reservation> findByDate(@PathVariable String date, @PathVariable String sport) {
+        List<Reservation> reservations = reservationRepository.findAllByDateReservationAndSportReservation(date, sport);
         return reservations;
     }
 
