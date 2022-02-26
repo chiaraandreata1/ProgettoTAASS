@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 
 import {Reservation} from "../reservation";
 import {ReservationService} from "../reservation.service";
-import { DateAdapter } from '@angular/material/core';
 
 /*export class DatepickerComponent implements OnInit {
   constructor() { }
@@ -29,15 +28,11 @@ export const MY_FORMATS = {
   selector: 'create-reservation',
   templateUrl: './create-reservation.component.html',
   styleUrls: ['./create-reservation.component.css'],
-  /*providers: [
-    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
-    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS, }
-  ]*/
 })
 export class CreateReservationComponent implements OnInit {
   reservation: Reservation = new Reservation();
   submitted = false;
-  constructor(private dateAdapter: DateAdapter<any>, private reservationService: ReservationService) { }
+  constructor(private reservationService: ReservationService) { }
 
   ngOnInit(): void {
   }
@@ -46,22 +41,6 @@ export class CreateReservationComponent implements OnInit {
     this.submitted = false;
     this.reservation = new Reservation();
   }
-
-  engLocale() {
-    this.dateAdapter.setLocale('en-US');
-  }
-
-  /*formatDate(date) {
-    var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear();
-
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-
-    return [year, month, day].join('-');}*/
-
 
   save() {
     this.reservationService.createReservation(this.reservation)

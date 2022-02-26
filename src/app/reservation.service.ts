@@ -31,7 +31,7 @@ export class ReservationService {
     return this.http.get(`${this.baseUrl}`);
   }
 
-  deleteAll(): Observable<any> {
+  deleteAllReservations(): Observable<any> {
     return this.http.delete(`${this.baseUrl}` + `/delete`, { responseType: 'text' });
   }
 }

@@ -21,7 +21,7 @@ export class ReservationsListComponent implements OnInit {
   }
 
   deleteReservations() {
-    this.reservationService.deleteAll()
+    this.reservationService.deleteAllReservations()
       .subscribe(
         data => {
           console.log(data);

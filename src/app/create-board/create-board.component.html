@@ -1,0 +1,40 @@
+<h3>Create Board</h3>
+<div [hidden]="submitted" style="width: 300px;">
+  <form (ngSubmit)="onSubmit()">
+
+    <div>
+      <h2>Sport:</h2>
+      <input type="radio" id="tennis" required [(ngModel)]="board.sport" name="selectsport" value="tennis">
+       <label for="tennis">tennis</label><br>
+       <input type="radio" id="padel" required [(ngModel)]="board.sport" name="selectsport" value="padel">
+       <label for="padel">padel</label><br>
+     </div>
+
+    <div>
+      <h2>Type communication:</h2>
+      <input type="radio" id="admincommunication" required [(ngModel)]="board.type" name="selecttype" value="admincommunication">
+      <label for="admincommunication">Admin communication</label><br>
+      <input type="radio" id="instructorcommunication" required [(ngModel)]="board.type" name="selecttype" value="instructorcommunication">
+      <label for="instructorcommunication">Instructor communication</label><br>
+      <input type="radio" id="playercommunication" required [(ngModel)]="board.type" name="selecttype" value="playercommunication">
+      <label for="playercommunication">Player communication</label><br>
+    </div>
+
+    <div>
+      <label for="owner">Owner: </label>
+      <input type="text" id="owner" required [(ngModel)]="board.owner" name="owner">
+    </div>
+
+    <div>
+      <label for="message">Message: </label>
+      <input type="text" id="message" required [(ngModel)]="board.message" name="message">
+    </div>
+
+    <button mat-raised-button color="primary" type="submit">Submit</button>
+  </form>
+</div>
+
+<div [hidden]="!submitted">
+  <h4>You submitted successfully!</h4>
+  <button mat-raised-button color="primary" (click)="newBoard()">Add new Board</button>
+</div>

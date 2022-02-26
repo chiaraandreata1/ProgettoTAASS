@@ -1,0 +1,15 @@
+<div *ngIf="board">
+  <div>
+    <label>Owner: </label> {{ board.owner }}
+  </div>
+  <div>
+    <label>Topic type: </label> {{ board.type }}
+  </div>
+  <div>
+    <label>Sport: </label> {{ board.sport }}
+  </div>
+  <div>
+    <label>Message: </label> {{ board.message }}
+  </div>
+  <button mat-raised-button color="warn" (click)='deleteBoard()'>Delete</button>
+</div>

@@ -1,0 +1,9 @@
+<h1>Boards</h1>
+
+<div *ngFor="let board of boards | async" style="width: 300px;">
+  <board-details [board]='board'></board-details>
+</div>
+
+<div>
+  <button mat-raised-button color="warn" (click)='deleteBoards()'>Delete All Boards</button>
+</div>

@@ -1,57 +1,25 @@
 <h3>Create Reservation</h3>
 <div [hidden]="submitted" style="width: 300px;">
-
   <form (ngSubmit)="onSubmit()">
-
-    <!-- <div>
-        <input type="radio" id="tennis" required [(ngModel)]="reservation.sporttype" name="selectsport" value="TENNIS">
-       <label for="tennis">tennis</label><br>
-       <input type="radio" id="padel" required [(ngModel)]="reservation.sporttype" name="selectsport" value="PADEL">
-       <label for="padel">padel</label><br>
-     </div> -->
-
-     <!-- <div>
-       <label for="dateReservation">Date Reservation: </label>
-       <input type="text" id="dateReservation" required [(ngModel)]="reservation.dateReservation" name="dateReservation">
-     </div> -->
-
-    <!--<div>
-      <input matInput [matDatepicker]="pickdatares" id="dateReservation" required [(ngModel)]="reservation.dateReservation"
-             name="dateReservation"  placeholder="Choose a date" >
-      <mat-datepicker-toggle matSuffix [for]="pickdatares"></mat-datepicker-toggle>
-      <mat-datepicker #pickdatares></mat-datepicker>
-      <p> Stampa:  {{reservation.dateReservation}}!</p>
-    </div> -->
-    <label for="dateReservation">Loading Date</label>
+    <label for="dateReservation">Choose your date</label>
     <div class="input-group date">
       <mat-form-field>
-        <input matInput [matDatepicker] = "picker" placeholder = "Choose a date" name="dateReservation" id="dateReservation" [(ngModel)]="reservation.dateReservation" #loading_date="ngModel" [ngClass]="{'is-invalid' : loading_date.invalid && ((loading_date.dirty || loading_date.touched))}"   required>
+        <input readonly='true' matInput [matDatepicker] = "picker" name="dateReservation" id="dateReservation" [(ngModel)]="reservation.dateReservation" #loading_date="ngModel" [ngClass]="{'is-invalid' : loading_date.invalid && ((loading_date.dirty || loading_date.touched))}"   required>
         <mat-datepicker-toggle matSuffix [for] = "picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
-      <p> Stampa:  {{reservation.dateReservation}}!</p>
-      <button type="button" mat-raised-button (click)="engLocale()">English</button>
     </div>
-
-
-   <!-- <mat-form-field>
-      <mat-label>Choose a date</mat-label>
-      <input matInput [matDatepicker]="dateres" id="dateReservation" required [(ngModel)]="reservation.dateReservation">
-      <mat-datepicker-toggle matSuffix [for]="dateres"></mat-datepicker-toggle>
-      <mat-datepicker #dateres></mat-datepicker>
-    </mat-form-field>
-    {{reservation.dateReservation}} -->
-
-    <div>
+    <!--
+   <div>
        <label for="hourReservation">Hour Reservation: </label>
        <input type="number" min="10" max="21" id="hourReservation" required [(ngModel)]="reservation.hourReservation" name="hoursReservation">
      </div>
-
-     <button type="submit">Submit</button>
-   </form>
- </div>
+    -->
+      <button mat-raised-button color="primary" type="submit">Create your reservation</button>
+  </form>
+</div>
 
  <div [hidden]="!submitted">
    <h4>You submitted successfully!</h4>
-   <button (click)="newReservation()">Add new</button>
+   <button mat-raised-button color="primary" type="submit" (click)="newReservation()">Add new</button>
  </div>
