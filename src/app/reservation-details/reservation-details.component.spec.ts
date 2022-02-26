@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReservationDetailsComponent } from './reservation-details.component';
+import {OnInit} from "@angular/core";
 
 describe('ReservationDetailsComponent', () => {
   let component: ReservationDetailsComponent;

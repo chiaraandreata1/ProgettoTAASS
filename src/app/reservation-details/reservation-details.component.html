@@ -1,12 +1,14 @@
 <div *ngIf="reservation">
-  <!-- <div>
+  <!--  <div>
     <label>Sport type: </label> {{ reservation.sporttype }}
   </div> -->
+
   <div>
     <label>Date reservation: </label> {{ reservation.dateReservation }}
   </div>
+
   <div>
-    <label>Hour reservation: </label> {{ reservation.hourReservation }}
+    <label> Hour reservation: </label> {{ reservation.hourReservation }}
   </div>
   <button mat-raised-button color="warn" (click)='deleteReservation()'>Delete</button>
 </div>
