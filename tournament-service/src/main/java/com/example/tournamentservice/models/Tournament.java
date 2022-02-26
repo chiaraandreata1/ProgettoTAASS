@@ -9,6 +9,9 @@ public class Tournament {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private String nameTournament;
+    private String descriptionTournament;
+    private Integer priceTournament;
     private String level;
     private Integer prizemoney;
     private String player1;
@@ -19,6 +22,22 @@ public class Tournament {
     private String player6;
     private String player7;
     private String player8;
+
+    public void setNameTournament(String nameTournament) { this.nameTournament = nameTournament; }
+
+    public void setDescriptionTournament(String descriptionTournament) { this.descriptionTournament = descriptionTournament; }
+
+    public void setPriceTournament(Integer priceTournament) { this.priceTournament = priceTournament; }
+
+    public void setLevel(String level) { this.level = level; }
+
+    public void setPrizemoney(Integer prizemoney) { this.prizemoney = prizemoney; }
+
+    public String getNameTournament() { return nameTournament; }
+
+    public String getDescriptionTournament() { return descriptionTournament; }
+
+    public Integer getPriceTournament() { return priceTournament; }
 
     public String getPlayer1() { return player1; }
 
@@ -62,7 +81,6 @@ public class Tournament {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }

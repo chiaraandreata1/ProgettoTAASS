@@ -11,10 +11,15 @@ public class Reservation {
 
     private String dateReservation;
     private Integer hourReservation;
+    private String sportReservation;
     private String player1;
     private String player2;
     private String player3;
     private String player4;
+
+    public String getSportReservation() { return sportReservation; }
+
+    public void setSportReservation(String sportReservation) { this.sportReservation = sportReservation; }
 
     public void setPlayer1(String player1) { this.player1 = player1; }
 

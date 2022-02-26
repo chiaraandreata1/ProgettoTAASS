@@ -21,6 +21,13 @@ public class ReservationController {
         return reservationRepository.findAll();
     }
 
+    @GetMapping(value = "reservations/date/{date}")
+    public List<Reservation> findByDate(@PathVariable String date) {
+
+        List<Reservation> reservations = reservationRepository.findByDateReservation(date);
+        return reservations;
+    }
+
     @PostMapping(value="/reservations/create")
     @ResponseStatus(HttpStatus.OK)
     public void create(@RequestBody Reservation reservation){
