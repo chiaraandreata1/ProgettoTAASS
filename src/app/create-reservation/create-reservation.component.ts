@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import {Reservation} from "../reservation";
 import {ReservationService} from "../reservation.service";
+import {Observable} from "rxjs";
 
 /*export class DatepickerComponent implements OnInit {
   constructor() { }
@@ -30,6 +31,7 @@ export const MY_FORMATS = {
   styleUrls: ['./create-reservation.component.css'],
 })
 export class CreateReservationComponent implements OnInit {
+  reservations!: Observable<Reservation[]>;
   reservation: Reservation = new Reservation();
   submitted = false;
   constructor(private reservationService: ReservationService) { }
@@ -51,6 +53,11 @@ export class CreateReservationComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     this.save();
+  }
+
+  reloadData(date: string, sport: string) {
+    console.log(date + "  e  " + sport)
+    this.reservations = this.reservationService.getReservationByDateAndSport(date, sport);
   }
 
 }

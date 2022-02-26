@@ -1,6 +1,12 @@
 <h3>Create Reservation</h3>
 <div [hidden]="submitted" style="width: 300px;">
   <form (ngSubmit)="onSubmit()">
+    <div>
+      <input type="radio" id="tennis" required [(ngModel)]="reservation.sportReservation" name="selectsport" value="TENNIS">
+      <label for="tennis">tennis</label><br>
+      <input type="radio" id="padel" required [(ngModel)]="reservation.sportReservation" name="selectsport" value="PADEL">
+      <label for="padel">padel</label><br>
+    </div>
     <label for="dateReservation">Choose your date</label>
     <div class="input-group date">
       <mat-form-field>
@@ -17,6 +23,7 @@
     -->
       <button mat-raised-button color="primary" type="submit">Create your reservation</button>
   </form>
+  <button mat-raised-button color="secondary" (click)='reloadData(this.reservation.dateReservation, this.reservation.sportReservation )'>See reservations</button>
 </div>
 
  <div [hidden]="!submitted">

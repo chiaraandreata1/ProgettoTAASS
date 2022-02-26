@@ -15,6 +15,10 @@ export class ReservationService {
     return this.http.get(`${this.baseUrl}/${id}`);
   }
 
+  getReservationByDateAndSport(date: string, sport: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/date/${date}/sport/${sport}`);
+  }
+
   createReservation(reservation: Object): Observable<Object> {
     return this.http.post(`${this.baseUrl}` + `/create`, reservation);
   }
