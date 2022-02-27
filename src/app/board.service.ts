@@ -31,6 +31,10 @@ export class BoardService {
     return this.http.get(`${this.baseUrl}`);
   }
 
+  getBoardsListBySportAndType(sport: string, type: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/sport/${sport}/type/${type}`);
+  }
+
   deleteAllBoards(): Observable<any> {
     return this.http.delete(`${this.baseUrl}` + `/delete`, { responseType: 'text' });
   }

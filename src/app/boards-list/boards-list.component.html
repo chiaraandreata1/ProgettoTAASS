@@ -1,9 +1,25 @@
 <h1>Boards</h1>
-
-<div *ngFor="let board of boards | async" style="width: 300px;">
-  <board-details [board]='board'></board-details>
+<div>
+  <h2>Sport:</h2>
+  <input type="radio" required name="selectsport" value="tennis" [formControl]="sportBoard">
+  <label>tennis</label><br>
+  <input type="radio" required name="selectsport" value="padel" [formControl]="sportBoard">
+  <label>padel</label><br>
 </div>
 
 <div>
-  <button mat-raised-button color="warn" (click)='deleteBoards()'>Delete All Boards</button>
+  <h2>Type:</h2>
+  <input type="radio" required name="selecttype" value="playercommunication" [formControl]="typeBoard">
+  <label>Player communication</label><br>
+  <input type="radio" required name="selecttype" value="admincommunication" [formControl]="typeBoard">
+  <label>Admin Communication</label><br>
+</div>
+
+<div>
+  <button mat-raised-button color="primary" (click)='reloadData()'>Find your boards</button>
+</div>
+
+
+<div *ngFor="let board of boards | async" style="width: 300px;">
+  <board-details [board]='board'></board-details>
 </div>

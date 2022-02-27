@@ -26,8 +26,10 @@
     </div>
 
     <div>
-      <label for="message">Message: </label>
-      <input type="text" id="message" required [(ngModel)]="board.message" name="message">
+      <mat-form-field appearance="fill">
+        <mat-label>Your message</mat-label>
+        <input matInput id="message" required [(ngModel)]="board.message" name="message">
+      </mat-form-field>
     </div>
 
     <button mat-raised-button color="primary" type="submit">Submit</button>
