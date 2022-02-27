@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Board} from "../board";
-import {BoardService} from "../board.service";
+import {Board} from "../../models/board";
+import {BoardService} from "../../services/board.service";
 import {BoardsListComponent} from "../boards-list/boards-list.component";
 
 @Component({

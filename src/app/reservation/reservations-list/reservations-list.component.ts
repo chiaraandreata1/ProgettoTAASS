@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { ReservationService } from '../reservation.service';
-import { Reservation } from '../reservation';
+import { ReservationService } from '../../services/reservation.service';
+import { Reservation } from '../../models/reservation';
 
 
 @Component({

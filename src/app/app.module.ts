@@ -6,15 +6,15 @@ import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from "@angular/mater
 import { HttpClientModule } from "@angular/common/http";
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ReservationsListComponent } from './reservations-list/reservations-list.component';
-import { ReservationDetailsComponent } from './reservation-details/reservation-details.component';
-import { CreateBoardComponent } from './create-board/create-board.component';
-import { BoardsListComponent } from './boards-list/boards-list.component';
-import { BoardDetailsComponent } from './board-details/board-details.component';
+import { ReservationsListComponent } from './reservation/reservations-list/reservations-list.component';
+import { ReservationDetailsComponent } from './reservation/reservation-details/reservation-details.component';
+import { CreateBoardComponent } from './board/create-board/create-board.component';
+import { BoardsListComponent } from './board/boards-list/boards-list.component';
+import { BoardDetailsComponent } from './board/board-details/board-details.component';
 
 
 import { MatButtonModule } from "@angular/material/button";
-import { CreateReservationComponent } from './create-reservation/create-reservation.component';
+import { CreateReservationComponent } from './reservation/create-reservation/create-reservation.component';
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {DateAdapter, MAT_DATE_FORMATS, MatNativeDateModule} from "@angular/material/core";

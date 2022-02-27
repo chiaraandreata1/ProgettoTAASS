@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import {Reservation} from "../reservation";
-import {ReservationService} from "../reservation.service";
+import {Reservation} from "../../models/reservation";
+import {ReservationService} from "../../services/reservation.service";
 import {Observable} from "rxjs";
 
 import * as $ from 'jquery';

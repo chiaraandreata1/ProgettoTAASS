@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Observable} from "rxjs";
-import {Board} from "../board";
-import {BoardService} from "../board.service";
+import {Board} from "../../models/board";
+import {BoardService} from "../../services/board.service";
 import {FormControl} from "@angular/forms";
 
 @Component({
