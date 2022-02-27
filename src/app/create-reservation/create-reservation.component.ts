@@ -4,6 +4,8 @@ import {Reservation} from "../reservation";
 import {ReservationService} from "../reservation.service";
 import {Observable} from "rxjs";
 
+import * as $ from 'jquery';
+
 /*export class DatepickerComponent implements OnInit {
   constructor() { }
   minDate = new Date(2022, 1, 1);
@@ -45,6 +47,7 @@ export class CreateReservationComponent implements OnInit {
   }
 
   save() {
+    this.reservation.dateReservation = this.reservation.dateReservation.toString();
     this.reservationService.createReservation(this.reservation)
       .subscribe(data => console.log(data), error => console.log(error));
     this.reservation = new Reservation();
@@ -55,9 +58,9 @@ export class CreateReservationComponent implements OnInit {
     this.save();
   }
 
-  reloadData(date: string, sport: string) {
-    console.log(date + "  e  " + sport)
-    this.reservations = this.reservationService.getReservationByDateAndSport(date, sport);
+  reloadData() {
+    console.log(this.reservation.dateReservation.toString() + "  e  " + this.reservation.sportReservation)
+    //this.reservations = this.reservationService.getReservationByDateAndSport(date, sport);
   }
 
 }
