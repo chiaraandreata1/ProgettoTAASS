@@ -20,6 +20,8 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {DateAdapter, MAT_DATE_FORMATS, MatNativeDateModule} from "@angular/material/core";
 import {MatInputModule} from "@angular/material/input";
 import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { BoardMainComponent } from './board/board-main/board-main.component';
+import { ReservationMainComponent } from './reservation/reservation-main/reservation-main.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,8 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
     CreateBoardComponent,
     BoardsListComponent,
     BoardDetailsComponent,
+    BoardMainComponent,
+    ReservationMainComponent,
   ],
   imports: [
     BrowserModule,

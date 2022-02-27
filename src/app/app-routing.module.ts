@@ -4,14 +4,15 @@ import { ReservationsListComponent } from './reservation/reservations-list/reser
 import { CreateReservationComponent } from "./reservation/create-reservation/create-reservation.component";
 import {BoardsListComponent} from "./board/boards-list/boards-list.component";
 import {CreateBoardComponent} from "./board/create-board/create-board.component";
+import {ReservationMainComponent} from "./reservation/reservation-main/reservation-main.component";
+import {BoardMainComponent} from "./board/board-main/board-main.component";
 
 
 const routes: Routes = [
-  { path: '', redirectTo: 'reservation', pathMatch: 'full' },
-  { path: 'reservation', component: ReservationsListComponent },
-  { path: 'addReservation', component: CreateReservationComponent },
-  { path: 'board', component: BoardsListComponent },
-  { path: 'addBoard', component: CreateBoardComponent },
+  { path: 'reservation-main', component: ReservationMainComponent,
+    children: [{ path: 'reservation', component: ReservationsListComponent }, { path: 'addReservation', component: CreateReservationComponent }]},
+  { path: 'board-main', component: BoardMainComponent,
+    children: [{ path: 'board', component: BoardsListComponent },  { path: 'addBoard', component: CreateBoardComponent }]},
 ];
 
 @NgModule({
