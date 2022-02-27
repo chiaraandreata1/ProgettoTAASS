@@ -22,6 +22,12 @@ public class BoardController {
         return boardRepository.findAll();
     }
 
+    @GetMapping(value = "boards/sport/{sport}/type/{type}")
+    public List<Board> findBySportAndTypeBoards(@PathVariable String sport, @PathVariable String type) {
+        List<Board> boards = boardRepository.findAllBySportAndType(sport, type);
+        return boards;
+    }
+
     @PostMapping(value="/boards/create")
     @ResponseStatus(HttpStatus.OK)
     public void create(@RequestBody Board board){

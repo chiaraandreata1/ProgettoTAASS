@@ -22,7 +22,7 @@ public class ReservationController {
     }
 
     @GetMapping(value = "reservations/date/{date}/sport/{sport}")
-    public List<Reservation> findByDate(@PathVariable String date, @PathVariable String sport) {
+    public List<Reservation> findByDateAndSportReservations(@PathVariable String date, @PathVariable String sport) {
         List<Reservation> reservations = reservationRepository.findAllByDateReservationAndSportReservation(date, sport);
         return reservations;
     }
