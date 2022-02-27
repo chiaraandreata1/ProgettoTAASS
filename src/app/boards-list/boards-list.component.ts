@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Observable} from "rxjs";
 import {Board} from "../board";
 import {BoardService} from "../board.service";
@@ -21,7 +21,7 @@ export class BoardsListComponent implements OnInit {
     //this.reloadData();
   }
 
-  deleteBoards(sport: string, type: string) {
+  deleteBoards() {
     this.boardService.deleteAllBoards()
       .subscribe(
         data => {
