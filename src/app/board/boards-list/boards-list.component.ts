@@ -14,8 +14,13 @@ export class BoardsListComponent implements OnInit {
   boards!: Observable<Board[]>;
   sportBoard = new FormControl();
   typeBoard = new FormControl();
+  dateBoard = new FormControl();
 
-  constructor(private boardService: BoardService) { }
+  maxDate: Date;
+
+  constructor(private boardService: BoardService) {
+    this.maxDate = new Date();
+  }
 
   ngOnInit(): void {
     //this.reloadData();
@@ -32,6 +37,10 @@ export class BoardsListComponent implements OnInit {
   }
 
   reloadData() {
-    this.boards = this.boardService.getBoardsListBySportAndType(this.sportBoard.value, this.typeBoard.value);
+    console.log(this.dateBoard.value);
+    if (this.dateBoard.value==null)
+      this.boards = this.boardService.getBoardsListBySportAndType(this.sportBoard.value, this.typeBoard.value);
+    else
+      this.boards = this.boardService.getBoardsListBySportAndTypeAndDate(this.sportBoard.value, this.typeBoard.value, new Date(this.dateBoard.value.toString()).toISOString().split('T')[0]);
   }
 }

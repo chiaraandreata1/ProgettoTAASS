@@ -11,14 +11,23 @@
   <h2>Type:</h2>
   <input type="radio" required name="selecttype" value="playercommunication" [formControl]="typeBoard">
   <label>Player communication</label><br>
+  <input type="radio" required name="selecttype" value="instructorcommunication" [formControl]="typeBoard">
+  <label>Instructor communication</label><br>
   <input type="radio" required name="selecttype" value="admincommunication" [formControl]="typeBoard">
   <label>Admin Communication</label><br>
+</div>
+
+<div class="input-group date">
+  <mat-form-field> <!-- da errore su [matDatepicker] = "picker" ma in realtà funziona-->
+    <input readonly='true' matInput [matDatepicker] = "picker" name="dateBoard" [max]="maxDate" id="dateBoard" [formControl]="dateBoard">
+    <mat-datepicker-toggle matSuffix [for] = "picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
 </div>
 
 <div>
   <button mat-raised-button color="primary" (click)='reloadData()'>Find your boards</button>
 </div>
-
 
 <div *ngFor="let board of boards | async" style="width: 300px;">
   <board-details [board]='board'></board-details>

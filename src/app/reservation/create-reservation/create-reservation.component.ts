@@ -47,7 +47,7 @@ export class CreateReservationComponent implements OnInit {
   }
 
   save() {
-    this.reservation.dateReservation = this.reservation.dateReservation.toString();
+    this.reservation.dateReservation = new Date(this.reservation.dateReservation.toString()).toISOString().split('T')[0];
     this.reservationService.createReservation(this.reservation)
       .subscribe(data => console.log(data), error => console.log(error));
     this.reservation = new Reservation();
@@ -59,7 +59,8 @@ export class CreateReservationComponent implements OnInit {
   }
 
   reloadData() {
-    console.log(this.reservation.dateReservation.toString() + "  e  " + this.reservation.sportReservation)
+    this.reservation.dateReservation = new Date(this.reservation.dateReservation.toString()).toISOString().split('T')[0];
+    console.log(this.reservation.dateReservation)
     //this.reservations = this.reservationService.getReservationByDateAndSport(date, sport);
   }
 

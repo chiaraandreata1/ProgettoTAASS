@@ -4,4 +4,5 @@ export class Board {
   type!: string;
   sport!: string;
   message!: string;
+  date!: string;
 }

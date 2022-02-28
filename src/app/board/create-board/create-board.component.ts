@@ -23,6 +23,7 @@ export class CreateBoardComponent implements OnInit {
   }
 
   save() {
+    this.board.date = new Date().toISOString().split('T')[0]
     this.boardService.createBoard(this.board)
       .subscribe(data => console.log(data), error => console.log(error));
     this.board = new Board();
