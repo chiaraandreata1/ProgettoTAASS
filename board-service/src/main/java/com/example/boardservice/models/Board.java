@@ -13,20 +13,27 @@ public class Board {
     private String type;    // tipo della bacheca (lezioni, torneo...) ci sono più bacheche
     private String sport; // padel o tennis
     private String message;
+    private String date; //data di creazione dell'annuncio
 
-    public String getowner() {
-        return owner;
-    }
+    public void setOwner(String owner) { this.owner = owner; }
 
-    public String gettype() {
-        return type;
-    }
+    public void setType(String type) { this.type = type; }
 
-    public String getsport() {
-        return sport;
-    }
+    public void setSport(String sport) { this.sport = sport; }
 
-    public String getmessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
+
+    public void setDate(String date) { this.date = date; }
+
+    public String getOwner() { return owner; }
+
+    public String getType() { return type; }
+
+    public String getSport() { return sport; }
+
+    public String getMessage() { return message; }
+
+    public String getDate() { return date; }
 
     public Long getId() {
         return id;
