@@ -22,6 +22,7 @@ import {MatInputModule} from "@angular/material/input";
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { BoardMainComponent } from './board/board-main/board-main.component';
 import { ReservationMainComponent } from './reservation/reservation-main/reservation-main.component';
+import { BoardPersonalComponent } from './board/board-personal/board-personal.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { ReservationMainComponent } from './reservation/reservation-main/reserva
     BoardDetailsComponent,
     BoardMainComponent,
     ReservationMainComponent,
+    BoardPersonalComponent,
   ],
   imports: [
     BrowserModule,

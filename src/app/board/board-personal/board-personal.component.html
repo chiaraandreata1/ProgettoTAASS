@@ -1,0 +1,38 @@
+<h1>Your Boards</h1>
+<div>
+  <label for="owner">Owner: </label>
+  <input type="text" id="owner" required [formControl]="owner">
+</div>
+
+<div>
+  <h2>Sport:</h2>
+  <input type="radio" required name="selectsport" value="tennis" [formControl]="sportBoard">
+  <label>tennis</label><br>
+  <input type="radio" required name="selectsport" value="padel" [formControl]="sportBoard">
+  <label>padel</label><br>
+</div>
+
+<div>
+  <button mat-raised-button color="primary" (click)='reloadData()'>Find your boards</button>
+</div>
+
+<div *ngFor="let board of boards | async" style="width: 300px;">
+  <div *ngIf="board">
+    <div>
+      <label>Owner: </label> {{ board.owner }}
+    </div>
+    <div>
+      <label>Topic type: </label> {{ board.type }}
+    </div>
+    <div>
+      <label>Sport: </label> {{ board.sport }}
+    </div>
+    <div>
+      <label>Message: </label> {{ board.message }}
+    </div>
+    <div>
+      <label>Date: </label> {{ board.date }}
+    </div>
+    <button mat-raised-button color="warn" (click)='deleteBoard(board.id)'>Delete</button>
+  </div>
+</div>

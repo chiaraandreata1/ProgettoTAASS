@@ -4,30 +4,8 @@ import {Reservation} from "../../models/reservation";
 import {ReservationService} from "../../services/reservation.service";
 import {Observable} from "rxjs";
 
-import * as $ from 'jquery';
 import {FormControl} from "@angular/forms";
 
-/*export class DatepickerComponent implements OnInit {
-  constructor() { }
-  minDate = new Date(2022, 1, 1);
-  maxDate = new Date(2024,1,1);
-  ngOnInit() {
-  }
-} */
-
-/*
-export const MY_FORMATS = {
-  parse: {
-    dateInput: 'LL',
-  },
-  display: {
-    dateInput: 'YYYY-MM-DD',
-    monthYearLabel: 'YYYY',
-    dateA11yLabel: 'LL',
-    monthYearA11yLabel: 'YYYY',
-  },
-};
-*/
 @Component({
   selector: 'create-reservation',
   templateUrl: './create-reservation.component.html',
@@ -62,9 +40,18 @@ export class CreateReservationComponent implements OnInit {
   }
 
   reloadData() {
-    this.reservation.dateReservation = new Date(this.reservation.dateReservation.toString()).toISOString().split('T')[0];
-    console.log(this.dateReservation.value.toISOString().split('T')[0])
-    this.reservations = this.reservationService.getReservationByDateAndSport(this.dateReservation.value.toISOString().split('T')[0], this.sportReservation.value);
+    //console.log(this.dateReservation.value.toISOString().split('T')[0])
+    this.reservations = this.reservationService.getReservationByDateAndSport(new Date(this.dateReservation.value).toISOString().split('T')[0], this.sportReservation.value);
+  }
+
+  deleteReservation(id: number) {
+    this.reservationService.deleteReservation(id)
+      .subscribe(
+        data => {
+          console.log(data);
+          this.reloadData();
+        },
+        error => console.log(error));
   }
 
 }

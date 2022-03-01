@@ -28,7 +28,20 @@
   <button mat-raised-button color="secondary" (click)='reloadData()' >See reservations</button>
 
   <div *ngFor="let reservation of reservations | async" style="width: 300px;">
-    <reservation-details [reservation]='reservation'></reservation-details>
+    <div *ngIf="reservation">
+      <div>
+        <label>Sport type: </label> {{ reservation.sportReservation }}
+      </div>
+
+      <div>
+        <label>Date reservation: </label> {{ reservation.dateReservation }}
+      </div>
+
+      <div>
+        <label> Hour reservation: </label> {{ reservation.hourReservation }}
+      </div>
+      <button mat-raised-button color="warn" (click)='deleteReservation(reservation.id)'>Delete</button>
+    </div>
   </div>
 
 </div>
