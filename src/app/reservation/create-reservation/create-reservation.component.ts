@@ -5,6 +5,7 @@ import {ReservationService} from "../../services/reservation.service";
 import {Observable} from "rxjs";
 
 import * as $ from 'jquery';
+import {FormControl} from "@angular/forms";
 
 /*export class DatepickerComponent implements OnInit {
   constructor() { }
@@ -35,6 +36,8 @@ export const MY_FORMATS = {
 export class CreateReservationComponent implements OnInit {
   reservations!: Observable<Reservation[]>;
   reservation: Reservation = new Reservation();
+  sportReservation = new FormControl();
+  dateReservation = new FormControl();
   submitted = false;
   constructor(private reservationService: ReservationService) { }
 
@@ -60,8 +63,10 @@ export class CreateReservationComponent implements OnInit {
 
   reloadData() {
     this.reservation.dateReservation = new Date(this.reservation.dateReservation.toString()).toISOString().split('T')[0];
-    console.log(this.reservation.dateReservation)
-    //this.reservations = this.reservationService.getReservationByDateAndSport(date, sport);
+    console.log(this.dateReservation.value.toISOString().split('T')[0])
+    this.reservations = this.reservationService.getReservationByDateAndSport(this.dateReservation.value.toISOString().split('T')[0], this.sportReservation.value);
   }
 
 }
+
+

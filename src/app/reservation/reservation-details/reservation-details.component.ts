@@ -13,7 +13,7 @@ export class ReservationDetailsComponent implements OnInit {
 
   @Input() reservation!: Reservation;
 
-  constructor(private reservationService: ReservationService, private listComponent: ReservationsListComponent) { }
+  constructor(private reservationService: ReservationService) { }
 
   ngOnInit(): void {
   }
@@ -23,7 +23,7 @@ export class ReservationDetailsComponent implements OnInit {
       .subscribe(
         data => {
           console.log(data);
-          this.listComponent.reloadData();
+          //this.listComponent.reloadData();
         },
         error => console.log(error));
   }
