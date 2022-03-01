@@ -17,7 +17,12 @@ export class CreateReservationComponent implements OnInit {
   sportReservation = new FormControl();
   dateReservation = new FormControl();
   submitted = false;
-  constructor(private reservationService: ReservationService) { }
+
+  minDate: Date;
+
+  constructor(private reservationService: ReservationService) {
+  this.minDate = new Date();
+}
 
   ngOnInit(): void {
   }

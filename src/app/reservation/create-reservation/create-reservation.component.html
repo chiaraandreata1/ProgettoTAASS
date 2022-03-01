@@ -10,7 +10,7 @@
     <label for="dateReservation">Choose your date</label>
     <div class="input-group date">
       <mat-form-field>
-        <input readonly='true' matInput [matDatepicker] = "picker" name="dateReservation" id="dateReservation"
+        <input readonly='true' matInput [matDatepicker] = "picker" name="dateReservation" id="dateReservation" [min]="minDate"
                [(ngModel)]="reservation.dateReservation"  [formControl]="dateReservation" required>
         <mat-datepicker-toggle matSuffix [for] = "picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
