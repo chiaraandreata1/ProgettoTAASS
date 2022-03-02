@@ -1,6 +1,6 @@
 <div *ngIf="reservation">
   <div>
-    <label>Sport type: </label> {{ reservation.sportReservation }}
+    <label>Sport type: </label> {{ reservation.courtReservation.type }}
   </div>
 
   <div>
@@ -9,6 +9,12 @@
 
   <div>
     <label> Hour reservation: </label> {{ reservation.hourReservation }}
+  </div>
+
+  <div>
+    <label> Court type: </label> {{ reservation.courtReservation.type}}
+    <br>
+    <label> Court number: </label> {{ reservation.courtReservation.id}}
   </div>
   <button mat-raised-button color="warn" (click)='deleteReservation()'>Delete</button>
 </div>
