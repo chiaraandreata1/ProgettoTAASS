@@ -2,9 +2,9 @@
 <div [hidden]="submitted" style="width: 300px;">
   <form (ngSubmit)="onSubmit()">
     <div>
-      <input type="radio" id="tennis" required [(ngModel)]="reservation.sportReservation" [formControl]="sportReservation"  name="selectsport" value="TENNIS">
+      <input type="radio" id="tennis" required [(ngModel)]="reservation.sportReservation" [formControl]="sportReservation"  name="selectsport" value="tennis">
       <label for="tennis">tennis</label><br>
-      <input type="radio" id="padel" required [(ngModel)]="reservation.sportReservation" [formControl]="sportReservation" name="selectsport" value="PADEL">
+      <input type="radio" id="padel" required [(ngModel)]="reservation.sportReservation" [formControl]="sportReservation" name="selectsport" value="padel">
       <label for="padel">padel</label><br>
     </div>
     <label for="dateReservation">Choose your date</label>
@@ -16,34 +16,23 @@
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
     </div>
-    <!--
-   <div>
-       <label for="hourReservation">Hour Reservation: </label>
-       <input type="number" min="10" max="21" id="hourReservation" required [(ngModel)]="reservation.hourReservation" name="hoursReservation">
-     </div>
-    -->
+
+    <div *ngIf="this.reservationsNOTAvailable">
+      <div *ngFor="let hour of hoursAvailable" style="width: 300px;">
+        <div *ngFor="let court of courts | async" style="width: 300px;">
+          <div *ngIf="this.arrNOTAvailableForHours[hour-9]!=undefined">
+            <div *ngIf="!this.arrNOTAvailableForHours[hour-9].includes(court.id) && court.type == sportReservation.value">
+              <button mat-raised-button color="primary" type="submit" (click)="createReservation(sportReservation.value, dateReservation.value, hour, court.id, court.type)">{{hour}}.00-Court{{court.id}}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
       <button mat-raised-button color="primary" type="submit">Create your reservation</button>
   </form>
 
   <button mat-raised-button color="secondary" (click)='reloadData()' >See reservations</button>
-
-  <div *ngFor="let reservation of reservations | async" style="width: 300px;">
-    <div *ngIf="reservation">
-      <div>
-        <label>Sport type: </label> {{ reservation.sportReservation }}
-      </div>
-
-      <div>
-        <label>Date reservation: </label> {{ reservation.dateReservation }}
-      </div>
-
-      <div>
-        <label> Hour reservation: </label> {{ reservation.hourReservation }}
-      </div>
-      <button mat-raised-button color="warn" (click)='deleteReservation(reservation.id)'>Delete</button>
-    </div>
-  </div>
-
+  <button mat-raised-button color="secondary" (click)='showarray()' >See array</button>
 </div>
 
  <div [hidden]="!submitted">
