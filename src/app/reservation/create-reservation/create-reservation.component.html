@@ -2,37 +2,55 @@
 <div [hidden]="submitted" style="width: 300px;">
   <form (ngSubmit)="onSubmit()">
     <div>
-      <input type="radio" id="tennis" required [(ngModel)]="reservation.sportReservation" [formControl]="sportReservation"  name="selectsport" value="tennis">
+      <input type="radio" id="tennis" required [(ngModel)]="reservation.sportReservation" [formControl]="sportReservation" (ngModelChange)="reloadData()" name="selectsport" value="tennis">
       <label for="tennis">tennis</label><br>
-      <input type="radio" id="padel" required [(ngModel)]="reservation.sportReservation" [formControl]="sportReservation" name="selectsport" value="padel">
+      <input type="radio" id="padel" required [(ngModel)]="reservation.sportReservation" [formControl]="sportReservation" (ngModelChange)="reloadData()" name="selectsport" value="padel">
       <label for="padel">padel</label><br>
+    </div>
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Player1</mat-label>
+        <input type="text" matInput [formControl]="player1" [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          <ng-container *ngIf="player1.value && player1.value.length>1">
+            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+              {{option.username}}
+            </mat-option>
+          </ng-container>
+        </mat-autocomplete>
+      </mat-form-field>
     </div>
     <label for="dateReservation">Choose your date</label>
     <div class="input-group date">
       <mat-form-field>
-        <input readonly='true' matInput [matDatepicker] = "picker" name="dateReservation" id="dateReservation" [min]="minDate"
-               [(ngModel)]="reservation.dateReservation"  [formControl]="dateReservation" required>
+        <input readonly='true' matInput [matDatepicker] = "picker" name="dateReservation" id="dateReservation" [min]="minDate" [max]="maxDate"
+               [(ngModel)]="reservation.dateReservation"  [formControl]="dateReservation" (ngModelChange)="reloadData()" required>
         <mat-datepicker-toggle matSuffix [for] = "picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
     </div>
 
-    <div *ngIf="this.reservationsNOTAvailable">
-      <div *ngFor="let hour of hoursAvailable" style="width: 300px;">
-        <div *ngFor="let court of courts | async" style="width: 300px;">
-          <div *ngIf="this.arrNOTAvailableForHours[hour-9]!=undefined">
-            <div *ngIf="!this.arrNOTAvailableForHours[hour-9].includes(court.id) && court.type == sportReservation.value">
+    <ng-container *ngIf="reservationsNOTAvailable && searchready">
+      <ng-container *ngFor="let hour of hoursAvailable" style="width: 300px;">
+        <ng-container *ngFor="let court of courts | async" style="width: 300px;">
+          <ng-container *ngIf="arrNOTAvailableForHours[hour-9]!=undefined && court.type == sportReservation.value">
+            <ng-container *ngIf="!arrNOTAvailableForHours[hour-9].includes(court.id); then ButtonAvailable else ButtonNotAvailable"></ng-container>
+            <ng-template #ButtonAvailable>
               <button mat-raised-button color="primary" type="submit" (click)="createReservation(sportReservation.value, dateReservation.value, hour, court.id, court.type)">{{hour}}.00-Court{{court.id}}</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-      <button mat-raised-button color="primary" type="submit">Create your reservation</button>
+            </ng-template>
+            <ng-template #ButtonNotAvailable>
+              <button mat-raised-button color="primary" [disabled]="true">{{hour}}.00-Court{{court.id}}</button>
+            </ng-template>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </ng-container>
   </form>
+  <!--
+  <button mat-raised-button color="primary" type="submit">Create your reservation</button>
+  -->
+  <button mat-raised-button color="secondary" (click)='show()' >See</button>
 
-  <button mat-raised-button color="secondary" (click)='reloadData()' >See reservations</button>
-  <button mat-raised-button color="secondary" (click)='showarray()' >See array</button>
 </div>
 
  <div [hidden]="!submitted">

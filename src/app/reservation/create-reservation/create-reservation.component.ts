@@ -2,11 +2,13 @@ import { Component, OnInit } from '@angular/core';
 
 import {Reservation} from "../../models/reservation";
 import {ReservationService} from "../../services/reservation.service";
-import {Observable, Subscription} from "rxjs";
+import {UserService} from "../../services/user.service";
+import {map, Observable, startWith, Subscription} from "rxjs";
 
 
 import {FormControl} from "@angular/forms";
 import {Court} from "../../models/court";
+import {User} from "../../models/user";
 
 @Component({
   selector: 'create-reservation',
@@ -20,20 +22,52 @@ export class CreateReservationComponent implements OnInit {
   court: Court = new Court();
   sportReservation = new FormControl();
   dateReservation = new FormControl();
+  player1 = new FormControl();
+  player2 = new FormControl();
+  player3 = new FormControl();
+  player4 = new FormControl();
   hoursAvailable = [9,10,11,12,13,14,15,16,17,18,19,20,21];
   submitted = false;
   arrNOTAvailableForHours = new Array();
+  users = new Array();
+  nameFormUsers = ['player1', 'player2', 'player3', 'player4'];
+  filteredOptions!: Observable<User[]>;
   subscription = new Subscription();
+  searchready = false;
 
   minDate: Date;
+  maxDate: Date;
 
-  constructor(private reservationService: ReservationService) {
+  constructor(private reservationService: ReservationService, private  userService: UserService) {
   this.minDate = new Date();
+  this.maxDate = new Date();
+  this.maxDate.setMonth(this.minDate.getMonth()+1)
 }
 
   ngOnInit(): void {
     this.courts = this.reservationService.getCourtsList();
+    var obsUsers = this.userService.getUsersList();
+    obsUsers.toPromise()
+      .then(
+        data => {
+          this.users = <Array<User>>data;
+        }
+      );
+    this.filteredOptions = this.player1.valueChanges.pipe(
+      map(value => (typeof value === 'string' ? value : value.username)),
+      map(username => (username ? this._filter(username) : this.users.slice())),
+    );
   }
+
+  displayFn(user: User): string {
+    return user && user.username ? user.username : '';
+  }
+
+  private _filter(username: string): User[] {
+    const filterValue = username.toLowerCase();
+    return this.users.filter(users => users.username.toLowerCase().includes(filterValue));
+  }
+
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
@@ -59,6 +93,7 @@ export class CreateReservationComponent implements OnInit {
     this.court.id = courtId;
     this.court.type = courtType;
     this.reservation.courtReservation = this.court;
+    this.submitted = true;
     this.save();
   }
 
@@ -68,25 +103,31 @@ export class CreateReservationComponent implements OnInit {
   }
 
   reloadData() {
-    console.log(this.dateReservation.value.toISOString().split('T')[0])
-    this.reservationsNOTAvailable = this.reservationService.getReservationByDateAndSport(new Date(this.dateReservation.value).toISOString().split('T')[0], this.sportReservation.value)
-    this.reservationsNOTAvailable.toPromise()
-    .then(
-      data => {
-        var reservationsNOTAvailableNOTobs = <Array<Reservation>>data;
-        this.arrNOTAvailableForHours = new Array();
-        for (var i=0; i<this.hoursAvailable.length; i++)
-        {
-          var arr = new Array();
-          for (var j = 0; j<reservationsNOTAvailableNOTobs.length; j++)
+    if (this.dateReservation.value!=undefined && this.sportReservation.value!=undefined)
+    {
+      this.searchready = true;
+      console.log(this.dateReservation.value.toISOString().split('T')[0])
+      this.reservationsNOTAvailable = this.reservationService.getReservationByDateAndSport(new Date(this.dateReservation.value).toISOString().split('T')[0], this.sportReservation.value)
+      this.reservationsNOTAvailable.toPromise()
+      .then(
+        data => {
+          var reservationsNOTAvailableNOTobs = <Array<Reservation>>data;
+          this.arrNOTAvailableForHours = new Array();
+          for (var i=0; i<this.hoursAvailable.length; i++)
           {
-            if (reservationsNOTAvailableNOTobs[j].hourReservation == this.hoursAvailable[i])
-              arr.push(reservationsNOTAvailableNOTobs[j].courtReservation.id);
+            var arr = new Array();
+            for (var j = 0; j<reservationsNOTAvailableNOTobs.length; j++)
+            {
+              if (reservationsNOTAvailableNOTobs[j].hourReservation == this.hoursAvailable[i])
+                arr.push(reservationsNOTAvailableNOTobs[j].courtReservation.id);
+            }
+            this.arrNOTAvailableForHours.push(arr);
           }
-          this.arrNOTAvailableForHours.push(arr);
         }
-      }
-    );
+      );
+    }
+    else
+      this.searchready = false;
   }
 
   deleteReservation(id: number) {
@@ -99,8 +140,8 @@ export class CreateReservationComponent implements OnInit {
         error => console.log(error));
   }
 
-  showarray(){
-    console.log(this.arrNOTAvailableForHours)
+  show(){
+    console.log(this.users)
   }
 }
 

@@ -23,6 +23,8 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { BoardMainComponent } from './board/board-main/board-main.component';
 import { ReservationMainComponent } from './reservation/reservation-main/reservation-main.component';
 import { BoardPersonalComponent } from './board/board-personal/board-personal.component';
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
 
 @NgModule({
   declarations: [
@@ -47,7 +49,9 @@ import { BoardPersonalComponent } from './board/board-personal/board-personal.co
     MatNativeDateModule,
     MatInputModule,
     MatDatepickerModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatAutocompleteModule,
   ],
   //crea correttamente la data, ma mantiene anche le informazioni non utili (ad esempio l'ora)
   providers: [
