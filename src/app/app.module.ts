@@ -25,6 +25,7 @@ import { ReservationMainComponent } from './reservation/reservation-main/reserva
 import { BoardPersonalComponent } from './board/board-personal/board-personal.component';
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import { TournamentMainComponent } from './tournament/tournament-main/tournament-main.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
     BoardMainComponent,
     ReservationMainComponent,
     BoardPersonalComponent,
+    TournamentMainComponent,
   ],
   imports: [
     BrowserModule,
