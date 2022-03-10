@@ -1,1 +1,272 @@
-<p>tournament-main works!</p>
+<div class="container">
+  <h1>Tournament</h1>
+
+  <main id="tournament">
+    <ul class="round" *ngFor="let round of rounds">
+      <li class="spacer">&nbsp;</li>
+
+      <ng-container *ngFor="let match of round.match">
+        <li (mouseover)="overMatch = match" class="game game-top"
+            (click)="selected = match"
+            [ngClass]="{
+      'winner': winner(true, match),
+      'hover-match': overMatch == match || selected == match
+      }">{{match.side1}} <span>{{match.points1}}</span></li>
+        <li (mouseover)="overMatch = match" class="game game-spacer"
+            (click)="selected = match"
+            [ngClass]="{
+      'winner': winner(true, match),
+      'hover-match': overMatch == match || selected == match
+      }">&nbsp;</li>
+        <li (mouseover)="overMatch = match" class="game game-bottom"
+            (click)="selected = match"
+            [ngClass]="{
+      'winner': winner(true, match),
+      'hover-match': overMatch == match || selected == match
+      }">{{match.side2}}
+          <span>{{match.points2}}</span></li>
+
+        <li class="spacer">&nbsp;</li>
+      </ng-container>
+    </ul>
+  </main>
+
+  <div class="card" *ngIf="selected != undefined && selected.side1 != undefined && selected.points1 != undefined">
+    <div class="card-header">
+      <h4>{{selected.side1}} - {{selected.side2}} {{selected.date}}</h4>
+    </div>
+    <div class="card-body">
+      <div><b>{{selected.side1}} <span>{{selected.points1}}</span></b></div>
+      <div><b>{{selected.side2}} <span>{{selected.points2}}</span></b></div>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="selected != undefined && selected.side1 != undefined && selected.points1 == undefined">
+    <div class="card-header">
+      <h4>{{selected.side1}} - {{selected.side2}} {{selected.date}}</h4>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <label class="form-label col-2" for="points1-input">{{selected.side1}}</label>
+        <div class="col-2">
+          <input class="form-control" id="points1-input" type="number">
+        </div>
+      </div>
+      <div class="row">
+        <label class="form-label col-2" for="points2-input">{{selected.side2}}</label>
+        <div class="col-2">
+          <input class="form-control" id="points2-input" type="number">
+        </div>
+      </div>
+      <button class="btn btn-primary">Save results</button>
+    </div>
+  </div>
+
+  <!--<ng-template #block let-match>-->
+
+  <!--  <li class="game game-top winner">Colo St <span>84</span></li>-->
+  <!--  <li class="game game-spacer">&nbsp;</li>-->
+  <!--  <li class="game game-bottom ">Missouri <span>72</span></li>-->
+
+  <!--</ng-template>-->
+
+  <!--<h1>2013 NCAA Tournament - Midwest Bracket</h1>
+  <main id="tournament">
+  &lt;!&ndash;  <ul class="round round-1">&ndash;&gt;
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">Lousville <span>79</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">A <span>15</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">B <span>79</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">NC A&T <span>83</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">Colo St <span>84</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">C <span>5</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">D <span>84</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">Missouri <span>87</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top ">E <span>9</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom winner">Oregon <span>68</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top ">Oklahoma St <span>98</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom winner">F <span>68</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">Saint Louis <span>64</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">G<span>44</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">H<span>64</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">New Mexico St <span>44</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">Memphis <span>54</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">St Mary's <span>52</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">I <span>54</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">St Mary's <span>52</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">Mich St <span>65</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">A <span>54</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">Creighton <span>67</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">Cincinnati <span>63</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">>Z <span>67</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">V <span>63</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">Duke <span>73</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">M <span>61</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">N <span>73</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">Albany <span>61</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;  </ul>&ndash;&gt;
+  &lt;!&ndash;  <ul class="round round-2">&ndash;&gt;
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">Lousville <span>79</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">NC A&T <span>48</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">Colo St <span>84</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">Missouri <span>72</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top ">Oklahoma St <span>55</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom winner">Oregon <span>68</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">Saint Louis <span>64</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">New Mexico St <span>44</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">Memphis <span>54</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">St Mary's <span>52</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">Mich St <span>65</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">Valparaiso <span>54</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">Creighton <span>67</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">Cincinnati <span>63</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="game game-top winner">Duke <span>73</span></li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;    <li class="game game-bottom ">Albany <span>61</span></li>&ndash;&gt;
+
+  &lt;!&ndash;    <li class="spacer">&nbsp;</li>&ndash;&gt;
+  &lt;!&ndash;  </ul>&ndash;&gt;
+    <ul class="round">
+      <li class="spacer">&nbsp;</li>
+
+      <li class="game game-top winner">Lousville <span>82</span></li>
+      <li class="game game-spacer">&nbsp;</li>
+      <li class="game game-bottom ">Colo St <span>56</span></li>
+
+      <li class="spacer">&nbsp;</li>
+
+      <li class="game game-top winner">Oregon <span>74</span></li>
+      <li class="game game-spacer">&nbsp;</li>
+      <li class="game game-bottom ">Saint Louis <span>57</span></li>
+
+      <li class="spacer">&nbsp;</li>
+
+      <li class="game game-top ">Memphis <span>48</span></li>
+      <li class="game game-spacer">&nbsp;</li>
+      <li class="game game-bottom winner">Mich St <span>70</span></li>
+
+      <li class="spacer">&nbsp;</li>
+
+      <li class="game game-top ">Creighton <span>50</span></li>
+      <li class="game game-spacer">&nbsp;</li>
+      <li class="game game-bottom winner">Duke <span>66</span></li>
+
+      <li class="spacer">&nbsp;</li>
+    </ul>
+    <ul class="round">
+      <li class="spacer">&nbsp;</li>
+
+      <li class="game game-top winner">Lousville <span>77</span></li>
+      <li class="game game-spacer">&nbsp;</li>
+      <li class="game game-bottom ">Oregon <span>69</span></li>
+
+      <li class="spacer">&nbsp;</li>
+
+      <li class="game game-top ">Mich St <span>61</span></li>
+      <li class="game game-spacer">&nbsp;</li>
+      <li class="game game-bottom winner">Duke <span>71</span></li>
+
+      <li class="spacer">&nbsp;</li>
+    </ul>
+    <ul class="round">
+      <li class="spacer">&nbsp;</li>
+
+      <li class="game game-top winner">Lousville <span>85</span></li>
+      <li class="game game-spacer">&nbsp;</li>
+      <li class="game game-bottom ">Duke <span>63</span></li>
+
+      <li class="spacer">&nbsp;</li>
+    </ul>
+  </main>-->
+
+
+</div>

@@ -26,6 +26,7 @@ import { BoardPersonalComponent } from './board/board-personal/board-personal.co
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import { TournamentMainComponent } from './tournament/tournament-main/tournament-main.component';
+import {NgTournamentTreeModule} from "ng-tournament-tree";
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { TournamentMainComponent } from './tournament/tournament-main/tournament
     ReactiveFormsModule,
     MatFormFieldModule,
     MatAutocompleteModule,
+    NgTournamentTreeModule
   ],
   //crea correttamente la data, ma mantiene anche le informazioni non utili (ad esempio l'ora)
   providers: [
