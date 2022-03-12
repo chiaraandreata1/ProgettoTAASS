@@ -19,7 +19,7 @@ public class TournamentServiceApplication {
 
 	@GetMapping
 	public String hello() {
-		return "working";
+		return "TorunamentService is working";
 	}
 
 }

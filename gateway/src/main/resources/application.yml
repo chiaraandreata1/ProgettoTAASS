@@ -36,5 +36,8 @@ zuul:
   ignoredServices: '*'
   routes:
     tournaments-service: /api/v1/tournaments/**
+    frontend:
+      path: /*
+      url: http://localhost:4200/
 #  routes:
 #    tournaments-service: /myusers/**
