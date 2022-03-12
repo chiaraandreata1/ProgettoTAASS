@@ -7,7 +7,12 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>tennispadel-master</name>
-	<description>Platform for Tennis&amp;Padel</description>
+	<description>Platform for Tennis and Padel</description>
+
+	<properties>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+	</properties>
 
 	<modules>
 		<module>board-service</module>
@@ -15,7 +20,7 @@
 		<module>reservation-service</module>
 		<module>tournament-service</module>
 		<module>user-service</module>
-		<module>eureka-client</module>
+		<module>gateway</module>
 		<module>eureka-server</module>
 	</modules>
 
