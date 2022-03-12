@@ -1,1 +1,9 @@
-<p>courses-list works!</p>
+<h1>All Courses</h1>
+
+<div *ngFor="let course of courses | async" style="width: 300px;">
+  <course-details [course]='course' ></course-details>
+</div>
+
+<div>
+  <button mat-raised-button color="warn" (click)='deleteCourses()'>Delete All</button>
+</div>

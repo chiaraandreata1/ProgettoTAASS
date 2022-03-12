@@ -8,6 +8,9 @@ import {ReservationMainComponent} from "./reservation/reservation-main/reservati
 import {BoardMainComponent} from "./board/board-main/board-main.component";
 import {BoardPersonalComponent} from "./board/board-personal/board-personal.component";
 import {TournamentMainComponent} from "./tournament/tournament-main/tournament-main.component";
+import {CourseMainComponent} from "./course/course-main/course-main.component";
+import {CoursesListComponent} from "./course/courses-list/courses-list.component";
+import {CourseAdmincontrollerComponent} from "./course/course-admincontroller/course-admincontroller.component";
 
 
 const routes: Routes = [
@@ -19,7 +22,9 @@ const routes: Routes = [
     path: 'tournament',
     component: TournamentMainComponent,
     children: []
-  }
+  },
+  { path: 'course-main', component: CourseMainComponent,
+    children: [{ path: 'course', component: CoursesListComponent }, { path: 'adminController', component: CourseAdmincontrollerComponent }]},
 ];
 
 @NgModule({

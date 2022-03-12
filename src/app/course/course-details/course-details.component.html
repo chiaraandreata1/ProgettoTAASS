@@ -1,1 +1,33 @@
-<p>course-details works!</p>
+<div *ngIf="course">
+  <div>
+    <div>
+      <label>SPORT: </label> {{course.sporttype}}
+    </div>
+    <div>
+      <label>INSTRUCTOR: </label> {{course.instructor}}
+    </div>
+    <div>
+      <label>PLAYERS: </label> {{course.player1}} {{course.player2}} {{course.player3}}
+    </div>
+  </div>
+
+  <div>
+    <h1>INFO FOR RESERVATIONS:</h1>
+    <div>
+      <label>DAY1: </label> {{course.day1}}
+    </div>
+    <div>
+      <label>DAY2: </label> {{course.day2}}
+    </div>
+    <div>
+      <label>HOUR LESSON: </label> {{course.hourlesson}}
+    </div>
+    <div>
+      <label>NUMBER WEEKS</label> {{course.numberweeks}}
+    </div>
+    <div>
+      <label>PRICE: </label> {{course.priceCourse}}
+    </div>
+  </div>
+  <button mat-raised-button color="warn" (click)='deleteCourse()'>Delete</button>
+</div>
