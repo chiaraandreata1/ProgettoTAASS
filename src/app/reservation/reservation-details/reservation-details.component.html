@@ -16,5 +16,9 @@
     <br>
     <label>-number: </label> {{ reservation.courtReservation.id}}
   </div>
+  <div>
+    <p>PLAYERS: </p>
+    {{reservation.player1}} {{reservation.player2}} {{reservation.player3}} {{reservation.player4}}
+  </div>
   <button mat-raised-button color="warn" (click)='deleteReservation()'>Delete</button>
 </div>

@@ -25,6 +25,8 @@ import { ReservationMainComponent } from './reservation/reservation-main/reserva
 import { BoardPersonalComponent } from './board/board-personal/board-personal.component';
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {MatIconModule} from "@angular/material/icon";
+import {MatRadioModule} from "@angular/material/radio";
 import { TournamentMainComponent } from './tournament/tournament-main/tournament-main.component';
 import {NgTournamentTreeModule} from "ng-tournament-tree";
 
@@ -42,21 +44,23 @@ import {NgTournamentTreeModule} from "ng-tournament-tree";
     BoardPersonalComponent,
     TournamentMainComponent,
   ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    AppRoutingModule,
-    HttpClientModule,
-    MatButtonModule,
-    BrowserAnimationsModule,
-    MatNativeDateModule,
-    MatInputModule,
-    MatDatepickerModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatAutocompleteModule,
-    NgTournamentTreeModule
-  ],
+    imports: [
+        BrowserModule,
+        FormsModule,
+        AppRoutingModule,
+        HttpClientModule,
+        MatButtonModule,
+        BrowserAnimationsModule,
+        MatNativeDateModule,
+        MatInputModule,
+        MatDatepickerModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatAutocompleteModule,
+        MatIconModule,
+        MatRadioModule,
+        NgTournamentTreeModule
+    ],
   //crea correttamente la data, ma mantiene anche le informazioni non utili (ad esempio l'ora)
   providers: [
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE,
