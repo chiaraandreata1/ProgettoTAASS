@@ -29,6 +29,10 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatRadioModule} from "@angular/material/radio";
 import { TournamentMainComponent } from './tournament/tournament-main/tournament-main.component';
 import {NgTournamentTreeModule} from "ng-tournament-tree";
+import { CourseMainComponent } from './course/course-main/course-main.component';
+import { CourseAdmincontrollerComponent } from './course/course-admincontroller/course-admincontroller.component';
+import { CoursesListComponent } from './course/courses-list/courses-list.component';
+import { CourseDetailsComponent } from './course/course-details/course-details.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +47,10 @@ import {NgTournamentTreeModule} from "ng-tournament-tree";
     ReservationMainComponent,
     BoardPersonalComponent,
     TournamentMainComponent,
+    CourseMainComponent,
+    CourseAdmincontrollerComponent,
+    CoursesListComponent,
+    CourseDetailsComponent,
   ],
     imports: [
         BrowserModule,
