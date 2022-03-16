@@ -28,16 +28,15 @@ export class CoursesListComponent implements OnInit {
     this.reloadData();
     this.prepareUserOptions();
     this.addOnFormGroup();
-    //console.log(this.pendingCourses);
   }
 
   displayFn(user: User): string {
     return user && user.username ? user.username : '';
   }
 
-  private _filter(username: string): User[] {
+  private _filter(username: string, usersSelectable: User[]): User[] {
     const filterValue = username.toLowerCase();
-    return this.users.filter(users => users.username.toLowerCase().includes(filterValue));
+    return usersSelectable.filter(users => users.username.toLowerCase().includes(filterValue));
   }
 
   //in realtà questa funzione c'è già in reservation. Bisogna renderla globale
@@ -57,23 +56,21 @@ export class CoursesListComponent implements OnInit {
         data => {
           let objCourses = <Array<Course>>data;
           for (let i = 0; i<objCourses.length; i++)
-            if (!objCourses[i].player1 || !objCourses[i].player2 || !objCourses[i].player3)
+            if (objCourses[i].players.length!=3)
             {
               this.formsInputPendingCourses.addControl(objCourses[i].id.toString(), new FormControl());
               this.pendingCourses.push(objCourses[i]);
             }
-          console.log(this.users);
           for (let i = 0; i<this.pendingCourses.length; i++)
           {
-            let userSelectable = this.users.filter(value => value.username!=this.pendingCourses[i].player1 && value.username!=this.pendingCourses[i].player2 && value.username!=this.pendingCourses[i].player3);
+            let userSelectable = this.users.filter(value => !this.pendingCourses[i].players.includes(value.username));
             console.log(this.formsInputPendingCourses.controls[this.pendingCourses[i].id]);
             let filteredOptions = this.formsInputPendingCourses.controls[this.pendingCourses[i].id].valueChanges.pipe(
               map(user => (typeof user === 'string' ? user : user.username)),
-              map(user => (user ? this._filter(user) : this.users.slice())),
+              map(user => (user ? this._filter(user, userSelectable) : userSelectable.slice())),
             );
             this.filtersOptions.push(filteredOptions);
           }
-          console.log(this.filtersOptions)
         }
       );
   }
@@ -94,25 +91,15 @@ export class CoursesListComponent implements OnInit {
   }
 
   addNewPlayer(courseId: number){
-    console.log(courseId);
     let course = this.pendingCourses.find(x => x.id === courseId);
-
-    //scriverlo meglio
-    if (!course.player1)
-      course.player1 = this.formsInputPendingCourses.controls[courseId.toString()].value;
-    else if (!course.player2)
-      course.player2 = this.formsInputPendingCourses.controls[courseId.toString()].value;
-    else
-      course.player3 = this.formsInputPendingCourses.controls[courseId.toString()].value;
-
-
+    course.players.push(this.formsInputPendingCourses.controls[courseId.toString()].value.username)
     this.courseService.updateCourse(courseId, course)
       .subscribe(data => console.log(data), error => console.log(error));
     window.location.reload();
   }
 
   show(){
-    console.log(this.formsInputPendingCourses.controls[10].value);
+    console.log(this.users);
   }
 
 }
