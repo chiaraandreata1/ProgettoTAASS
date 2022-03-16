@@ -74,7 +74,6 @@ export class CreateReservationComponent implements OnInit {
 
   //modifica le filtered options con i nuovi usersNotSelected, che sono tutte uguali qualunque sia il player scelto
   changeFilters(){
-    console.log('call changeFilters');
     let usersSelected = new Array();
     for (let i = 0; i<this.arrplayers.length; i++)
     {
@@ -139,14 +138,10 @@ export class CreateReservationComponent implements OnInit {
 
   createReservation(sportReservation: string, dateReservation: string, hour: number, courtId: number, courtType: string)
   {
-    //si potrebbe magari scrivere meglio l'assegnamento ai 4 players
-    this.reservation.player1 = typeof this.playersForm.controls[this.arrplayers[0]].value == "string" ? this.playersForm.controls[this.arrplayers[0]].value : this.playersForm.controls[this.arrplayers[0]].value.username;
-    this.reservation.player2 = typeof this.playersForm.controls[this.arrplayers[1]].value == "string" ? this.playersForm.controls[this.arrplayers[1]].value : this.playersForm.controls[this.arrplayers[1]].value.username;
-    if (this.numberplayers>2)
-    {
-      this.reservation.player3 = typeof this.playersForm.controls[this.arrplayers[2]].value == "string" ? this.playersForm.controls[this.arrplayers[2]].value : this.playersForm.controls[this.arrplayers[2]].value.username;
-      this.reservation.player4 = typeof this.playersForm.controls[this.arrplayers[3]].value == "string" ? this.playersForm.controls[this.arrplayers[3]].value : this.playersForm.controls[this.arrplayers[3]].value.username;
-    }
+    let players = new Array();
+    for (let i = 0; i<this.numberplayers; i++)
+      players.push(typeof this.playersForm.controls[this.arrplayers[0]].value == "string" ? this.playersForm.controls[this.arrplayers[i]].value : this.playersForm.controls[this.arrplayers[i]].value.username);
+    this.reservation.players = players;
     this.reservation.sportReservation = sportReservation;
     this.reservation.dateReservation = new Date(this.reservation.dateReservation.toString()).toISOString().split('T')[0];
     this.reservation.hourReservation = hour;
@@ -173,7 +168,6 @@ export class CreateReservationComponent implements OnInit {
   //si attiva quando vuoi svutare la label dall'user selezionato. Riabilita la label
   enableInputPlayer(absControl: AbstractControl)
   {
-    console.log('call enableInputPlayer');
     absControl.reset();
     absControl.enable();
     this.listplayersready = false;
@@ -183,38 +177,25 @@ export class CreateReservationComponent implements OnInit {
   //si attiva quando hai scelto l'user player. Disabilita la label
   disableInputPlayer(absControl: AbstractControl)
   {
-    console.log('call enableInputPlayer');
     absControl.disable();
     this.changeFilters();
   }
 
   //resetta e pulisce gli input dei 4 player. Si attiva quando cambi i campi sport, numero giocatori o quando fai una nuova prenotazione
   resetInputPlayers(){
-    console.log('call resetInputPlayers');
-    console.log('numero giocatori = ' + this.numberplayers);
     for (let i = 0; i<this.arrplayers.length; i++)
     {
-      console.log('ciclo ' + i);
+      this.playersForm.controls[this.arrplayers[i]].reset();
       if (i<this.numberplayers && (typeof this.playersForm.controls[this.arrplayers[i]].value != 'string' || !this.playersForm.controls[this.arrplayers[i]].value))
-      {
-        console.log('if');
-        this.playersForm.controls[this.arrplayers[i]].reset();
         this.playersForm.controls[this.arrplayers[i]].enable();
-      }
       else
-      {
-        console.log('else');
-        this.playersForm.controls[this.arrplayers[i]].reset();
         this.playersForm.controls[this.arrplayers[i]].disable();
-      }
-
     }
     this.changeFilters();
   }
 
   //funzione che evita di selezionare il numero di giocatori se scegli padel come sport
   checkRadioInputs() {
-    console.log('call checkRadioInputs');
     if (this.sportReservation == 'padel')
       this.numberplayers = 4;
     else if (this.sportReservation == 'tennis')
@@ -236,7 +217,6 @@ export class CreateReservationComponent implements OnInit {
 
   //funzione che entra in gioco quando i campi precedenti sono tutti corretti, e permette di scegliere una data. La reservationsNOTAvailable è il complementare che crea poi dall'html le reservation disponibili
   reloadData() {
-    console.log('call reloadData');
     if (this.dateReservation.value!=undefined && this.sportReservation!='')
     {
       this.searchready = true;

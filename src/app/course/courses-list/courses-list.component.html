@@ -1,9 +1,42 @@
 <h1>All Courses</h1>
 
-<div *ngFor="let course of courses | async" style="width: 300px;">
-  <course-details [course]='course' ></course-details>
+<div>
+  <h2>COMPLETE COURSES</h2>
+  <ng-container *ngFor="let course of courses | async" style="width: 300px;">
+    <div *ngIf="course.player1 && course.player2 && course.player3;">
+      <course-details [course]='course' ></course-details>
+    </div>
+  </ng-container>
+</div>
+<br>
+<div [formGroup]=formsInputPendingCourses>
+  <h2>PENDING COURSES</h2>
+  <ng-container *ngFor="let course of courses | async; let i = index" style="width: 300px;">
+    <div *ngIf="!course.player1 || !course.player2 || !course.player3;">
+      <course-details [course]='course' ></course-details>
+      <!-- creare l'input del nuovo giocatore per la put associato a quel corso pendente -->
+      <div>
+        <label>Add a new player on this course:</label>
+        <mat-form-field appearance="fill">
+          <input type="text" matInput [formControlName]=course.id [matAutocomplete]="playersoption">
+          <mat-autocomplete #playersoption="matAutocomplete" [displayWith]="displayFn">
+              <mat-option *ngFor="let option of filtersOptions[i] | async" [value]="option">
+                {{option.username}}
+              </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <button mat-raised-button color="secondary" (click)="addNewPlayer(course.id)">Add player</button>
+      </div>
+    </div>
+  </ng-container>
 </div>
 
 <div>
   <button mat-raised-button color="warn" (click)='deleteCourses()'>Delete All</button>
 </div>
+
+<!-- BOTTONE DEBUGGING -->
+  <div>
+  <button mat-raised-button color="secondary" (click)='show()' >See</button>
+  </div>
+
