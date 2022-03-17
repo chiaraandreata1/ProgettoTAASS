@@ -14,6 +14,7 @@ import {UserService} from "../../services/user.service";
 export class CoursesListComponent implements OnInit {
 
   courses!: Observable<Course[]>;
+  obsPendingCourses!: Observable<Course[]>;
   course: Course = new Course();
   pendingCourses = new Array();
 
@@ -25,7 +26,15 @@ export class CoursesListComponent implements OnInit {
   constructor(private courseService: CourseService, private userService: UserService) { }
 
   ngOnInit(): void {
+    /*
+    this.obsPendingCourses.pipe(
+      map(result =>
+        result.filter(one => one.players.length<3)
+      )
+    )
+  */
     this.reloadData();
+    this.obsPendingCourses = this.courses.pipe(map(courses => courses.filter(course => course.players.length<3)));
     this.prepareUserOptions();
     this.addOnFormGroup();
   }
@@ -92,6 +101,7 @@ export class CoursesListComponent implements OnInit {
 
   addNewPlayer(courseId: number){
     let course = this.pendingCourses.find(x => x.id === courseId);
+    console.log(course)
     course.players.push(this.formsInputPendingCourses.controls[courseId.toString()].value.username)
     this.courseService.updateCourse(courseId, course)
       .subscribe(data => console.log(data), error => console.log(error));
@@ -99,7 +109,13 @@ export class CoursesListComponent implements OnInit {
   }
 
   show(){
-    console.log(this.users);
+    this.obsPendingCourses.toPromise()
+      .then(
+        data => {
+          let res = <Array<Course>>data;
+          console.log(res);
+        }
+      );
   }
 
 }

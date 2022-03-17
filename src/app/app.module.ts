@@ -30,9 +30,9 @@ import {MatRadioModule} from "@angular/material/radio";
 import { TournamentMainComponent } from './tournament/tournament-main/tournament-main.component';
 import {NgTournamentTreeModule} from "ng-tournament-tree";
 import { CourseMainComponent } from './course/course-main/course-main.component';
-import { CourseAdmincontrollerComponent } from './course/course-admincontroller/course-admincontroller.component';
 import { CoursesListComponent } from './course/courses-list/courses-list.component';
 import { CourseDetailsComponent } from './course/course-details/course-details.component';
+import { CreateCourseComponent } from './course/create-course/create-course.component';
 
 @NgModule({
   declarations: [
@@ -48,9 +48,9 @@ import { CourseDetailsComponent } from './course/course-details/course-details.c
     BoardPersonalComponent,
     TournamentMainComponent,
     CourseMainComponent,
-    CourseAdmincontrollerComponent,
     CoursesListComponent,
     CourseDetailsComponent,
+    CreateCourseComponent,
   ],
     imports: [
         BrowserModule,

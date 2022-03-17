@@ -1,0 +1,43 @@
+<h3>Create Reservation</h3>
+<div [hidden]="submitted" style="width: 300px;">
+  <form (ngSubmit)="onSubmit()">
+    <div>
+      <p>SPORT COURSE:</p>
+      <mat-radio-group required [(ngModel)]="course.sporttype" name='valueSport' aria-label="SPORT COURSE">
+        <mat-radio-button value="tennis">Tennis</mat-radio-button>
+        <mat-radio-button value="padel">Padel</mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <div>
+      <p>PRICE COURSE:</p>
+      <mat-radio-group required [(ngModel)]="course.priceCourse" name='valuePriceCourse' aria-label="PRICE COURSE"> <!-- in base al prezzo cambiano il numero di settimane totali -->
+        <mat-radio-button value=240>240€ (12 weeks)</mat-radio-button>
+        <mat-radio-button value=400>400€ (24 weeks)</mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Instructor</mat-label>
+        <input type="text" matInput [(ngModel)]="course.instructor" required> <!-- aggiungere: 1) il button mat icon "x" per poter pulire l'input 2) suggerimenti istruttori -->
+      </mat-form-field>
+    </div>
+    <div>
+      <p>DAY COURSE:</p> <!-- aggiungere per anche 2 giorni a settimana -->
+      <mat-radio-group required name='valueDay' aria-label="DAY COURSE">
+        <mat-radio-button value=1>Mon</mat-radio-button> <mat-radio-button value=2>Tue</mat-radio-button> <mat-radio-button value=3>Wed</mat-radio-button>
+        <mat-radio-button value=4>Thu</mat-radio-button> <mat-radio-button value=5>Fri</mat-radio-button> <mat-radio-button value=6>Sat</mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <div>
+      <p>HOUR COURS:</p>
+      <mat-radio-group required name='valueDay' [(ngModel)]="course.hourlesson" aria-label="DAY COURSE">
+        <mat-radio-button value=9>9</mat-radio-button> <mat-radio-button value=10>10</mat-radio-button> <mat-radio-button value=11>11</mat-radio-button>
+        <mat-radio-button value=12>12</mat-radio-button> <mat-radio-button value=13>13</mat-radio-button> <mat-radio-button value=14>14</mat-radio-button>
+        <mat-radio-button value=15>15</mat-radio-button> <mat-radio-button value=16>16</mat-radio-button> <mat-radio-button value=17>17</mat-radio-button>
+        <mat-radio-button value=18>18</mat-radio-button> <mat-radio-button value=19>19</mat-radio-button> <mat-radio-button value=20>20</mat-radio-button>
+        <mat-radio-button value=21>21</mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <button mat-raised-button color="primary" type="submit">CREATE COURSE</button>
+  </form>
+</div>

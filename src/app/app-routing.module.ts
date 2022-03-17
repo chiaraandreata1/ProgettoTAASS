@@ -10,7 +10,7 @@ import {BoardPersonalComponent} from "./board/board-personal/board-personal.comp
 import {TournamentMainComponent} from "./tournament/tournament-main/tournament-main.component";
 import {CourseMainComponent} from "./course/course-main/course-main.component";
 import {CoursesListComponent} from "./course/courses-list/courses-list.component";
-import {CourseAdmincontrollerComponent} from "./course/course-admincontroller/course-admincontroller.component";
+import {CreateCourseComponent} from "./course/create-course/create-course.component";
 
 
 const routes: Routes = [
@@ -24,7 +24,7 @@ const routes: Routes = [
     children: []
   },
   { path: 'course-main', component: CourseMainComponent,
-    children: [{ path: 'course', component: CoursesListComponent }, { path: 'adminController', component: CourseAdmincontrollerComponent }]},
+    children: [{ path: 'course', component: CoursesListComponent }, { path: 'createCourse', component: CreateCourseComponent }]},
 ];
 
 @NgModule({
