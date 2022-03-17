@@ -181,7 +181,7 @@ export class CreateReservationComponent implements OnInit {
     this.changeFilters();
   }
 
-  //resetta e pulisce gli input dei 4 player. Si attiva quando cambi i campi sport, numero giocatori o quando fai una nuova prenotazione
+  //resetta e pulisce gli input dei 4 player. Si attiva quando cambi i campi sport, numero giocatori o quando fai una nuova prenotazione, vedere il submit button
   resetInputPlayers(){
     for (let i = 0; i<this.arrplayers.length; i++)
     {
@@ -243,9 +243,9 @@ export class CreateReservationComponent implements OnInit {
       this.searchready = false;
   }
 
+  //la save la fa la createReservation che prende tutti i valori necessari
   onSubmit() {
     this.submitted = true;
-    this.save();
   }
 
 //bottone debugging
