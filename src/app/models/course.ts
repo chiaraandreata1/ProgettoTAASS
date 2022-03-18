@@ -8,4 +8,6 @@ export class Course {
   hourlesson!: number;
   numberweeks!: number;
   priceCourse!: number;
+
+  endDateRegistration!: string;
 }

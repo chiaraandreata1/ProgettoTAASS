@@ -10,7 +10,7 @@
     </div>
     <div>
       <p>PRICE COURSE:</p>
-      <mat-radio-group required [(ngModel)]="course.priceCourse" name='valuePriceCourse' aria-label="PRICE COURSE"> <!-- in base al prezzo cambiano il numero di settimane totali -->
+      <mat-radio-group required [(ngModel)]="course.priceCourse" name='valuePriceCourse' (change)="setNumberWeeks()" aria-label="PRICE COURSE"> <!-- in base al prezzo cambiano il numero di settimane totali -->
         <mat-radio-button value=240>240€ (12 weeks)</mat-radio-button>
         <mat-radio-button value=400>400€ (24 weeks)</mat-radio-button>
       </mat-radio-group>
@@ -18,14 +18,18 @@
     <div>
       <mat-form-field appearance="fill">
         <mat-label>Instructor</mat-label>
-        <input type="text" matInput [(ngModel)]="course.instructor" required> <!-- aggiungere: 1) il button mat icon "x" per poter pulire l'input 2) suggerimenti istruttori -->
+        <input type="text" matInput [(ngModel)]="course.instructor" name="Instructor" required> <!-- TODO: 1) il button mat icon "x" per poter pulire l'input 2) suggerimenti istruttori -->
       </mat-form-field>
     </div>
     <div>
-      <p>DAY COURSE:</p> <!-- aggiungere per anche 2 giorni a settimana -->
-      <mat-radio-group required name='valueDay' aria-label="DAY COURSE">
-        <mat-radio-button value=1>Mon</mat-radio-button> <mat-radio-button value=2>Tue</mat-radio-button> <mat-radio-button value=3>Wed</mat-radio-button>
-        <mat-radio-button value=4>Thu</mat-radio-button> <mat-radio-button value=5>Fri</mat-radio-button> <mat-radio-button value=6>Sat</mat-radio-button>
+      <p>DAYs COURSE:</p> <!-- TODO: i giorni scelti devono essere tra loro mutuamente esclusivi. Manca la disable-->
+      <mat-radio-group required name='valueDay1' aria-label="DAY COURSE" [formControl]="day1" (change)="setDay(0)">
+        <mat-radio-button value="Monday">Mon</mat-radio-button> <mat-radio-button value="Tuesday">Tue</mat-radio-button> <mat-radio-button value="Wednesday">Wed</mat-radio-button>
+        <mat-radio-button value="Thursday">Thu</mat-radio-button> <mat-radio-button value="Friday">Fri</mat-radio-button> <mat-radio-button value="Saturday">Sat</mat-radio-button>
+      </mat-radio-group> <br>
+      <mat-radio-group required name='valueDay2' aria-label="DAY COURSE" [formControl]="day2" (change)="setDay(1)">
+        <mat-radio-button value="Monday">Mon</mat-radio-button> <mat-radio-button value="Tuesday">Tue</mat-radio-button> <mat-radio-button value="Wednesday">Wed</mat-radio-button>
+        <mat-radio-button value="Thursday">Thu</mat-radio-button> <mat-radio-button value="Friday">Fri</mat-radio-button> <mat-radio-button value="Saturday">Sat</mat-radio-button>
       </mat-radio-group>
     </div>
     <div>
@@ -38,6 +42,19 @@
         <mat-radio-button value=21>21</mat-radio-button>
       </mat-radio-group>
     </div>
+    <div class="input-group date">
+      <mat-form-field>
+        <input readonly='true' matInput [matDatepicker] = "picker" name="dateEndRegistration" id="dateEndRegistration" [min]="minDate"
+               [formControl]="dateEndRegistration" (ngModelChange)="setDate()" required>
+        <mat-datepicker-toggle matSuffix [for] = "picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
     <button mat-raised-button color="primary" type="submit">CREATE COURSE</button>
   </form>
+</div>
+
+<div [hidden]="!submitted">
+  <h4>You submitted successfully!</h4>
+  <button mat-raised-button color="primary" type="submit" (click)="newCourse()">Add new</button>
 </div>
