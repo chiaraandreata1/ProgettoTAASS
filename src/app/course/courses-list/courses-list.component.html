@@ -18,6 +18,7 @@
           <label>Add a new player on this course:</label>
           <mat-form-field appearance="fill">
             <input type="text" matInput [formControlName]=course.id [matAutocomplete]="playersoption">
+            <mat-error *ngIf="formsInputPendingCourses.controls[course.id].hasError('userInvalid')">Select one suggestion</mat-error>
             <mat-autocomplete #playersoption="matAutocomplete" [displayWith]="displayFn">
               <ng-container *ngIf="formsInputPendingCourses.controls[course.id].value && formsInputPendingCourses.controls[course.id].value.length>1">
                 <mat-option *ngFor="let option of filtersOptions[i] | async" [value]="option">
@@ -26,7 +27,14 @@
               </ng-container>
             </mat-autocomplete>
           </mat-form-field>
-          <button mat-raised-button color="secondary" (click)="addNewPlayer(course.id)">Add player</button>
+          <ng-container *ngIf="formsInputPendingCourses.controls[course.id].value && formsInputPendingCourses.controls[course.id].value.hasOwnProperty('username'); then ButtonAvailable else ButtonNotAvailable"></ng-container>
+          <ng-template #ButtonAvailable>
+            <button mat-raised-button color="secondary" (click)="addNewPlayer(course.id)">Add player</button>
+          </ng-template>
+          <ng-template #ButtonNotAvailable>
+            <button mat-raised-button color="secondary" [disabled]="true">Add player</button>
+          </ng-template>
+
         </div>
     </ng-container>
   </ng-container>
@@ -36,8 +44,8 @@
   <button mat-raised-button color="warn" (click)='deleteCourses()'>Delete All</button>
 </div>
 
-<!-- BOTTONE DEBUGGING -->
+<!-- BOTTONE DEBUGGING
   <div>
   <button mat-raised-button color="secondary" (click)='show()' >See</button>
   </div>
-
+-->

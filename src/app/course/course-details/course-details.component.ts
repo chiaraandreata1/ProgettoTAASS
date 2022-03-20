@@ -25,6 +25,7 @@ export class CourseDetailsComponent implements OnInit {
           this.listComponent.reloadData();
         },
         error => console.log(error));
+    window.location.reload();
   }
 
 }

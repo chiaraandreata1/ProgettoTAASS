@@ -18,23 +18,30 @@
     <div>
       <mat-form-field appearance="fill">
         <mat-label>Instructor</mat-label>
-        <input type="text" matInput [(ngModel)]="course.instructor" name="Instructor" required> <!-- TODO: 1) il button mat icon "x" per poter pulire l'input 2) suggerimenti istruttori -->
+        <input type="text" matInput [formControl]="instructorCourse" name="Instructor" [matAutocomplete]="auto"  required>
+        <button *ngIf="instructorCourse.value" matSuffix mat-icon-button aria-label="Clear" (click)="enableInstructorInput()">
+          <mat-icon>close</mat-icon>
+        </button>
+        <mat-error *ngIf="instructorCourse.hasError('userInvalid')">Select one suggestion</mat-error>
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          <ng-container *ngIf="instructorCourse.value && instructorCourse.value.length>1">
+            <mat-option *ngFor="let option of filter | async" [value]="option" (click)="disableInstructorInput()">
+              {{option.username}}
+            </mat-option>
+          </ng-container>
+        </mat-autocomplete>
       </mat-form-field>
     </div>
     <div>
-      <p>DAYs COURSE:</p> <!-- TODO: i giorni scelti devono essere tra loro mutuamente esclusivi. Manca la disable-->
-      <mat-radio-group required name='valueDay1' aria-label="DAY COURSE" [formControl]="day1" (change)="setDay(0)">
-        <mat-radio-button value="Monday">Mon</mat-radio-button> <mat-radio-button value="Tuesday">Tue</mat-radio-button> <mat-radio-button value="Wednesday">Wed</mat-radio-button>
-        <mat-radio-button value="Thursday">Thu</mat-radio-button> <mat-radio-button value="Friday">Fri</mat-radio-button> <mat-radio-button value="Saturday">Sat</mat-radio-button>
-      </mat-radio-group> <br>
-      <mat-radio-group required name='valueDay2' aria-label="DAY COURSE" [formControl]="day2" (change)="setDay(1)">
+      <p>DAYs COURSE:</p>
+      <mat-radio-group required name='valueDay' aria-label="DAY COURSE" [(ngModel)]="course.daycourse">
         <mat-radio-button value="Monday">Mon</mat-radio-button> <mat-radio-button value="Tuesday">Tue</mat-radio-button> <mat-radio-button value="Wednesday">Wed</mat-radio-button>
         <mat-radio-button value="Thursday">Thu</mat-radio-button> <mat-radio-button value="Friday">Fri</mat-radio-button> <mat-radio-button value="Saturday">Sat</mat-radio-button>
       </mat-radio-group>
     </div>
     <div>
       <p>HOUR COURS:</p>
-      <mat-radio-group required name='valueDay' [(ngModel)]="course.hourlesson" aria-label="DAY COURSE">
+      <mat-radio-group required name='valueHour' [(ngModel)]="course.hourlesson" aria-label="HOUR LESSON">
         <mat-radio-button value=9>9</mat-radio-button> <mat-radio-button value=10>10</mat-radio-button> <mat-radio-button value=11>11</mat-radio-button>
         <mat-radio-button value=12>12</mat-radio-button> <mat-radio-button value=13>13</mat-radio-button> <mat-radio-button value=14>14</mat-radio-button>
         <mat-radio-button value=15>15</mat-radio-button> <mat-radio-button value=16>16</mat-radio-button> <mat-radio-button value=17>17</mat-radio-button>
@@ -50,7 +57,13 @@
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
     </div>
-    <button mat-raised-button color="primary" type="submit">CREATE COURSE</button>
+    <ng-container *ngIf="course.priceCourse && course.daycourse && course.instructor && course.endDateRegistration && course.hourlesson && course.sporttype; then ButtonAvailable else ButtonNotAvailable"></ng-container>
+    <ng-template #ButtonAvailable>
+      <button mat-raised-button color="primary" type="submit">CREATE COURSE</button>
+    </ng-template>
+    <ng-template #ButtonNotAvailable>
+      <button mat-raised-button color="primary" [disabled]="true">CREATE COURSE</button>
+    </ng-template>
   </form>
 </div>
 
@@ -58,3 +71,7 @@
   <h4>You submitted successfully!</h4>
   <button mat-raised-button color="primary" type="submit" (click)="newCourse()">Add new</button>
 </div>
+
+<!--
+<button mat-raised-button color="secondary" (click)="debugButton()">DEBUG</button>
+-->

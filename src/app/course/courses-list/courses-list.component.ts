@@ -2,9 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import {map, Observable} from "rxjs";
 import {Course} from "../../models/course";
 import {CourseService} from "../../services/course.service";
-import {FormControl, FormGroup} from "@angular/forms";
+import {AbstractControl, FormControl, FormGroup} from "@angular/forms";
 import {User} from "../../models/user";
 import {UserService} from "../../services/user.service";
+import {ReservationService} from "../../services/reservation.service";
+import {Reservation} from "../../models/reservation";
+import {Court} from "../../models/court";
 
 @Component({
   selector: 'app-courses-list',
@@ -23,16 +26,11 @@ export class CoursesListComponent implements OnInit {
   users = new Array();
   filtersOptions = new Array();
 
-  constructor(private courseService: CourseService, private userService: UserService) { }
+  weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+  constructor(private courseService: CourseService, private userService: UserService, private reservationService: ReservationService) { }
 
   ngOnInit(): void {
-    /*
-    this.obsPendingCourses.pipe(
-      map(result =>
-        result.filter(one => one.players.length<3)
-      )
-    )
-  */
     this.reloadData();
     this.obsPendingCourses = this.courses.pipe(map(courses => courses.filter(course => course.players.length<3)));
     this.prepareUserOptions();
@@ -48,7 +46,7 @@ export class CoursesListComponent implements OnInit {
     return usersSelectable.filter(users => users.username.toLowerCase().includes(filterValue));
   }
 
-  //in realtà questa funzione c'è già in reservation. Bisogna renderla globale
+  //in realtà questa funzione e la validate ci sono già in reservation. Bisogna renderla globale
   prepareUserOptions(): void {
     let obsUsers = this.userService.getUsersList();
     obsUsers.toPromise()
@@ -59,6 +57,13 @@ export class CoursesListComponent implements OnInit {
       );
   }
 
+  validatePlayer(control: AbstractControl): {[key: string]: any} | null  {
+    if (typeof control.value == 'string') {
+      return { 'userInvalid': true };
+    }
+    return null;
+  }
+
   addOnFormGroup(){
     this.courses.toPromise()
       .then(
@@ -67,13 +72,12 @@ export class CoursesListComponent implements OnInit {
           for (let i = 0; i<objCourses.length; i++)
             if (objCourses[i].players.length!=3)
             {
-              this.formsInputPendingCourses.addControl(objCourses[i].id.toString(), new FormControl());
+              this.formsInputPendingCourses.addControl(objCourses[i].id.toString(), new FormControl('', [this.validatePlayer]));
               this.pendingCourses.push(objCourses[i]);
             }
           for (let i = 0; i<this.pendingCourses.length; i++)
           {
             let userSelectable = this.users.filter(value => !this.pendingCourses[i].players.includes(value.username));
-            console.log(this.formsInputPendingCourses.controls[this.pendingCourses[i].id]);
             let filteredOptions = this.formsInputPendingCourses.controls[this.pendingCourses[i].id].valueChanges.pipe(
               map(user => (typeof user === 'string' ? user : user.username)),
               map(user => (user ? this._filter(user, userSelectable) : userSelectable.slice())),
@@ -101,21 +105,40 @@ export class CoursesListComponent implements OnInit {
 
   addNewPlayer(courseId: number){
     let course = this.pendingCourses.find(x => x.id === courseId);
-    console.log(course)
     course.players.push(this.formsInputPendingCourses.controls[courseId.toString()].value.username)
     this.courseService.updateCourse(courseId, course)
       .subscribe(data => console.log(data), error => console.log(error));
+    //BLOCCO CREAZIONE CORSO (SE COMPLETO). FORSE SAREBBE MEGLIO CHE QUESTA OPERAZIONE LA FACESSE IL SERVER
+    if (course.players.length==3)
+    {
+      let date = new Date(course.endDateRegistration);
+      date.setMonth(date.getMonth()+1);
+
+      let reservationCourse = new Reservation();
+      reservationCourse.sportReservation = course.sporttype;
+      reservationCourse.players = course.players;
+      reservationCourse.players.push(course.instructor);
+      date.setDate(date.getDate() + 7 - date.getDay() + this.weekday.indexOf(course.daycourse));
+      reservationCourse.hourReservation = course.hourlesson;
+      let courtCourse = new Court();
+      courtCourse.id = 1;
+      courtCourse.type = course.sporttype.toLowerCase();
+      reservationCourse.courtReservation = courtCourse;
+      for (let i = 0; i<course.numberweeks; i++)
+      {
+        reservationCourse.dateReservation = date.toISOString().split('T')[0];
+        this.reservationService.createReservation(reservationCourse)
+          .subscribe(data => console.log(data), error => console.log(error));
+        date.setDate(date.getDate() + 7);
+      }
+    }
+    //-----------------------------------------------------------------------------------------------------
     window.location.reload();
   }
 
   show(){
-    this.obsPendingCourses.toPromise()
-      .then(
-        data => {
-          let res = <Array<Course>>data;
-          console.log(res);
-        }
-      );
+    let date = new Date('2022-03-30');
+    console.log(date);
   }
 
 }

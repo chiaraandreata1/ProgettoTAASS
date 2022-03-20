@@ -4,7 +4,7 @@ export class Course {
   instructor!: string;
   players!: string[];
 
-  dayslesson!: string[];
+  daycourse!: string;
   hourlesson!: number;
   numberweeks!: number;
   priceCourse!: number;

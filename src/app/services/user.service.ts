@@ -19,4 +19,8 @@ export class UserService {
     return this.http.get(`${this.baseUrlUsers}`);
   }
 
+  getUsersByType(typeuser: string): Observable<any> {
+    return this.http.get(`${this.baseUrlUsers}/typeuser/${typeuser}`)
+  }
+
 }
