@@ -11,7 +11,6 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/v1")
 public class CourseController {
     @Autowired
     private CourseRepository courseRepository;
@@ -21,7 +20,7 @@ public class CourseController {
         return courseRepository.findAll();
     }
 
-    @PostMapping(value="/courses/create")
+    @PostMapping("/courses/create")
     @ResponseStatus(HttpStatus.OK)
     public void create(@RequestBody Course course){
         courseRepository.save(course);
@@ -34,6 +33,27 @@ public class CourseController {
         courseRepository.deleteById(id);
 
         return new ResponseEntity<>("Course deleted!", HttpStatus.OK);
+    }
+
+    @PutMapping("/courses/{id}")
+    public Course updateCourse(@PathVariable("id") long id, @RequestBody Course newCourse) {
+        System.out.println("Update Course with ID = " + id + "...");
+
+        return courseRepository.findById(id)
+               .map( _course -> {
+                           _course.setSporttype(newCourse.getSporttype());
+                           _course.setInstructor(newCourse.getInstructor());
+                           _course.setPlayers(newCourse.getPlayers());
+                           _course.setDaycourse(newCourse.getDaycourse());
+                           _course.setHourlesson(newCourse.getHourlesson());
+                           _course.setNumberweeks(newCourse.getNumberweeks());
+                           _course.setPriceCourse(newCourse.getPriceCourse());
+                           _course.setEndDateRegistration(newCourse.getEndDateRegistration());
+                           return courseRepository.save(_course);
+                       })
+               .orElseGet(() -> {
+                   return courseRepository.save(newCourse);
+               });
     }
 
     @DeleteMapping("/courses/delete")

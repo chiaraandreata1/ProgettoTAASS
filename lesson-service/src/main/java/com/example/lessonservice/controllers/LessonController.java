@@ -11,24 +11,23 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/v1")
 public class LessonController {
 
     @Autowired
     private LessonRepository lessonRepository;
 
-    @GetMapping("/lessons")
+    @GetMapping("/")
     public List<Lesson> list(){
         return lessonRepository.findAll();
     }
 
-    @PostMapping(value="/lessons/create")
+    @PostMapping("/create")
     @ResponseStatus(HttpStatus.OK)
     public void create(@RequestBody Lesson lesson){
         lessonRepository.save(lesson);
     }
 
-    @DeleteMapping("/lessons/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteLessons(@PathVariable("id") long id){
         System.out.println("Delete lesson with id = " + id + "...");
 
@@ -37,7 +36,7 @@ public class LessonController {
         return new ResponseEntity<>("Lesson deleted!", HttpStatus.OK);
     }
 
-    @DeleteMapping("/lessons/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<String> deleteAllLessons(){
         System.out.println("Delete all Lessons...");
 

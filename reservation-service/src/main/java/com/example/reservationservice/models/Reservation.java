@@ -1,6 +1,7 @@
 package com.example.reservationservice.models;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="reservations")
@@ -12,30 +13,17 @@ public class Reservation {
     private String dateReservation;
     private Integer hourReservation;
     private String sportReservation;
-    private String player1;
-    private String player2;
-    private String player3;
-    private String player4;
+
+    @ElementCollection
+    private List<String> players;
+
+    public List<String> getPlayers() { return players; }
+
+    public void setPlayers(List<String> players) { this.players = players; }
 
     public String getSportReservation() { return sportReservation; }
 
     public void setSportReservation(String sportReservation) { this.sportReservation = sportReservation; }
-
-    public void setPlayer1(String player1) { this.player1 = player1; }
-
-    public void setPlayer2(String player2) { this.player2 = player2; }
-
-    public void setPlayer3(String player3) { this.player3 = player3; }
-
-    public void setPlayer4(String player4) { this.player4 = player4; }
-
-    public String getPlayer1() { return player1; }
-
-    public String getPlayer2() { return player2; }
-
-    public String getPlayer3() { return player3; }
-
-    public String getPlayer4() { return player4; }
 
     public String getDateReservation() { return dateReservation; }
 

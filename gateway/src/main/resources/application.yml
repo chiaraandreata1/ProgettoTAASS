@@ -36,6 +36,10 @@ zuul:
   ignoredServices: '*'
   routes:
     tournaments-service: /api/v1/tournaments/**
+    reservation-service: /api/v1/reservations/**
+    board-service: /api/v1/boards/**
+    lesson-service: /api/v1/lessons/**
+    user-service: /api/v1/users/**
     frontend:
       path: /*
       url: http://localhost:4200/
