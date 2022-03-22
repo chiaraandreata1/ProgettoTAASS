@@ -1,6 +1,7 @@
 package com.example.lessonservice.models;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="courses")
@@ -11,48 +12,35 @@ public class Course {
 
     private String sporttype;
     private String instructor;
-    private String player1;
-    private String player2;
-    private String player3;
 
-    private String day1;
-    private String day2;
-    private String hourlesson;
+    @ElementCollection
+    private List<String> players;
+
+    private String daycourse;
+
+    private Integer hourlesson;
     private Integer numberweeks;
     private Integer priceCourse;
 
+    private String endDateRegistration;
 
-    public String getDay1() { return day1; }
+    public List<String> getPlayers() { return players; }
 
-    public String getDay2() { return day2; }
+    public void setPlayers(List<String> players) { this.players = players; }
 
-    public String getHourlesson() { return hourlesson; }
+    public String getDaycourse() { return daycourse; }
 
-    public void setDay1(String day1) { this.day1 = day1; }
+    public void setDaycourse(String daycourse) { this.daycourse = daycourse; }
 
-    public void setDay2(String day2) { this.day2 = day2; }
+    public String getEndDateRegistration() { return endDateRegistration; }
 
-    public void setHourlesson(String hourlesson) { this.hourlesson = hourlesson; }
+    public Integer getHourlesson() { return hourlesson; }
 
-    public String getPlayer1() { return player1; }
-
-    public String getPlayer2() { return player2; }
-
-    public String getPlayer3() { return player3; }
+    public void setHourlesson(Integer hourlesson) { this.hourlesson = hourlesson; }
 
     public Integer getNumberweeks() { return numberweeks; }
 
-    public void setPlayer1(String player1) { this.player1 = player1; }
-
-    public void setPlayer2(String player2) { this.player2 = player2; }
-
-    public void setPlayer3(String player3) { this.player3 = player3; }
-
     public void setNumberweeks(Integer numberweeks) { this.numberweeks = numberweeks; }
-
-    public String getsporttype() {
-        return sporttype;
-    }
 
     public String getInstructor() {
         return instructor;
@@ -68,5 +56,25 @@ public class Course {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setSporttype(String sporttype) {
+        this.sporttype = sporttype;
+    }
+
+    public void setInstructor(String instructor) {
+        this.instructor = instructor;
+    }
+
+    public void setPriceCourse(Integer priceCourse) {
+        this.priceCourse = priceCourse;
+    }
+
+    public void setEndDateRegistration(String endDateRegistration) {
+        this.endDateRegistration = endDateRegistration;
+    }
+
+    public String getSporttype() {
+        return sporttype;
     }
 }

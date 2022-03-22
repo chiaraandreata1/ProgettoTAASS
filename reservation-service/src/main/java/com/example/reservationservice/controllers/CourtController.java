@@ -11,8 +11,6 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/v1")
-
 public class CourtController {
 
     @Autowired
@@ -23,7 +21,7 @@ public class CourtController {
         return courtRepository.findAll();
     }
 
-    @PostMapping(value = "/courts/create")
+    @PostMapping("/courts/create")
     @ResponseStatus(HttpStatus.OK)
     public void create(@RequestBody Court court) {
         courtRepository.save(court);

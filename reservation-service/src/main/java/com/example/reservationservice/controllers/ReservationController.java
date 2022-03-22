@@ -11,23 +11,22 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/v1")
 public class ReservationController {
     @Autowired
     private ReservationRepository reservationRepository;
 
-    @GetMapping("/reservations")
+    @GetMapping("/")
     public List<Reservation> list(){
         return reservationRepository.findAll();
     }
 
-    @GetMapping(value = "reservations/date/{date}/sport/{sport}")
+    @GetMapping("/date/{date}/sport/{sport}")
     public List<Reservation> findByDateAndSportReservations(@PathVariable String date, @PathVariable String sport) {
         List<Reservation> reservations = reservationRepository.findAllByDateReservationAndSportReservation(date, sport);
         return reservations;
     }
 
-    @PostMapping(value="/reservations/create")
+    @PostMapping("/create")
     @ResponseStatus(HttpStatus.OK)
     public Reservation create(@RequestBody Reservation reservation){
         reservation.setId(-1L);
@@ -35,7 +34,7 @@ public class ReservationController {
         return reservation;
     }
 
-    @DeleteMapping("/reservations/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteReservations(@PathVariable("id") long id){
         System.out.println("Delete reservation with id = " + id + "...");
 
@@ -44,7 +43,7 @@ public class ReservationController {
         return new ResponseEntity<>("Reservation deleted!", HttpStatus.OK);
     }
 
-    @DeleteMapping("/reservations/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<String> deleteAllReservations(){
         System.out.println("Delete all reservations...");
 

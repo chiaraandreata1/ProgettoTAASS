@@ -11,42 +11,41 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/v1")
 public class BoardController {
 
     @Autowired
     private BoardRepository boardRepository;
 
-    @GetMapping("/boards")
+    @GetMapping("/")
     public List<Board> list(){
         return boardRepository.findAll();
     }
 
-    @GetMapping(value = "boards/sport/{sport}/type/{type}")
+    @GetMapping("/sport/{sport}/type/{type}")
     public List<Board> findBySportAndTypeBoards(@PathVariable String sport, @PathVariable String type) {
         List<Board> boards = boardRepository.findAllBySportAndType(sport, type);
         return boards;
     }
 
-    @GetMapping(value = "boards/sport/{sport}/type/{type}/date/{date}")
+    @GetMapping("/sport/{sport}/type/{type}/date/{date}")
     public List<Board> findBySportAndTypeAndDateBoards(@PathVariable String sport, @PathVariable String type, @PathVariable String date) {
         List<Board> boards = boardRepository.findAllBySportAndTypeAndDate(sport, type, date);
         return boards;
     }
 
-    @GetMapping(value = "boards/sport/{sport}/owner/{owner}")
+    @GetMapping("/sport/{sport}/owner/{owner}")
     public List<Board> findBySportAndOwnerBoards(@PathVariable String sport, @PathVariable String owner) {
         List<Board> boards = boardRepository.findAllBySportAndOwner(sport, owner);
         return boards;
     }
 
-    @PostMapping(value="/boards/create")
+    @PostMapping("/create")
     @ResponseStatus(HttpStatus.OK)
     public void create(@RequestBody Board board){
         boardRepository.save(board);
     }
 
-    @DeleteMapping("/boards/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteBoards(@PathVariable("id") long id){
         System.out.println("Delete Board with id = " + id + "...");
 
@@ -55,7 +54,7 @@ public class BoardController {
         return new ResponseEntity<>("Board deleted!", HttpStatus.OK);
     }
 
-    @DeleteMapping("/boards/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<String> deleteAllBoards(){
         System.out.println("Delete all Boards...");
 

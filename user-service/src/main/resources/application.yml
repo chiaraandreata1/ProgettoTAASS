@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: taass
+    url: jdbc:postgresql://localhost:5432/users
+    password: asd
+  application:
+    name: user-service
+  jpa:
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: 'false'
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    hibernate:
+      ddl-auto: update
+server:
+  port: '8085'
+
+#NO DOCKER : jdbc:postgresql://localhost:5432/users
+#CON DOCKER: jdbc:postgresql://dbusers:5432/users
+

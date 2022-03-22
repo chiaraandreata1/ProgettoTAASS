@@ -11,24 +11,26 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/v1")
 public class UserController {
 
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/users")
-    public List<User> list(){
+    @GetMapping("/")
+    public List<User> listAllUsers(){
         return userRepository.findAll();
     }
 
-    @PostMapping(value="/users/create")
+    @GetMapping("/typeuser/{typeuser}")
+    public List<User> listUsersByType(@PathVariable String typeuser){ return userRepository.findAllByTypeuser(typeuser); }
+
+    @PostMapping("/create")
     @ResponseStatus(HttpStatus.OK)
     public void create(@RequestBody User user){
         userRepository.save(user);
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUsers(@PathVariable("id") long id){
         System.out.println("Delete user with id = " + id + "...");
 
@@ -37,7 +39,7 @@ public class UserController {
         return new ResponseEntity<>("User deleted!", HttpStatus.OK);
     }
 
-    @DeleteMapping("/users/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<String> deleteAllUsers(){
         System.out.println("Delete all users...");
 
