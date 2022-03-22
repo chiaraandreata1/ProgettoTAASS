@@ -1,0 +1,14 @@
+<div>
+  <form class="row" (ngSubmit)="onAdd()">
+    <div class="col-3 mb-3" *ngFor="let i of playersCount | forLoop">
+      <label class="form-label" for="member-{{i}}">Player {{i + 1}}</label>
+      <input [class.is-invalid]="!valid(i)" class="form-control" id="member-{{i}}" (input)="onInput(i, $event)" [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let suggestion of suggestions" [value]="suggestion" (onSelectionChange)="suggestionSelected(suggestion, i)">
+          {{suggestion}}
+        </mat-option>
+      </mat-autocomplete>
+    </div>
+  </form>
+  <button class="btn btn-success" [disabled]="!enableSubmit()" (click)="onAdd()">Submit</button>
+</div>

@@ -1,0 +1,80 @@
+<div class="card">
+  <div class="card-header bg-primary text-white">
+    <h2>{{tournament.name}}<span *ngIf="tournament.id == -1" class="fst-italic"> (draft)</span></h2>
+    <span>{{tournament.sport}} tournament</span>
+  </div>
+
+  <div class="card-body">
+    <div class="card">
+      <div class="card-header bg-secondary">
+        Details
+      </div>
+      <div class="card-body row">
+        <div class="fw-bold" *ngIf="tournament.description">Description</div>
+        <div class="col-12" *ngIf="tournament.description"><span>{{tournament.description}}</span></div>
+        <div class="col-3">
+          <div class="fw-bold">Level</div>
+          <div>{{tournament.level}}</div>
+        </div>
+        <div class="col-3">
+          <div class="fw-bold">Price</div>
+          <div>{{tournament.price}} €</div>
+        </div>
+        <div class="col-3">
+          <div class="fw-bold">Prize</div>
+          <div>{{tournament.prize}} €</div>
+        </div>
+      </div>
+    </div>
+
+    <main id="tournament">
+      <ul class="round" *ngFor="let round of tournament.rounds">
+        <li class="spacer">&nbsp;</li>
+
+        <ng-container *ngFor="let match of round.matches">
+          <li (mouseover)="overMatch = match" class="game game-top"
+              (click)="selected = match"
+              [ngClass]="{
+      'winner': winner(true, match),
+      'hover-match': overMatch == match,
+       'selected-match': selected == match
+      }">{{teamLabel(match.side0)}} <span>{{match.points0}}</span></li>
+          <li (mouseover)="overMatch = match" class="game game-spacer"
+              (click)="selected = match"
+              [ngClass]="{
+      'hover-match': overMatch == match,
+       'selected-match': selected == match
+      }">&nbsp;
+          </li>
+          <li class="game game-info text-center" (mouseover)="overMatch = match" (click)="selected = match" [ngClass]="{
+      'hover-match': overMatch == match,
+       'selected-match': selected == match
+      }">
+            <div>{{formatDate(match)}}</div>
+            <div>Court {{match.court}}</div>
+          </li>
+          <li (mouseover)="overMatch = match" class="game game-spacer"
+              (click)="selected = match"
+              [ngClass]="{
+      'hover-match': overMatch == match,
+       'selected-match': selected == match
+      }">&nbsp;
+          </li>
+          <li (mouseover)="overMatch = match" class="game game-bottom"
+              (click)="selected = match"
+              [ngClass]="{
+      'winner': winner(false, match),
+      'hover-match': overMatch == match,
+       'selected-match': selected == match
+      }">{{teamLabel(match.side1)}}
+            <span>{{match.points1}}</span></li>
+
+          <li class="spacer">&nbsp;</li>
+        </ng-container>
+      </ul>
+      <ul class="round">
+        <li class="winner game game-top"><span *ngIf="champion() as w">{{teamLabel(w)}}</span></li>
+      </ul>
+    </main>
+  </div>
+</div>

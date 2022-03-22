@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import {NgttRound, NgttTournament} from "ng-tournament-tree";
 
 @Component({
-  selector: 'app-tournament-main',
-  templateUrl: './tournament-main.component.html',
-  styleUrls: ['./tournament-main.component.css']
+  selector: 'app-tournaments-main',
+  templateUrl: './tournaments-main.component.html',
+  styleUrls: ['./tournaments-main.component.css']
 })
-export class TournamentMainComponent implements OnInit {
+export class TournamentsMainComponent implements OnInit {
 
   selected?: Match;
   overMatch?: Match;

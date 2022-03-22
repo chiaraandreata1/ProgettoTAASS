@@ -32,10 +32,13 @@
             "styles": [
               "src/custom-theme.scss",
               "src/styles.css",
-              "src/assets/bootstrap/css/bootstrap.min.css"
+              "src/assets/bootstrap/css/bootstrap.min.css",
+              "src/assets/datepicker/css/bootstrap-datepicker.css"
             ],
             "scripts": [
-              "src/assets/bootstrap/js/bootstrap.min.js"
+              "node_modules/jquery/dist/jquery.js",
+              "src/assets/bootstrap/js/bootstrap.min.js",
+              "src/assets/datepicker/js/bootstrap-datepicker.js"
             ]
           },
           "configurations": {
