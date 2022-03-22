@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from "@angular/material-moment-adapter";
 
-import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import { HttpClientModule } from "@angular/common/http";
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ReservationsListComponent } from './reservation/reservations-list/reservations-list.component';
@@ -25,6 +25,8 @@ import { ReservationMainComponent } from './reservation/reservation-main/reserva
 import { BoardPersonalComponent } from './board/board-personal/board-personal.component';
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {MatIconModule} from "@angular/material/icon";
+import {MatRadioModule} from "@angular/material/radio";
 import { TournamentsMainComponent } from './tournaments/tournaments-main/tournaments-main.component';
 import {NgTournamentTreeModule} from "ng-tournament-tree";
 import { CreateTournamentComponent } from './tournaments/create-tournament/create-tournament.component';
@@ -39,30 +41,38 @@ import {CustomJsonParser} from "./CustomJsonParser";
 import {Serialization} from "./utilities/serialization";
 import { TournamentViewComponent } from './tournaments/tournament-view/tournament-view.component';
 import { ShowTournamentComponent } from './tournaments/show-tournament/show-tournament.component';
+import { CourseMainComponent } from './course/course-main/course-main.component';
+import { CoursesListComponent } from './course/courses-list/courses-list.component';
+import { CourseDetailsComponent } from './course/course-details/course-details.component';
+import { CreateCourseComponent } from './course/create-course/create-course.component';
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        ReservationsListComponent,
-        ReservationDetailsComponent,
-        CreateReservationComponent,
-        CreateBoardComponent,
-        BoardsListComponent,
-        BoardDetailsComponent,
-        BoardMainComponent,
-        ReservationMainComponent,
-        BoardPersonalComponent,
-        TournamentsMainComponent,
-        CreateTournamentComponent,
-        CreateTeamComponent,
-        TeamCardComponent,
-        SportSelectorComponent,
-        ForLoopPipe,
-        DatesComponent,
-        CreateTeamListComponent,
-        TournamentViewComponent,
-        ShowTournamentComponent,
-    ],
+  declarations: [
+    AppComponent,
+    ReservationsListComponent,
+    ReservationDetailsComponent,
+    CreateReservationComponent,
+    CreateBoardComponent,
+    BoardsListComponent,
+    BoardDetailsComponent,
+    BoardMainComponent,
+    ReservationMainComponent,
+    BoardPersonalComponent,
+    TournamentsMainComponent,
+    CreateTournamentComponent,
+    CreateTeamComponent,
+    TeamCardComponent,
+    SportSelectorComponent,
+    ForLoopPipe,
+    DatesComponent,
+    CreateTeamListComponent,
+    TournamentViewComponent,
+    ShowTournamentComponent,
+    CourseMainComponent,
+    CoursesListComponent,
+    CourseDetailsComponent,
+    CreateCourseComponent,
+  ],
   imports: [
     BrowserModule,
     FormsModule,
@@ -76,6 +86,8 @@ import { ShowTournamentComponent } from './tournaments/show-tournament/show-tour
     ReactiveFormsModule,
     MatFormFieldModule,
     MatAutocompleteModule,
+    MatIconModule,
+    MatRadioModule,
     NgTournamentTreeModule
   ],
   //crea correttamente la data, ma mantiene anche le informazioni non utili (ad esempio l'ora)
@@ -95,11 +107,7 @@ import { ShowTournamentComponent } from './tournaments/show-tournament/show-tour
           monthYearA11yLabel: "MMMM YYYY",
         },
       }
-    },
-    { provide: HTTP_INTERCEPTORS, useClass: JsonInterceptor, multi: true },
-    { provide: JsonParser, useClass: CustomJsonParser },
-    { provide: Serialization, useClass: Serialization},
-  ],
+    }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

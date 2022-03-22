@@ -9,7 +9,7 @@ import {UserB} from "../models/user-b";
 })
 export class UserService {
 
-  private baseUrlUsers = 'http://localhost:8080/users';
+  private baseUrlUsers = 'http://localhost:8080/api/v1/users';
 
   constructor(private http: HttpClient) { }
 
@@ -19,6 +19,10 @@ export class UserService {
 
   getUsersList(): Observable<any> {
     return this.http.get(`${this.baseUrlUsers}`);
+  }
+
+  getUsersByType(typeuser: string): Observable<any> {
+    return this.http.get(`${this.baseUrlUsers}/typeuser/${typeuser}`)
   }
 
   private users: UserB[] = [

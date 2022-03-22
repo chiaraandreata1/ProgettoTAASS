@@ -10,6 +10,9 @@ import {BoardPersonalComponent} from "./board/board-personal/board-personal.comp
 import {TournamentsMainComponent} from "./tournaments/tournaments-main/tournaments-main.component";
 import {CreateTournamentComponent} from "./tournaments/create-tournament/create-tournament.component";
 import {ShowTournamentComponent} from "./tournaments/show-tournament/show-tournament.component";
+import {CourseMainComponent} from "./course/course-main/course-main.component";
+import {CoursesListComponent} from "./course/courses-list/courses-list.component";
+import {CreateCourseComponent} from "./course/create-course/create-course.component";
 
 
 const routes: Routes = [
@@ -19,7 +22,9 @@ const routes: Routes = [
     children: [{ path: 'board', component: BoardsListComponent },  { path: 'addBoard', component: CreateBoardComponent }, { path: 'yourBoards', component: BoardPersonalComponent }]},
   { path: 'tournaments', component: TournamentsMainComponent },
   { path: 'tournaments/create', component: CreateTournamentComponent },
-  { path: 'tournaments/info', component: ShowTournamentComponent }
+  { path: 'tournaments/info', component: ShowTournamentComponent },
+  { path: 'course-main', component: CourseMainComponent,
+    children: [{ path: 'course', component: CoursesListComponent }, { path: 'createCourse', component: CreateCourseComponent }]},
 ];
 
 @NgModule({

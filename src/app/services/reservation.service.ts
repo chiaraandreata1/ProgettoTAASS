@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class ReservationService {
 
-  private baseUrlReservations = 'http://localhost:8080/reservations';
-  private baseUrlCourts = 'http://localhost:8080/courts';
+  private baseUrlReservations = 'http://localhost:8080/api/v1/reservations';
+  private baseUrlCourts = 'http://localhost:8080/api/v1/reservations/courts';
 
   constructor(private http: HttpClient) { }
 
