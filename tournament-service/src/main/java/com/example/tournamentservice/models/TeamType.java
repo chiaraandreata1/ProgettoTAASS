@@ -27,6 +27,9 @@ public class TeamType implements UserType {
 
     @Override
     public boolean equals(Object o, Object o1) throws HibernateException {
+        if (o == null || o1 == null)
+            return o1 == o;
+
         if (o.getClass() != Team.class || o1.getClass() != Team.class)
             return false;
         Team m = (Team) o, m1 = (Team) o1;
@@ -44,24 +47,35 @@ public class TeamType implements UserType {
     @Override
     public Object nullSafeGet(ResultSet resultSet, String[] strings, SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException, SQLException {
         ArrayList<String> players = new ArrayList<>();
-        players.add(resultSet.getString(strings[0]));
-        String opt = resultSet.getString(strings[1]);
-        if (opt != null) {
-            players.add(opt);
-            players.sort(String::compareTo);
+
+        for (int i = 0; i < 2; i++) {
+            String tmp = resultSet.getString(strings[i]);
+            if (tmp != null)
+                players.add(tmp);
         }
-        return new Team(players);
+
+        if (players.size() > 1)
+            players.sort(String::compareTo);
+
+        return players.isEmpty() ? null : new Team(players);
     }
 
     @Override
     public void nullSafeSet(PreparedStatement preparedStatement, Object o, int i, SharedSessionContractImplementor sharedSessionContractImplementor) throws HibernateException, SQLException {
-        List<String> players = ((Team) o).getPlayers();
-        preparedStatement.setString(i++, players.get(0));
-        preparedStatement.setString(i, players.size() > 1 ?  players.get(1) : null);
+        if (o == null) {
+            preparedStatement.setString(i++, null);
+            preparedStatement.setString(i, null);
+        } else {
+            List<String> players = ((Team) o).getPlayers();
+            preparedStatement.setString(i++, players.get(0));
+            preparedStatement.setString(i, players.size() > 1 ? players.get(1) : null);
+        }
     }
 
     @Override
     public Object deepCopy(Object o) throws HibernateException {
+        if (o == null)
+            return null;
         List<String> players = ((Team) o).getPlayers(), res = new ArrayList<>();
         res.add(players.get(0));
         if (players.size() > 1) {

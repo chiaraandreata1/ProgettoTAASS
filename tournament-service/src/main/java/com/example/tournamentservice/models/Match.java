@@ -16,6 +16,9 @@ public class Match {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private int round;
+    private int roundHeight;
+
 //    @OneToOne
     @Columns(columns = {@Column(name = "t1p1"), @Column(name = "t1p2")})
     @Type(type = "com.example.tournamentservice.models.TeamType")
@@ -31,16 +34,25 @@ public class Match {
     public Match() {
     }
 
-    public Match(Team side0) {
+    public Match(int round, int roundHeight) {
+        this.round = round;
+        this.roundHeight = roundHeight;
+    }
+
+    public Match(Team side0, int round, int roundHeight) {
         this.side0 = side0;
         this.side1 = null;
         this.points0 = 6;
         this.points1 = 0;
+        this.round = round;
+        this.roundHeight = roundHeight;
     }
 
-    public Match(Team side0, Team side1) {
+    public Match(Team side0, Team side1, int round, int roundHeight) {
         this.side0 = side0;
         this.side1 = side1;
+        this.round = round;
+        this.roundHeight = roundHeight;
     }
 
 //    public Match(Match previous0) {
@@ -59,6 +71,22 @@ public class Match {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public int getRound() {
+        return round;
+    }
+
+    public void setRound(int round) {
+        this.round = round;
+    }
+
+    public int getRoundHeight() {
+        return roundHeight;
+    }
+
+    public void setRoundHeight(int roundHeight) {
+        this.roundHeight = roundHeight;
     }
 
     public Team getSide0() {

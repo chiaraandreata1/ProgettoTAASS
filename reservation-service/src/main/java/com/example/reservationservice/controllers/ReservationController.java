@@ -29,8 +29,10 @@ public class ReservationController {
 
     @PostMapping(value="/reservations/create")
     @ResponseStatus(HttpStatus.OK)
-    public void create(@RequestBody Reservation reservation){
-        reservationRepository.save(reservation);
+    public Reservation create(@RequestBody Reservation reservation){
+        reservation.setId(-1L);
+        reservation = reservationRepository.save(reservation);
+        return reservation;
     }
 
     @DeleteMapping("/reservations/{id}")

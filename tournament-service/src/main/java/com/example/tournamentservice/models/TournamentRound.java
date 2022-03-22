@@ -11,16 +11,14 @@ public class TournamentRound {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private int round;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Match> matches;
 
     protected TournamentRound() {
 
     }
 
-    public TournamentRound(int round, List<Match> matches) {
-        this.round = round;
+    public TournamentRound(List<Match> matches) {
         this.matches = matches;
     }
 
@@ -30,14 +28,6 @@ public class TournamentRound {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public int getRound() {
-        return round;
-    }
-
-    public void setRound(int round) {
-        this.round = round;
     }
 
     public List<Match> getMatches() {

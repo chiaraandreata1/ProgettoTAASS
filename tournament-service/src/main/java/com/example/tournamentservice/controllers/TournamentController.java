@@ -48,6 +48,9 @@ public class TournamentController {
 
     @GetMapping("/{id}")
     public Tournament getTournament(@PathVariable Long id) {
-        return tournamentRepository.getById(id);
+        Optional<Tournament> optionalTournament = tournamentRepository.findById(id);
+        if (!optionalTournament.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tournament not found");
+        return optionalTournament.get();
     }
 }

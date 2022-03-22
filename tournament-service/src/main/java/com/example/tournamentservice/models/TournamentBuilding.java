@@ -137,21 +137,23 @@ public class TournamentBuilding {
         int i;
 
         for (i = 0; i + 1 < teams.size(); i += 2)
-            round.add(new Match(teams.get(i), teams.get(i + 1)));
+            round.add(new Match(teams.get(i), teams.get(i + 1), roundI, i / 2));
         if (i < teams.size())
-            round.add(new Match(teams.get(i)));
+            round.add(new Match(teams.get(i), roundI, i / 2));
 
-        rounds.add(new TournamentRound(++roundI, round));
+        rounds.add(new TournamentRound(round));
+        roundI++;
 
         int upperBound = round.size();
         while (upperBound != 1) {
             round = new ArrayList<>();
             for (i = 0; i + 1 < upperBound; i += 2)
-                round.add(new Match());
+                round.add(new Match(roundI, i/2));
             if (i < upperBound)
-                round.add(new Match());
+                round.add(new Match(roundI, i/2));
             upperBound = round.size();
-            rounds.add(new TournamentRound(++roundI, round));
+            rounds.add(new TournamentRound(round));
+            roundI++;
         }
     }
 
@@ -214,7 +216,6 @@ public class TournamentBuilding {
                 price,
                 prize,
                 level,
-                teams,
                 rounds
         );
     }

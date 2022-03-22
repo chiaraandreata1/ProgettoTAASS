@@ -1,5 +1,6 @@
 package com.example.tournamentservice.models;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.Type;
 
@@ -7,7 +8,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name="tournaments")
+//@Table(name="tournaments")
 public class Tournament {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,14 +20,14 @@ public class Tournament {
     private Double price;
     private Double prize;
     private String level;
+//
+////    @OneToMany
+//    @ElementCollection
+//    @Type(type = "com.example.tournamentservice.models.TeamType")
+//    @Columns(columns = {@Column(name = "tp1"), @Column(name = "tp2")})
+//    private List<Team> teams;
 
-//    @OneToMany
-    @ElementCollection
-    @Type(type = "com.example.tournamentservice.models.TeamType")
-    @Columns(columns = {@Column(name = "tp1"), @Column(name = "tp2")})
-    private List<Team> teams;
-
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<TournamentRound> rounds;
 
     public Tournament() {
@@ -38,7 +39,6 @@ public class Tournament {
                       Double price,
                       Double prize,
                       String level,
-                      List<Team> teams,
                       List<TournamentRound> rounds) {
         this.name = name;
         this.description = description;
@@ -46,7 +46,6 @@ public class Tournament {
         this.price = price;
         this.prize = prize;
         this.level = level;
-        this.teams = teams;
         this.rounds = rounds;
     }
 
@@ -104,14 +103,6 @@ public class Tournament {
 
     public void setLevel(String level) {
         this.level = level;
-    }
-
-    public List<Team> getTeams() {
-        return teams;
-    }
-
-    public void setTeams(List<Team> teams) {
-        this.teams = teams;
     }
 
     public List<TournamentRound> getRounds() {
