@@ -15,6 +15,7 @@ export class CustomJsonParser implements JsonParser {
   }
 
   parse(text: string): any {
+    console.log(text);
     return JSON.parse(text, (key, value) => this.revive(key, value, this.serialization));
   }
 

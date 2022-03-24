@@ -31,6 +31,7 @@ export class Serialization {
   }
 
   public static deserializeDate(string: String): Date {
+    console.log(string);
     const date = new Date();
     const h = string.split(" ");
     const h0 = h[0].split("/").map(value => parseInt(value));

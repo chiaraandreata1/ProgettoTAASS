@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from "@angular/material-moment-adapter";
 
-import { HttpClientModule } from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ReservationsListComponent } from './reservation/reservations-list/reservations-list.component';
@@ -107,7 +107,11 @@ import { CreateCourseComponent } from './course/create-course/create-course.comp
           monthYearA11yLabel: "MMMM YYYY",
         },
       }
-    }],
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: JsonInterceptor, multi: true },
+    { provide: JsonParser, useClass: CustomJsonParser },
+    { provide: Serialization, useClass: Serialization},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
