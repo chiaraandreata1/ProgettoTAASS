@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
 import {User} from "../models/user";
-import {UserB} from "../models/user-b";
+import {UserInfo} from "../models/user-info";
 
 @Injectable({
   providedIn: 'root'
@@ -25,33 +25,28 @@ export class UserService {
     return this.http.get(`${this.baseUrlUsers}/typeuser/${typeuser}`)
   }
 
-  private users: UserB[] = [
-    new UserB("Alfio"),
-    new UserB("Betta"),
-    new UserB("Claudio"),
-    new UserB("Diana"),
-    new UserB("Elio"),
-    new UserB("Federica"),
-    new UserB("Gaio"),
-    new UserB("Hensel"),
-    new UserB("Imola"),
-  ];
-
-  public suggestedUsers(hint: string = "", limit = 5) {
+  public suggestedUsers(hint: string = "", limit = 5): Observable<UserInfo[]> {
+    console.log(hint);
     if (hint == "")
-      return [];
-    return this.users.filter(value => value.username.toLowerCase().includes(hint.toLowerCase())).slice(0, limit);
+      return of([]);
+    return this.http.get<UserInfo[]>(`${this.baseUrlUsers}/suggestions`, {params: {
+        input: hint,
+        limit: limit
+      }});
   }
 
-  public getUserB(username: string): UserB {
-    const res = this.users.filter(value => value.username.toLowerCase() === username.toLowerCase());
-    if (res.length != 1)
-      throw new Error("NOPE");
-    return res[0];
+  public findUserInfo(username: string): Observable<UserInfo | null> {
+    return this.http.get<UserInfo | null>(`${this.baseUrlUsers}/find-user-info`, {params: {username: username}});
   }
 
-  public getUsers(usernames: string[]): UserB[] {
-    return usernames.map(value => this.getUserB(value));
+  public getUserInfo(id: number): Observable<UserInfo> {
+    return this.http.get<UserInfo>(`${this.baseUrlUsers}/user-info`, {params: {id: id}});
+  }
+
+  public getUsersInfo(ids: number[]): Observable<UserInfo[]> {
+    if (ids.length == 0)
+      return of([]);
+    return this.http.get<UserInfo[]>(`${this.baseUrlUsers}/user-info`, {params: {ids: ids}});
   }
 
 }

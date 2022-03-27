@@ -5,12 +5,12 @@ import {Injectable} from "@angular/core";
 @Injectable()
 export class Serialization {
 
-  private bGetUsers;
+  private getUsers;
 
   constructor(
     private userService: UserService
   ) {
-    this.bGetUsers = userService.getUsers.bind(this.userService);
+    this.getUsers = userService.getUsersInfo.bind(this.userService);
   }
 
   public static serializeDate(date: Date, keepHours: boolean = false): string {
@@ -65,12 +65,12 @@ export class Serialization {
     return res;
   }
 
-  public deserializeTeamLambda() {
-    const bGetUsers = this.userService.getUsers.bind(this.userService);
-    return (players: string[]) => new Team(bGetUsers(players));
-  }
-
-  public deserializeTeam(players: string[]): Team {
-    return new Team(this.userService.getUsers(players))
-  }
+  // public deserializeTeamLambda() {
+  //   const bGetUsers = this.userService.getUsers.bind(this.userService);
+  //   return (players: string[]) => new Team(bGetUsers(players));
+  // }
+  //
+  // public deserializeTeam(players: string[]): Team {
+  //   return new Team(this.userService.getUsers(players))
+  // }
 }

@@ -2,7 +2,7 @@ import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {Sport} from "../../models/sport";
 import {TournamentBuilding} from "../../models/tournament-building";
 import {Team} from "../../models/team";
-import {UserB} from "../../models/user-b";
+import {UserInfo} from "../../models/user-info";
 import {TournamentsService} from "../tournaments.service";
 import {Match, Tournament, TournamentRound} from "../../models/tournament";
 import {Router} from "@angular/router";
@@ -30,7 +30,7 @@ export class CreateTournamentComponent implements OnInit, AfterViewInit {
   tournamentBuilding!: TournamentBuilding;
   teams: Team[] = [];
 
-  selectedPlayers!: UserB[];
+  selectedPlayers!: UserInfo[];
   editing?: Team;
   waiting: boolean = false;
 

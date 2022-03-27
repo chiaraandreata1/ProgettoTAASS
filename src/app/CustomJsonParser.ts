@@ -2,8 +2,9 @@ import {Injectable} from "@angular/core";
 import {JsonParser} from "./utilities/json-interceptor";
 import {Serialization} from "./utilities/serialization";
 import {UserService} from "./services/user.service";
-import {UserB} from "./models/user-b";
+import {UserInfo} from "./models/user-info";
 import {Team} from "./models/team";
+import {firstValueFrom} from "rxjs";
 
 @Injectable()
 export class CustomJsonParser implements JsonParser {
@@ -29,7 +30,7 @@ export class CustomJsonParser implements JsonParser {
         value = (value as string[]).map(Serialization.deserializeDate);
         break;
       case 'players':
-        value = this.userService.getUsers(value);
+        firstValueFrom(this.userService.getUsersInfo(value)).then(value1 => value = value1);
         break;
       case 'side0':
       case 'side1':
