@@ -40,6 +40,7 @@ zuul:
     board-service: /api/v1/boards/**
     lesson-service: /api/v1/lessons/**
     user-service: /api/v1/users/**
+    facility-service: /api/v1/facility/**
     frontend:
       path: /**
       url: http://localhost:4200/
