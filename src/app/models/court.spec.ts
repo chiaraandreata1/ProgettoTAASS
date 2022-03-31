@@ -1,7 +1,7 @@
-import { Court } from './court';
+import { DummyCourt } from './dummyCourt';
 
 describe('Court', () => {
   it('should create an instance', () => {
-    expect(new Court()).toBeTruthy();
+    expect(new DummyCourt()).toBeTruthy();
   });
 });

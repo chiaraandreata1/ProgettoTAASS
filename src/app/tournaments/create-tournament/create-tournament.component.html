@@ -4,7 +4,7 @@
   Waiting for server...
 </div>
 
-<div class="card mb-3" *ngIf="!tournament && !waiting">
+<div class="card mb-3" *ngIf="!tournament && !waiting && sports as sports">
   <div class="card-header bg-primary text-white">
     <h2>Create new tournament</h2>
   </div>
@@ -22,9 +22,11 @@
         </div>
         <div class="col-2">
           <label for="tournament-level" class="form-label">Level</label>
-          <input #levelInput="ngModel"
-                 [ngClass]="{'is-valid': levelInput.touched && levelInput.valid, 'is-invalid': levelInput.touched && levelInput.invalid}"
-                 class="form-control" id="tournament-level" [(ngModel)]="tournamentBuilding.level" name="level" required>
+          <select #levelInput="ngModel" id="tournament-level" [ngClass]="{'is-valid': levelInput.touched && levelInput.valid, 'is-invalid': levelInput.touched && levelInput.invalid}" class="form-control" [(ngModel)]="tournamentBuilding.level" name="level" [disabled]="!sport" required>
+            <ng-container *ngIf="sport as sport">
+              <option *ngFor="let l of sport.levels" [value]="l">{{formatLevel(l)}}</option>
+            </ng-container>
+          </select>
           <div [hidden]="levelInput.valid || !levelInput.touched" class="alert alert-danger">
             Level is required
           </div>
@@ -32,9 +34,9 @@
         <div class="col-2">
           <label for="court-count" class="form-label">Court number</label>
           <input type="number" class="form-control" id="court-count" [(ngModel)]="tournamentBuilding.courtCount" name="courtCount" #courtCountInput="ngModel"
-                 [ngClass]="{'is-valid': courtCountInput.touched && courtCountInput.valid, 'is-invalid': courtCountInput.touched && courtCountInput.invalid}" min="1" required>
+                 [ngClass]="{'is-valid': courtCountInput.touched && courtCountInput.valid, 'is-invalid': courtCountInput.touched && courtCountInput.invalid}" min="1" [max]="courtNumber ? courtNumber : 0" required [disabled]="!sport">
           <div [hidden]="courtCountInput.valid || !courtCountInput.touched" class="alert alert-danger">
-            Court count number has to be positive
+            Court count number has to be positive and lower than the maximum number of courts, {{courtNumber}}, for {{sport ? sport.name : 'the sport'}}.
           </div>
         </div>
       </div>
@@ -75,13 +77,13 @@
             <thead>
             <tr>
               <th class="col-1"></th>
-              <th *ngFor="let i of s.players | forLoop">Player {{i + 1}}</th>
+              <th *ngFor="let i of s.playersPerTeam | forLoop">Player {{i + 1}}</th>
             </tr>
             </thead>
             <tbody>
             <tr *ngIf="teams.length == 0">
               <td></td>
-              <td [attr.colspan]="s.players"><i>No team inserted</i></td>
+              <td [attr.colspan]="s.playersPerTeam"><i>No team inserted</i></td>
             </tr>
             <tr *ngFor="let team of teams">
               <td class="align-content-center">
@@ -99,7 +101,7 @@
             <div class="card-header bg-light">Add team</div>
             <div class="card-body">
               <div class="mb-3">
-                <app-create-team [playersCount]="sport.players" [selectedPlayers]="selectedPlayers" [team]="editing"
+                <app-create-team [playersCount]="sport.playersPerTeam" [selectedPlayers]="selectedPlayers" [team]="editing"
                                  (created)="createdTeam($event)" (updated)="updatedTeam($event)"></app-create-team>
               </div>
             </div>

@@ -1,5 +1,6 @@
 import {Team} from "./team";
 import {Serialization} from "../utilities/serialization";
+import {Sport} from "./sport";
 
 export class Match {
 
@@ -51,7 +52,7 @@ export class Tournament {
   constructor(
     public id: number,
     public name: string,
-    public sport: string,
+    public sport: Sport,
     public price: number,
     public prize: number,
     public level: string,
@@ -64,7 +65,7 @@ export class Tournament {
     return {
       'id': tournament.id,
       'name': tournament.name,
-      'sport': tournament.sport,
+      'sport': tournament.sport.id,
       'price': tournament.price,
       'prize': tournament.prize,
       'level': tournament.level,

@@ -1,4 +1,11 @@
+import {Sport} from "./sport";
+
 export class Court {
-  id!: number;
-  type!: string;
+
+  constructor(
+    public id: number,
+    public sport: Sport,
+    public status: string
+  ) {
+  }
 }

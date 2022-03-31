@@ -7,7 +7,7 @@ import {map, Observable} from "rxjs";
 
 
 import {AbstractControl, FormControl, FormGroup} from "@angular/forms";
-import {Court} from "../../models/court";
+import {DummyCourt} from "../../models/dummyCourt";
 import {User} from "../../models/user";
 
 @Component({
@@ -18,7 +18,7 @@ import {User} from "../../models/user";
 export class CreateReservationComponent implements OnInit {
   reservation: Reservation = new Reservation();
 
-  courts!: Observable<Court[]> //i campi disponibili del centro sportivo
+  courts!: Observable<DummyCourt[]> //i campi disponibili del centro sportivo
 
   //info generali
   sportReservation = '';
@@ -145,7 +145,7 @@ export class CreateReservationComponent implements OnInit {
     this.reservation.sportReservation = sportReservation;
     this.reservation.dateReservation = new Date(this.reservation.dateReservation.toString()).toISOString().split('T')[0];
     this.reservation.hourReservation = hour;
-    let court = new Court();
+    let court = new DummyCourt();
     court.id = courtId;
     court.type = courtType;
     this.reservation.courtReservation = court;

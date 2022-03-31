@@ -6,6 +6,7 @@ import {UserInfo} from "../../models/user-info";
 import {TournamentsService} from "../tournaments.service";
 import {Match, Tournament, TournamentRound} from "../../models/tournament";
 import {Router} from "@angular/router";
+import {FacilityService} from "../../services/facility.service";
 
 @Component({
   selector: 'app-create-tournaments',
@@ -15,15 +16,9 @@ import {Router} from "@angular/router";
 export class CreateTournamentComponent implements OnInit, AfterViewInit {
   @ViewChild('teamsList') teamList!: HTMLInputElement;
 
-  sports: Sport[] = [
-    new Sport(1, "Padel", 2),
-    new Sport(-1, "Tennis", 0, [
-      new Sport(2, "Single", 1),
-      new Sport(3, "Double", 2)
-    ])
-  ];
-
+  sports?: Sport[];
   sport?: Sport;
+  courtNumber?: number;
 
   tournament?: Tournament;
 
@@ -33,9 +28,11 @@ export class CreateTournamentComponent implements OnInit, AfterViewInit {
   selectedPlayers!: UserInfo[];
   editing?: Team;
   waiting: boolean = false;
+  level?: string;
 
   constructor(
     private router: Router,
+    private facilityService: FacilityService,
     private tournamentService: TournamentsService
   ) {
     // this.tournament = new Tournament(
@@ -105,6 +102,8 @@ export class CreateTournamentComponent implements OnInit, AfterViewInit {
       // new Team([new UserB("Alfio")])
     ];
 
+    this.facilityService.getSports().subscribe(value => this.sports = value);
+
     this.tournamentBuilding = new TournamentBuilding(
       // @ts-ignore
       undefined,
@@ -115,29 +114,13 @@ export class CreateTournamentComponent implements OnInit, AfterViewInit {
       undefined,
     );
 
-
-    // this.tournamentBuilding.name = "Un torneo";
-    // this.tournamentBuilding.courtCount = 1;
-    // this.tournamentBuilding.price = 0;
-    // this.tournamentBuilding.prize = 0;
-    // this.tournamentBuilding.courtCount = 1;
-    // this.tournamentBuilding.teams = this.teams;
     this.selectedPlayers = [];
-    // @ts-ignore
-    // this.sport = this.sports[1].children[0];
-
-    // let dates = [
-    //   Date()
-    // ];
-    // @ts-ignore
-    // $('#tournament-dates').datepicker('setDates', dates);/
-      // @ts-ignore
-    // $('#tournament-dates').datepicker('show');
   }
 
   ngAfterViewInit() {
     const boundUpdateDates = this.updateDates.bind(this);
 
+    // console.log($('#tournament-dates'));
     // @ts-ignore
     $('#tournament-dates').datepicker({
       multidate: true,
@@ -154,6 +137,10 @@ export class CreateTournamentComponent implements OnInit, AfterViewInit {
 
   selectedSport(sport?: Sport) {
     this.sport = sport;
+    if (sport)
+      this.facilityService.getCourtsForSport(sport).subscribe(courts => this.courtNumber = courts.length);
+    else
+      this.courtNumber = undefined;
     // this.tournamentBuilding.sport = sport;
   }
 
@@ -206,5 +193,9 @@ export class CreateTournamentComponent implements OnInit, AfterViewInit {
     this.waiting = true;
     if (this.tournament)
       this.tournamentService.confirm(this.tournament).subscribe(value => this.router.navigate(['tournaments', 'info'], {queryParams: {'id': value.id}}));
+  }
+
+  formatLevel(l: string): string {
+    return l[0].toUpperCase() + l.substring(1).toLowerCase();
   }
 }

@@ -5,13 +5,15 @@ import {UserService} from "./services/user.service";
 import {UserInfo} from "./models/user-info";
 import {Team} from "./models/team";
 import {firstValueFrom} from "rxjs";
+import {FacilityService} from "./services/facility.service";
 
 @Injectable()
 export class CustomJsonParser implements JsonParser {
 
   constructor(
     private serialization: Serialization,
-    private userService: UserService
+    private userService: UserService,
+    private facilityService: FacilityService
   ) {
   }
 
@@ -30,12 +32,19 @@ export class CustomJsonParser implements JsonParser {
         value = (value as string[]).map(Serialization.deserializeDate);
         break;
       case 'players':
-        firstValueFrom(this.userService.getUsersInfo(value)).then(value1 => value = value1);
+        firstValueFrom(this.userService.getUsersInfo(value)).then(players => {
+          value = players.map(player => player as UserInfo);
+        });
         break;
       case 'side0':
       case 'side1':
         if (value)
           value = value as Team;
+        break;
+      case 'sport':
+        if (typeof value !== 'object')
+          firstValueFrom(this.facilityService.getSport(value)).then(sport => value = sport);
+        break;
     }
     // console.log(value)
     return value;

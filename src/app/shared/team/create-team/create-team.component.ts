@@ -58,7 +58,7 @@ export class CreateTeamComponent implements OnInit, OnChanges {
   private updateValue(i: number, value: any) {
     if (typeof value === 'string') {
       this.players[i] = value;
-    } else if (value instanceof UserInfo) {
+    } else if (typeof value == 'object') {
       this.players[i] = value;
     } else {
       return;
@@ -66,17 +66,22 @@ export class CreateTeamComponent implements OnInit, OnChanges {
     this.updateSuggestions(i);
   }
 
+  private selectedIDs(): number[] {
+    let res = this.players.filter(p => typeof p === 'object').map(p => (p as UserInfo).id);
+    res.push(...this.selectedPlayers.map(p => (p as UserInfo).id));
+    return res;
+  }
+
   private updateSuggestions(i: number) {
     const value = this.players[i];
-    if (value instanceof UserInfo)
+    if (typeof value === 'object')
       this.suggestions = [];
     else {
       /*let users = */
       this.userService.suggestedUsers(value)
         .subscribe(
           value1 => {
-            let users = value1.filter(value => !this.selectedPlayers.includes(value))
-              .filter(value => !this.players.includes(value) || this.players.indexOf(value) == i);
+            const users = value1.filter(user => !this.selectedIDs().includes(user.id));
             if (users.length == 1 && users[0].userName.toLowerCase() === value.toLowerCase())
               this.updateValue(i, users[0]);
             else
@@ -98,19 +103,19 @@ export class CreateTeamComponent implements OnInit, OnChanges {
   }
 
   valid(i: number): boolean {
-    return !this.touched[i] || this.players[i] instanceof UserInfo;
+    return !this.touched[i] || typeof this.players[i] === 'object';
   }
 
   onInput(i: number, $event: Event) {
     const el = ($event.target as HTMLInputElement);
     this.updateValue(i, el.value);
-    el.value = this.players[i] instanceof UserInfo ? (this.players[i] as UserInfo).userName : this.players[i] as string;
+    el.value = typeof this.players[i] === 'object' ? (this.players[i] as UserInfo).userName : this.players[i] as string;
     // this.update(el.value, i, el);
     // el.value = this.players[i] instanceof UserB ? (this.players[i] as UserB).username : this.players[i] as string;
   }
 
   enableSubmit(): boolean {
-    return this.players.filter(value => !(value instanceof UserInfo)).length == 0;
+    return this.players.filter(value => !(typeof value === 'object')).length == 0;
   }
 
   onAdd() {
@@ -127,5 +132,10 @@ export class CreateTeamComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.init(this.team);
+  }
+
+  onFocusIn(i: number, event: FocusEvent) {
+    const el = (event.target as HTMLInputElement);
+    this.updateSuggestions(i);
   }
 }

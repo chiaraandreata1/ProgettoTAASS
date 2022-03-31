@@ -1,10 +1,10 @@
-import {Court} from "./court";
+import {DummyCourt} from "./dummyCourt";
 
 export class Reservation {
   id!: number;
   sportReservation!: string;
   dateReservation!: string;
   hourReservation!: number;
-  courtReservation!: Court;
+  courtReservation!: DummyCourt;
   players!: string[];
 }

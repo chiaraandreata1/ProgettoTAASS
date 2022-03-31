@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {NgttRound, NgttTournament} from "ng-tournament-tree";
+import {FacilityService} from "../../services/facility.service";
 
 @Component({
   selector: 'app-tournaments-main',
@@ -38,9 +39,13 @@ export class TournamentsMainComponent implements OnInit {
     ])
   ];
 
-  constructor() { }
+  constructor(
+    private facilityService: FacilityService
+  ) { }
 
   ngOnInit(): void {
+    this.facilityService.getSports().subscribe(console.log);
+    this.facilityService.getCourts().subscribe(console.log);
   }
 
   public winner(side: boolean, match: Match): boolean {

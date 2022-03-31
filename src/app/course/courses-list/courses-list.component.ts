@@ -7,7 +7,7 @@ import {User} from "../../models/user";
 import {UserService} from "../../services/user.service";
 import {ReservationService} from "../../services/reservation.service";
 import {Reservation} from "../../models/reservation";
-import {Court} from "../../models/court";
+import {DummyCourt} from "../../models/dummyCourt";
 
 @Component({
   selector: 'app-courses-list',
@@ -120,7 +120,7 @@ export class CoursesListComponent implements OnInit {
       reservationCourse.players.push(course.instructor);
       date.setDate(date.getDate() + 7 - date.getDay() + this.weekday.indexOf(course.daycourse));
       reservationCourse.hourReservation = course.hourlesson;
-      let courtCourse = new Court();
+      let courtCourse = new DummyCourt();
       courtCourse.id = 1;
       courtCourse.type = course.sporttype.toLowerCase();
       reservationCourse.courtReservation = courtCourse;
