@@ -13,6 +13,7 @@ public class Reservation {
     private String dateReservation;
     private Integer hourReservation;
     private String sportReservation;
+    private String typeReservation; //private, lesson e tournament
 
     @ElementCollection
     private List<String> players;
@@ -36,6 +37,10 @@ public class Reservation {
     public Long getId() { return id; }
 
     public void setId(Long id) { this.id = id; }
+
+    public String getTypeReservation() { return typeReservation; }
+
+    public void setTypeReservation(String typeReservation) { this.typeReservation = typeReservation; }
 
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "court", referencedColumnName = "id")

@@ -26,6 +26,11 @@ public class ReservationController {
         return reservations;
     }
 
+    @GetMapping("/player/{player}")
+    public List<Reservation> findByPlayer(@PathVariable String player) {
+        return reservationRepository.getAllByPlayer(player);
+    }
+
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.OK)
     public Reservation create(@RequestBody Reservation reservation){

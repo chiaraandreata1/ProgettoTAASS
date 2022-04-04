@@ -10,10 +10,11 @@ public class User {
     private Long id;
 
     private String username;
-    private String password;
+    private String email;
     private String levelplayer;
-    private String sporttype;
     private String typeuser;
+
+    public String getEmail() { return email; }
 
     public String getUsername() {
         return username;
@@ -21,14 +22,6 @@ public class User {
 
     public String getLevelplayer() {
         return levelplayer;
-    }
-
-    public String getSporttype() {
-        return sporttype;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public String getTypeuser() {
@@ -42,4 +35,12 @@ public class User {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public void setEmail(String email) { this.email = email; }
+
+    public void setUsername(String username) { this.username = username; }
+
+    public void setLevelplayer(String levelplayer) { this.levelplayer = levelplayer; }
+
+    public void setTypeuser(String typeuser) { this.typeuser = typeuser; }
 }

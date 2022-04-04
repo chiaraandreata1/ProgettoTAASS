@@ -35,9 +35,48 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/")
+    @GetMapping("/allusers")
     public List<User> listAllUsers(){
         return userRepository.findAll();
+    }
+
+    @PutMapping("/setadmin/{id}")
+    public User setUserAdmin(@PathVariable("id") Long id, @RequestBody User newUser) {
+        System.out.println("Update Course with ID = " + id + "...");
+        return userRepository.findById(id)
+                .map( _user -> {
+                    _user.setLevelplayer("");
+                    _user.setUsername(newUser.getUsername());
+                    _user.setEmail(newUser.getEmail());
+                    _user.setTypeuser(newUser.getTypeuser()); //TODO: va messa la costante "admin". Per ora lo lascio così per aggiornare il typeuser da admin a player e viceversa
+                    return userRepository.save(_user);
+                })
+                .orElseGet(() -> {
+                    return userRepository.save(newUser);
+                });
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public User loginUser(@RequestParam String[] values) {
+        User user = userRepository.findByEmail(values[0]);
+        //nel caso in cui nel database non c'è già va creato
+        if (user==null) {
+            StringBuilder stringBuilder = new StringBuilder(30);
+            stringBuilder.append(values[1]);
+            stringBuilder.append(values[2]);
+            List<User> usersWithUsername = userRepository.findAllByUsernameContaining(stringBuilder.toString());
+            int size = usersWithUsername.size();
+            User newUser = new User();
+            newUser.setEmail(values[0]);
+            if (size>0)
+                stringBuilder.append(size);
+            newUser.setTypeuser("player");
+            newUser.setUsername(stringBuilder.toString());
+            newUser.setLevelplayer("beginner");
+            userRepository.save(newUser);
+            return newUser;
+        }
+        return user;
     }
 
     @GetMapping("/typeuser/{typeuser}")
