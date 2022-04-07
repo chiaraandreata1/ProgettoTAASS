@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/labeldate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Date:"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:textColor="#3C3B3B"
+        android:textSize="10dp" />
+
+    <TextView
+        android:id="@+id/date"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/labelhour"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hour:"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:textColor="#3C3B3B"
+        android:textSize="10dp" />
+
+    <TextView
+        android:id="@+id/hour"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/labelidres"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Id reservation:"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:textColor="#3C3B3B"
+        android:textSize="10dp" />
+
+    <TextView
+        android:id="@+id/resid"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/labelsport"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SPORT:"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:textColor="#3C3B3B"
+        android:textSize="10dp" />
+
+    <TextView
+        android:id="@+id/sport"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/labeltyperes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TYPESER:"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:textColor="#3C3B3B"
+        android:textSize="10dp" />
+
+    <TextView
+        android:id="@+id/typeres"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/labelcourt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="COURT:"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:textColor="#3C3B3B"
+        android:textSize="10dp" />
+
+    <TextView
+        android:id="@+id/courtid"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <!--
+    <Button
+        android:id="@+id/delete_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:focusable="false"
+        android:text="Delete" />
+
+    <Button
+        android:id="@+id/edit_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:focusable="false"
+        android:text="EDIT" />
+-->
+
+</LinearLayout>
