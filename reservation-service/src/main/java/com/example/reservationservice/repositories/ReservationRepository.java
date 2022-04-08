@@ -10,7 +10,7 @@ import java.util.List;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     List<Reservation> findAllByDateReservationAndSportReservation(String date, String sportReservation);
 
-    @Query("select p from Reservation p WHERE :player in elements(p.players)")
-    List<Reservation> getAllByPlayer(@Param("player") String player);
+    @Query("select p from Reservation p WHERE (:player in elements(p.players) AND p.dateReservation=:date AND p.sportReservation=:sport)")
+    List<Reservation> getAllByPlayer(@Param("player") String player, @Param("date") String date, @Param("sport") String sport);
 
 }

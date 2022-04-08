@@ -22,13 +22,12 @@ public class ReservationController {
 
     @GetMapping("/date/{date}/sport/{sport}")
     public List<Reservation> findByDateAndSportReservations(@PathVariable String date, @PathVariable String sport) {
-        List<Reservation> reservations = reservationRepository.findAllByDateReservationAndSportReservation(date, sport);
-        return reservations;
+        return reservationRepository.findAllByDateReservationAndSportReservation(date, sport);
     }
 
-    @GetMapping("/player/{player}")
-    public List<Reservation> findByPlayer(@PathVariable String player) {
-        return reservationRepository.getAllByPlayer(player);
+    @GetMapping("/player/{player}/date/{date}/sport/{sport}")
+    public List<Reservation> findByPlayerAndDateAndSport(@PathVariable String player, @PathVariable String date, @PathVariable String sport) {
+        return reservationRepository.getAllByPlayer(player, date, sport);
     }
 
     @PostMapping("/create")
