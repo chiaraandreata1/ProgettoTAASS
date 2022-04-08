@@ -35,7 +35,7 @@ eureka:
 zuul:
   ignoredServices: '*'
   routes:
-    tournaments-service: /api/v1/tournaments/**
+    tournament-service: /api/v1/tournaments/**
     reservation-service: /api/v1/reservations/**
     board-service: /api/v1/boards/**
     lesson-service: /api/v1/lessons/**
