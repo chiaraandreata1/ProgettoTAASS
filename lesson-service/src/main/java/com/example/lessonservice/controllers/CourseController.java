@@ -48,6 +48,7 @@ public class CourseController {
                            _course.setHourlesson(newCourse.getHourlesson());
                            _course.setNumberweeks(newCourse.getNumberweeks());
                            _course.setPriceCourse(newCourse.getPriceCourse());
+                           _course.setCourtCourse(newCourse.getCourtCourse());
                            _course.setEndDateRegistration(newCourse.getEndDateRegistration());
                            return courseRepository.save(_course);
                        })

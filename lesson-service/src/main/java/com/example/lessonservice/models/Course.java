@@ -21,8 +21,13 @@ public class Course {
     private Integer hourlesson;
     private Integer numberweeks;
     private Integer priceCourse;
+    private Integer courtCourse;
 
     private String endDateRegistration;
+
+    public Integer getCourtCourse() { return courtCourse; }
+
+    public void setCourtCourse(Integer courtCourse) { this.courtCourse = courtCourse; }
 
     public List<String> getPlayers() { return players; }
 
