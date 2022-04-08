@@ -1,12 +1,39 @@
 <div class="container" style="padding: 20px;">
   <h1 style="color: blue">{{title}}</h1>
   <h3>{{description}}</h3>
-  <button mat-stroked-button routerLink="reservation-main" routerLinkActive="active">Reservations</button>
-  <button mat-stroked-button routerLink="board-main" routerLinkActive="active">Boards</button>
-  <button mat-stroked-button routerLink="tournament" routerLinkActive="active">Tournament</button>
-  <button mat-stroked-button routerLink="course-main" routerLinkActive="active">Course</button>
+  <div>
+    <!-- TODO: gestire i token e la sessione -->
+    <ng-container *ngIf="!loggedIn">
+      <h4>You're not logged. Please login to use our services!</h4>
+      <button mat-stroked-button (click)="signInWithGoogle()">LOGIN WITH GOOGLE</button>
+      <button mat-stroked-button (click)="signInWithFB()">LOGIN WITH FACEBOOK</button>
+    </ng-container>
+    <ng-container *ngIf="loggedIn">
+      <h1>HELLO {{(userLogged | async)?.username}}</h1>
+    </ng-container>
+  </div>
+  <div *ngIf="loggedIn">
+    <button mat-stroked-button routerLink="reservation-main" (click)="setUsername()" routerLinkActive="active">Reservations</button>
+    <button mat-stroked-button routerLink="board-main" (click)="setUsername()" routerLinkActive="active">Boards</button>
+    <button mat-stroked-button routerLink="tournament" (click)="setUsername()" routerLinkActive="active">Tournament</button>
+    <button mat-stroked-button routerLink="course-main" (click)="setUsername()" routerLinkActive="active">Course</button>
+    <!-- TODO: button admin per dare la possibilità di dare privilegi (istruttore o admin) ad altri utenti -->
+  </div>
   <nav>
-    <router-outlet></router-outlet>
+    <router-outlet *ngIf="usernameSetted"></router-outlet>
   </nav>
+    <ng-container *ngIf="loggedIn">
+    <button mat-raised-button color="primary" (click)="signOut()">LOGOUT</button>
+  </ng-container>
 </div>
 
+<!--
+      <h4>Hello {{ socialUser.name }}!</h4>
+      <h4>auth code: {{ socialUser.authorizationCode }}</h4>
+      <h4>id: {{ socialUser.id }}</h4>
+      <h4>first name: {{ socialUser.firstName }}</h4>
+      <h4>last name: {{ socialUser.lastName }}</h4>
+      <h4>auth token: {{ socialUser.authToken }}</h4>
+      <h4>email: {{ socialUser.email }}</h4>
+      <h4>provider: {{ socialUser.provider }}</h4>
+      -->

@@ -12,7 +12,8 @@ import { CreateBoardComponent } from './board/create-board/create-board.componen
 import { BoardsListComponent } from './board/boards-list/boards-list.component';
 import { BoardDetailsComponent } from './board/board-details/board-details.component';
 
-
+import { SocialLoginModule, SocialAuthServiceConfig } from 'angularx-social-login';
+import { GoogleLoginProvider,  FacebookLoginProvider } from 'angularx-social-login';
 import { MatButtonModule } from "@angular/material/button";
 import { CreateReservationComponent } from './reservation/create-reservation/create-reservation.component';
 import {MatDatepickerModule} from "@angular/material/datepicker";
@@ -45,6 +46,7 @@ import { CourseMainComponent } from './course/course-main/course-main.component'
 import { CoursesListComponent } from './course/courses-list/courses-list.component';
 import { CourseDetailsComponent } from './course/course-details/course-details.component';
 import { CreateCourseComponent } from './course/create-course/create-course.component';
+import { UserDetailsComponent } from './user-details/user-details.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +74,7 @@ import { CreateCourseComponent } from './course/create-course/create-course.comp
     CoursesListComponent,
     CourseDetailsComponent,
     CreateCourseComponent,
+    UserDetailsComponent,
   ],
   imports: [
     BrowserModule,
@@ -88,7 +91,8 @@ import { CreateCourseComponent } from './course/create-course/create-course.comp
     MatAutocompleteModule,
     MatIconModule,
     MatRadioModule,
-    NgTournamentTreeModule
+    NgTournamentTreeModule,
+    SocialLoginModule
   ],
   //crea correttamente la data, ma mantiene anche le informazioni non utili (ad esempio l'ora)
   providers: [
@@ -108,9 +112,30 @@ import { CreateCourseComponent } from './course/create-course/create-course.comp
         },
       }
     },
-    { provide: HTTP_INTERCEPTORS, useClass: JsonInterceptor, multi: true },
-    { provide: JsonParser, useClass: CustomJsonParser },
-    { provide: Serialization, useClass: Serialization},
+    //{ provide: HTTP_INTERCEPTORS, useClass: JsonInterceptor, multi: true },
+    //{ provide: JsonParser, useClass: CustomJsonParser },
+    //{ provide: Serialization, useClass: Serialization},
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              '591851973060-i6r6ne69n2ql5l19g1j51dm1tqh99od4.apps.googleusercontent.com'
+            )
+          },
+          {
+            id: FacebookLoginProvider.PROVIDER_ID,
+            provider: new FacebookLoginProvider('506876684362004')
+          }
+        ],
+        onError: (err) => {
+          console.error(err);
+        }
+      } as SocialAuthServiceConfig,
+    }
   ],
   bootstrap: [AppComponent]
 })
