@@ -20,7 +20,10 @@
       <label>HOUR LESSON: </label> {{course.hourlesson}}
     </div>
     <div>
-      <label>NUMBER WEEKS</label> {{course.numberweeks}}
+      <label>NUMBER WEEKS: </label> {{course.numberweeks}}
+    </div>
+    <div>
+      <label>COURT RESERVED: </label> {{course.courtCourse}}
     </div>
     <div>
       <label>PRICE: </label> {{course.priceCourse}}
@@ -29,5 +32,5 @@
       <label>END DATE REGISTRATION : </label> {{course.endDateRegistration}}
     </div>
   </div>
-  <button mat-raised-button color="warn" (click)='deleteCourse()'>Delete</button>
+  <button *ngIf="isAdmin && isPending" mat-raised-button color="warn" (click)='deleteCourse()'>Delete</button>
 </div>

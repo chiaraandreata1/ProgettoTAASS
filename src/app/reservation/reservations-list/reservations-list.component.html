@@ -1,9 +1,22 @@
 <h1>Active Reservations</h1>
-
-<div *ngFor="let reservation of reservations | async" style="width: 300px;">
-  <reservation-details [reservation]='reservation' ></reservation-details>
+<div>
+  <p>SPORT RESERVATION:</p>
+  <mat-radio-group required [(ngModel)]="sportReservation" name='valueSport' (ngModelChange)="reloadData()" aria-label="SPORT RESERVATION">
+    <mat-radio-button value="tennis">Tennis</mat-radio-button>
+    <mat-radio-button value="padel">Padel</mat-radio-button>
+  </mat-radio-group>
 </div>
-
+<mat-form-field>
+  <input readonly='true' matInput [matDatepicker] = "picker" name="dateReservation" id="dateReservation" (ngModelChange)="reloadData()" [min]="minDate" [max]="maxDate"
+         [formControl]="dateReservation" required>
+  <mat-datepicker-toggle matSuffix [for] = "picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+</mat-form-field>
+<div *ngFor="let reservation of reservations | async" style="width: 300px;">
+  <reservation-details [reservation]='reservation' [isAdmin]="isAdmin" ></reservation-details>
+</div>
+<!--
 <div>
   <button mat-raised-button color="warn" (click)='deleteReservations()'>Delete All</button>
 </div>
+-->

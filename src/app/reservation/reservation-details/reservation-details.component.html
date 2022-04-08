@@ -10,6 +10,9 @@
     <label> Hour reservation: </label> {{ reservation.hourReservation }}
   </div>
   <div>
+    <label> TYPE reservation: </label> {{ reservation.typeReservation }}
+  </div>
+  <div>
   <label>INFO COURT RESERVED:</label>
     <br>
     <label>-type: </label> {{ reservation.courtReservation.type}}
@@ -19,5 +22,5 @@
   <div>
     <p>PLAYERS: </p> {{reservation.players}}
   </div>
-  <button mat-raised-button color="warn" (click)='deleteReservation()'>Delete</button>
+  <button *ngIf="reservation.typeReservation=='private' || isAdmin" mat-raised-button color="warn" (click)='deleteReservation()'>Delete</button>
 </div>

@@ -15,6 +15,7 @@ import {DummyCourt} from "../../models/dummyCourt";
   styleUrls: ['./courses-list.component.css']
 })
 export class CoursesListComponent implements OnInit {
+  isAdmin = false;
 
   courses!: Observable<Course[]>;
   obsPendingCourses!: Observable<Course[]>;
@@ -31,8 +32,8 @@ export class CoursesListComponent implements OnInit {
   constructor(private courseService: CourseService, private userService: UserService, private reservationService: ReservationService) { }
 
   ngOnInit(): void {
+    this.isAdmin = this.userService.getRoleUserLogged() == "admin";
     this.reloadData();
-    this.obsPendingCourses = this.courses.pipe(map(courses => courses.filter(course => course.players.length<3)));
     this.prepareUserOptions();
     this.addOnFormGroup();
   }
@@ -77,7 +78,7 @@ export class CoursesListComponent implements OnInit {
             }
           for (let i = 0; i<this.pendingCourses.length; i++)
           {
-            let userSelectable = this.users.filter(value => !this.pendingCourses[i].players.includes(value.username));
+            let userSelectable = this.users.filter(value => !this.pendingCourses[i].players.includes(value.username) && value.username!=this.pendingCourses[i].instructor);
             let filteredOptions = this.formsInputPendingCourses.controls[this.pendingCourses[i].id].valueChanges.pipe(
               map(user => (typeof user === 'string' ? user : user.username)),
               map(user => (user ? this._filter(user, userSelectable) : userSelectable.slice())),
@@ -100,15 +101,31 @@ export class CoursesListComponent implements OnInit {
 
   reloadData() {
     this.course = new Course();
-    this.courses = this.courseService.getCoursesList();
+    this.courses = this.courseService.getCoursesList()
+    this.courses.toPromise().then( data => { //TODO: perfezionare. Non sempre si vede il course con i players aggiornato
+      this.obsPendingCourses = this.courses.pipe(map(courses => courses.filter(course => course.players.length < 3)));
+    });
   }
 
   addNewPlayer(courseId: number){
     let course = this.pendingCourses.find(x => x.id === courseId);
     course.players.push(this.formsInputPendingCourses.controls[courseId.toString()].value.username)
     this.courseService.updateCourse(courseId, course)
-      .subscribe(data => console.log(data), error => console.log(error));
-    //BLOCCO CREAZIONE CORSO (SE COMPLETO). FORSE SAREBBE MEGLIO CHE QUESTA OPERAZIONE LA FACESSE IL SERVER
+      .subscribe(data => {
+        console.log(data);
+        let course = <Course>data;
+        let index = 0;
+        for (; index<this.pendingCourses.length; index++)
+          if (this.pendingCourses[index].id == course.id)
+            break;
+        let userSelectable = this.users.filter(value => !course.players.includes(value.username) && value.username!=course.instructor);
+        this.formsInputPendingCourses.controls[this.pendingCourses[index].id].reset();
+        this.filtersOptions[index] = this.formsInputPendingCourses.controls[this.pendingCourses[index].id].valueChanges.pipe(
+          map(user => (typeof user === 'string' ? user : user.username)),
+          map(user => (user ? this._filter(user, userSelectable) : userSelectable.slice())),
+        );
+      }, error => console.log(error));
+    //TODO: questa operazione dovrà essere fatta dal server
     if (course.players.length==3)
     {
       let date = new Date(course.endDateRegistration);
@@ -120,8 +137,9 @@ export class CoursesListComponent implements OnInit {
       reservationCourse.players.push(course.instructor);
       date.setDate(date.getDate() + 7 - date.getDay() + this.weekday.indexOf(course.daycourse));
       reservationCourse.hourReservation = course.hourlesson;
+      reservationCourse.typeReservation = "lesson";
       let courtCourse = new DummyCourt();
-      courtCourse.id = 1;
+      courtCourse.id = course.courtCourse;
       courtCourse.type = course.sporttype.toLowerCase();
       reservationCourse.courtReservation = courtCourse;
       for (let i = 0; i<course.numberweeks; i++)
@@ -133,7 +151,7 @@ export class CoursesListComponent implements OnInit {
       }
     }
     //-----------------------------------------------------------------------------------------------------
-    window.location.reload();
+    this.reloadData();
   }
 
   show(){

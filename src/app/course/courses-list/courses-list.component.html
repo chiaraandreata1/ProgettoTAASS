@@ -1,10 +1,10 @@
 <h1>All Courses</h1>
-
+<!-- TODO: fare la get rispetto a un anno specifico, invece della get all -->
 <div>
   <h2>COMPLETE COURSES</h2>
   <ng-container *ngFor="let course of courses | async" style="width: 300px;">
     <div *ngIf="course.players.length==3">
-      <course-details [course]='course' ></course-details>
+      <course-details [course]='course' [isAdmin]='isAdmin' [isPending]=false ></course-details>
     </div>
   </ng-container>
 </div>
@@ -13,8 +13,8 @@
   <h2>PENDING COURSES</h2>
   <ng-container *ngIf="obsPendingCourses">
     <ng-container *ngFor="let course of obsPendingCourses | async; let i = index" style="width: 300px;">
-        <course-details [course]='course' ></course-details>
-        <div>
+        <course-details [course]='course' [isAdmin]='isAdmin' [isPending]=true></course-details>
+        <div *ngIf="isAdmin">
           <label>Add a new player on this course:</label>
           <mat-form-field appearance="fill">
             <input type="text" matInput [formControlName]=course.id [matAutocomplete]="playersoption">
@@ -34,16 +34,15 @@
           <ng-template #ButtonNotAvailable>
             <button mat-raised-button color="secondary" [disabled]="true">Add player</button>
           </ng-template>
-
         </div>
     </ng-container>
   </ng-container>
 </div>
-
+<!--
 <div>
   <button mat-raised-button color="warn" (click)='deleteCourses()'>Delete All</button>
 </div>
-
+-->
 <!-- BOTTONE DEBUGGING
   <div>
   <button mat-raised-button color="secondary" (click)='show()' >See</button>

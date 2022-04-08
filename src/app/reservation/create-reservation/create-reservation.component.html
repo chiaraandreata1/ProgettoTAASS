@@ -33,9 +33,9 @@
       </mat-form-field>
     </div>
     <div *ngIf="listplayersready && numberplayers>0">
-      <label for="dateReservation">Choose your date</label>
       <div class="input-group date">
         <mat-form-field>
+          <mat-label>Choose your date</mat-label>
           <input readonly='true' matInput [matDatepicker] = "picker" name="dateReservation" id="dateReservation" [min]="minDate" [max]="maxDate"
                  [(ngModel)]="reservation.dateReservation"  [formControl]="dateReservation" (ngModelChange)="reloadData()" required>
           <mat-datepicker-toggle matSuffix [for] = "picker"></mat-datepicker-toggle>
@@ -47,7 +47,7 @@
         <ng-container *ngFor="let hour of hoursAvailable" style="width: 300px;">
           <ng-container *ngFor="let court of courts | async" style="width: 300px;">
             <ng-container *ngIf="arrNOTAvailableForHours[hour-9]!=undefined && court.type == sportReservation">
-              <ng-container *ngIf="!arrNOTAvailableForHours[hour-9].includes(court.id); then ButtonAvailable else ButtonNotAvailable"></ng-container>
+              <ng-container *ngIf="!arrNOTAvailableForHours[hour-9].includes(court.id) && checkAvailableDate(hour); then ButtonAvailable else ButtonNotAvailable"></ng-container>
               <ng-template #ButtonAvailable>
                 <button mat-raised-button color="primary" type="submit" (click)="createReservation(sportReservation, dateReservation.value, hour, court.id, court.type)">{{hour}}.00-Court{{court.id}}</button>
               </ng-template>

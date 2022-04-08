@@ -11,6 +11,8 @@ import {CoursesListComponent} from "../courses-list/courses-list.component";
 export class CourseDetailsComponent implements OnInit {
 
   @Input() course!: Course;
+  @Input() isAdmin!: boolean;
+  @Input() isPending!: boolean;
 
   constructor(private courseService: CourseService, private listComponent: CoursesListComponent) { }
 
@@ -25,7 +27,7 @@ export class CourseDetailsComponent implements OnInit {
           this.listComponent.reloadData();
         },
         error => console.log(error));
-    window.location.reload();
+    this.listComponent.reloadData();
   }
 
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Course} from "../../models/course";
 import {CourseService} from "../../services/course.service";
-import {AbstractControl, FormControl} from "@angular/forms";
+import {AbstractControl, FormControl, Validators} from "@angular/forms";
 import {map, Observable} from "rxjs";
 import {User} from "../../models/user";
 import {UserService} from "../../services/user.service";
@@ -18,6 +18,7 @@ export class CreateCourseComponent implements OnInit { //RIGHE 35 E 110 sono com
   instructors = new Array();
 
   instructorCourse = new FormControl('', [this.validateInstructor]);
+  hourLesson = new FormControl('', [Validators.min(9), Validators.max(21)])
   filter: Observable<User[]>;
 
   day1 = new FormControl();
@@ -28,8 +29,10 @@ export class CreateCourseComponent implements OnInit { //RIGHE 35 E 110 sono com
   submitted = false;
 
   minDate: Date;
+  isAdmin: Boolean;
 
   constructor(private courseService: CourseService, private userService: UserService) {
+    this.isAdmin = this.userService.getRoleUserLogged()=='admin';
     this.minDate = new Date();
     this.minDate.setDate(this.minDate.getDate() + 14);
     //this.course.dayslesson = new Array();
@@ -77,16 +80,6 @@ export class CreateCourseComponent implements OnInit { //RIGHE 35 E 110 sono com
     this.course.dayslesson[i] = i==0 ? this.day1.value : this.day2.value;
   }
   */
-  setNumberWeeks() {
-    switch (this.course.priceCourse.toString()) //non so perchè lo switch con gli interi non funziona
-    {
-      case '240':
-        this.course.numberweeks = 12;
-        break;
-      case '400':
-        this.course.numberweeks = 24;
-    }
-  }
 
   enableInstructorInput(){
     this.instructorCourse.reset(); this.instructorCourse.enable(); this.course.instructor="";
@@ -119,6 +112,7 @@ export class CreateCourseComponent implements OnInit { //RIGHE 35 E 110 sono com
   }
 
   debugButton(){
+    console.log(this.course.numberweeks)
     console.log(this.course.priceCourse);
     console.log(this.course.daycourse);
     console.log(this.course.instructor);

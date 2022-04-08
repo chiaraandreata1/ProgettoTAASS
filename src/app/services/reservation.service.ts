@@ -16,6 +16,10 @@ export class ReservationService {
     return this.http.get(`${this.baseUrlReservations}/${id}`);
   }
 
+  getUserLoggedReservationsByDateAndSport(userLogged: string, date: String, sport: String): Observable<any> {
+    return this.http.get(`${this.baseUrlReservations}/player/${userLogged}/date/${date}/sport/${sport}`);
+  }
+
   getReservationByDateAndSport(date: string, sport: string): Observable<any> {
     return this.http.get(`${this.baseUrlReservations}/date/${date}/sport/${sport}`);
   }

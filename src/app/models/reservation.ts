@@ -5,6 +5,7 @@ export class Reservation {
   sportReservation!: string;
   dateReservation!: string;
   hourReservation!: number;
+  typeReservation!: string;
   courtReservation!: DummyCourt;
   players!: string[];
 }

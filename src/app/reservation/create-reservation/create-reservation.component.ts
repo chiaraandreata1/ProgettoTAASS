@@ -21,17 +21,14 @@ export class CreateReservationComponent implements OnInit {
   courts!: Observable<DummyCourt[]> //i campi disponibili del centro sportivo
 
   //info generali
+  userLogged = '';
+  isAdmin = false;
   sportReservation = '';
   numberplayers = 0;
 
   //FormControls per ottenere gli users player
-  playersForm = new FormGroup({
-    player1: new FormControl('', [this.validatePlayer]),
-    player2: new FormControl('', [this.validatePlayer]),
-    player3: new FormControl('', [this.validatePlayer]),
-    player4: new FormControl('', [this.validatePlayer]),
-  });
-  arrplayers = ['player1', 'player2', 'player3', 'player4'];
+  playersForm = new FormGroup({});
+  arrplayers = new Array();
 
   //per creare i buttons con le prenotazioni possibili
   dateReservation = new FormControl();
@@ -52,12 +49,17 @@ export class CreateReservationComponent implements OnInit {
   maxDate: Date;
 
   constructor(private reservationService: ReservationService, private  userService: UserService) {
-  this.minDate = new Date();
-  this.maxDate = new Date();
-  this.maxDate.setMonth(this.minDate.getMonth()+1)
+    this.minDate = new Date();
+    this.maxDate = new Date();
+    this.maxDate.setMonth(this.minDate.getMonth()+1);
 }
 
   ngOnInit(): void {
+    this.isAdmin = this.userService.getRoleUserLogged() == "admin";
+    this.userLogged = this.userService.getUserLogged();
+    this.arrplayers = this.isAdmin ? ['player1', 'player2', 'player3', 'player4'] : ['player2', 'player3', 'player4'];
+    for (let i = 0; i<this.arrplayers.length; i++)
+      this.playersForm.addControl(this.arrplayers[i], new FormControl('', [this.validatePlayer]));
     this.courts = this.reservationService.getCourtsList();
     //INIZIALIZZO IL FILTRO SUGGERIMENTI, dove inizialmente la usersNotSelected comprende tutti gli utenti
     this.prepareUserOptions();
@@ -71,7 +73,7 @@ export class CreateReservationComponent implements OnInit {
       this.filtersOptions.push(filteredOptions)
     }
   }
-
+  //TODO: il changefilters va fatto senza utilizzare la get all users (collegamento alla prepareuseroption di riga 99). Serve una get specifica
   //modifica le filtered options con i nuovi usersNotSelected, che sono tutte uguali qualunque sia il player scelto
   changeFilters(){
     let usersSelected = new Array();
@@ -80,6 +82,8 @@ export class CreateReservationComponent implements OnInit {
       if (typeof this.playersForm.controls[this.arrplayers[i]].value != "string")
         usersSelected.push(this.playersForm.controls[this.arrplayers[i]].value);
     }
+    if (!this.isAdmin)
+      usersSelected.push(this.userLogged);
     this.usersNotSelected = this.users.filter(value => !usersSelected.includes(value));
     this.filtersOptions = new Array();
     for (let i = 0; i<this.arrplayers.length; i++) {
@@ -93,6 +97,7 @@ export class CreateReservationComponent implements OnInit {
 
   //CREAZIONE DELL'ARRAY USER E USERNAMES-------------------------------------------------
   //utilizzata dalla onInit, inizializza l'array observable di users e usersNotSelected, che inizialmente sono uguali
+  //TODO: costruirlo in modo tale che vengano presi solo gli users richiesti prendendoli dal server (e non tutti) (collegamento alla changefilters di riga 75)
   prepareUserOptions(): void {
     let obsUsers = this.userService.getUsersList();
     obsUsers.toPromise()
@@ -139,13 +144,17 @@ export class CreateReservationComponent implements OnInit {
   createReservation(sportReservation: string, dateReservation: string, hour: number, courtId: number, courtType: string)
   {
     let players = new Array();
-    for (let i = 0; i<this.numberplayers; i++)
-      players.push(typeof this.playersForm.controls[this.arrplayers[0]].value == "string" ? this.playersForm.controls[this.arrplayers[i]].value : this.playersForm.controls[this.arrplayers[i]].value.username);
+    let nPlayersToConsider = this.isAdmin ? this.numberplayers : this.numberplayers-1;
+    if (!this.isAdmin)
+      players.push(this.userLogged);
+    for (let i = 0; i<nPlayersToConsider; i++)
+      players.push(typeof this.playersForm.controls[this.arrplayers[i]].value == "string" ? this.playersForm.controls[this.arrplayers[i]].value : this.playersForm.controls[this.arrplayers[i]].value.username);
     this.reservation.players = players;
     this.reservation.sportReservation = sportReservation;
     this.reservation.dateReservation = new Date(this.reservation.dateReservation.toString()).toISOString().split('T')[0];
     this.reservation.hourReservation = hour;
     let court = new DummyCourt();
+    this.reservation.typeReservation = 'private';
     court.id = courtId;
     court.type = courtType;
     this.reservation.courtReservation = court;
@@ -183,10 +192,11 @@ export class CreateReservationComponent implements OnInit {
 
   //resetta e pulisce gli input dei 4 player. Si attiva quando cambi i campi sport, numero giocatori o quando fai una nuova prenotazione, vedere il submit button
   resetInputPlayers(){
+    let nPlayersToConsider = this.isAdmin ? this.numberplayers : this.numberplayers-1;
     for (let i = 0; i<this.arrplayers.length; i++)
     {
       this.playersForm.controls[this.arrplayers[i]].reset();
-      if (i<this.numberplayers && (typeof this.playersForm.controls[this.arrplayers[i]].value != 'string' || !this.playersForm.controls[this.arrplayers[i]].value))
+      if (i<nPlayersToConsider && (typeof this.playersForm.controls[this.arrplayers[i]].value != 'string' || !this.playersForm.controls[this.arrplayers[i]].value))
         this.playersForm.controls[this.arrplayers[i]].enable();
       else
         this.playersForm.controls[this.arrplayers[i]].disable();
@@ -194,7 +204,7 @@ export class CreateReservationComponent implements OnInit {
     this.changeFilters();
   }
 
-  //funzione che evita di selezionare il numero di giocatori se scegli padel come sport
+  //funzione che evita di selezionare il numero di giocatori se scegli padel come sport (se scegli padel è implicito che siano 4 i giocatori)
   checkRadioInputs() {
     if (this.sportReservation == 'padel')
       this.numberplayers = 4;
@@ -205,7 +215,8 @@ export class CreateReservationComponent implements OnInit {
 
   //setta il flag true quando tutti i campi input (da player 1 a 4) conterranno le classi user corrette, e permette di scegliere la data
   playerlistready() {
-    for (let i = 0; i<this.numberplayers; i++)
+    let nPlayersToConsider = this.isAdmin ? this.numberplayers : this.numberplayers-1;
+    for (let i = 0; i<nPlayersToConsider; i++)
     {
       if (typeof this.playersForm.controls[this.arrplayers[i]].value == "string" || !this.playersForm.controls[this.arrplayers[i]].value) {
         this.listplayersready = false;
@@ -241,6 +252,12 @@ export class CreateReservationComponent implements OnInit {
     }
     else
       this.searchready = false;
+  }
+
+  //funzione utile soprattutto se si vuole prenotare il giorno stesso. Le ore del giorno stesso già passate devono avere i bottoni disabilitati.
+  checkAvailableDate(hour: number): boolean {
+    let completeDate = new Date(this.dateReservation.value); completeDate.setHours(hour);
+    return completeDate > this.minDate;
   }
 
   //la save la fa la createReservation che prende tutti i valori necessari
