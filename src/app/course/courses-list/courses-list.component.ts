@@ -65,13 +65,14 @@ export class CoursesListComponent implements OnInit {
     return null;
   }
 
+  //funzione che crea gli input formControl per aggiungere gli utenti a un corso ancora incompleto (pendente), con i suggerimenti opportuni. Appare solo se sei admin
   addOnFormGroup(){
     this.courses.toPromise()
       .then(
         data => {
           let objCourses = <Array<Course>>data;
           for (let i = 0; i<objCourses.length; i++)
-            if (objCourses[i].players.length!=3)
+            if (objCourses[i].players.length!=3) //il formControl avrà come Id l'id del corso pendente
             {
               this.formsInputPendingCourses.addControl(objCourses[i].id.toString(), new FormControl('', [this.validatePlayer]));
               this.pendingCourses.push(objCourses[i]);
@@ -107,6 +108,8 @@ export class CoursesListComponent implements OnInit {
     });
   }
 
+  //dopo che aggiungi un user nell'input label, questo dopo aver premuto il pulsante add aggiornerà la lista players di quel corso con una PUT
+  //nel caso in cui aggiungi un giocatore che completerà il corso, bisognerà creare tutte le reservation
   addNewPlayer(courseId: number){
     let course = this.pendingCourses.find(x => x.id === courseId);
     course.players.push(this.formsInputPendingCourses.controls[courseId.toString()].value.username)

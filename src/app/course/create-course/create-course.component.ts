@@ -21,8 +21,6 @@ export class CreateCourseComponent implements OnInit { //RIGHE 35 E 110 sono com
   hourLesson = new FormControl('', [Validators.min(9), Validators.max(21)])
   filter: Observable<User[]>;
 
-  day1 = new FormControl();
-  day2 = new FormControl();
   dateEndRegistration = new FormControl();
 
   weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -70,7 +68,7 @@ export class CreateCourseComponent implements OnInit { //RIGHE 35 E 110 sono com
     return null;
   }
   //----------------------------------------------------------------------------------------------------------------------------
-
+  //creerà dall'oggetto date la stringa con la sola data (senza ora)
   setDate() {
     this.course.endDateRegistration = new Date(this.dateEndRegistration.value.toString()).toISOString().split('T')[0];
   }
@@ -81,6 +79,7 @@ export class CreateCourseComponent implements OnInit { //RIGHE 35 E 110 sono com
   }
   */
 
+  //Per la gestione dinamica della label Instructor------------------------------------------------------
   enableInstructorInput(){
     this.instructorCourse.reset(); this.instructorCourse.enable(); this.course.instructor="";
   }
@@ -88,6 +87,7 @@ export class CreateCourseComponent implements OnInit { //RIGHE 35 E 110 sono com
   disableInstructorInput(){
     this.instructorCourse.disable(); this.course.instructor = this.instructorCourse.value.username;
   }
+  //-----------------------------------------------------------------------------------------------------
 
   save(){
     this.course.players = new Array();
@@ -104,21 +104,13 @@ export class CreateCourseComponent implements OnInit { //RIGHE 35 E 110 sono com
 
   newCourse(){
     this.course = new Course();
-    this.day1.reset();
-    this.day2.reset();
     this.instructorCourse.reset();
     //this.course.dayslesson = new Array();
     this.submitted = false;
   }
 
   debugButton(){
-    console.log(this.course.numberweeks)
-    console.log(this.course.priceCourse);
-    console.log(this.course.daycourse);
-    console.log(this.course.instructor);
-    console.log(this.course.endDateRegistration);
-    console.log(this.course.hourlesson);
-    console.log(this.course.sporttype);
+
   }
 
 }
