@@ -5,20 +5,20 @@ import java.util.List;
 
 public class Team {
 
-    private List<String> players;
+    private List<Long> players;
 
     public Team() {
     }
 
-    public Team(List<String> players) {
+    public Team(List<Long> players) {
         this.players = players;
     }
 
-    public List<String> getPlayers() {
+    public List<Long> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<String> players) {
+    public void setPlayers(List<Long> players) {
         this.players = players;
     }
 }

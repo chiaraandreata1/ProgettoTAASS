@@ -2,6 +2,7 @@ package com.example.tournamentservice.models;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.type.LongType;
 import org.hibernate.type.StringType;
 import org.hibernate.usertype.UserType;
 
@@ -17,7 +18,8 @@ public class TeamType implements UserType {
 
     @Override
     public int[] sqlTypes() {
-        return new int[] {StringType.INSTANCE.sqlType(), StringType.INSTANCE.sqlType()};
+//        return new int[] {StringType.INSTANCE.sqlType(), StringType.INSTANCE.sqlType()};
+        return new int[] {LongType.INSTANCE.sqlType(), LongType.INSTANCE.sqlType()};
     }
 
     @Override
@@ -33,29 +35,29 @@ public class TeamType implements UserType {
         if (o.getClass() != Team.class || o1.getClass() != Team.class)
             return false;
         Team m = (Team) o, m1 = (Team) o1;
-        List<String> p = m.getPlayers(), p1 = m1.getPlayers();
+        List<Long> p = m.getPlayers(), p1 = m1.getPlayers();
         return p.size() == p1.size() && p.containsAll(p1);
     }
 
     @Override
     public int hashCode(Object o) throws HibernateException {
-        List<String> players = ((Team) o).getPlayers();
-        players.sort(String::compareTo);
+        List<Long> players = ((Team) o).getPlayers();
+        players.sort(Long::compareTo);
         return players.hashCode();
     }
 
     @Override
     public Object nullSafeGet(ResultSet resultSet, String[] strings, SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException, SQLException {
-        ArrayList<String> players = new ArrayList<>();
+        ArrayList<Long> players = new ArrayList<>();
 
         for (int i = 0; i < 2; i++) {
-            String tmp = resultSet.getString(strings[i]);
-            if (tmp != null)
+            Long tmp = resultSet.getLong(strings[i]);
+            if (tmp != 0)
                 players.add(tmp);
         }
 
         if (players.size() > 1)
-            players.sort(String::compareTo);
+            players.sort(Long::compareTo);
 
         return players.isEmpty() ? null : new Team(players);
     }
@@ -63,12 +65,15 @@ public class TeamType implements UserType {
     @Override
     public void nullSafeSet(PreparedStatement preparedStatement, Object o, int i, SharedSessionContractImplementor sharedSessionContractImplementor) throws HibernateException, SQLException {
         if (o == null) {
-            preparedStatement.setString(i++, null);
-            preparedStatement.setString(i, null);
+            preparedStatement.setNull(i++, LongType.INSTANCE.sqlType());
+            preparedStatement.setNull(i, LongType.INSTANCE.sqlType());
         } else {
-            List<String> players = ((Team) o).getPlayers();
-            preparedStatement.setString(i++, players.get(0));
-            preparedStatement.setString(i, players.size() > 1 ? players.get(1) : null);
+            List<Long> players = ((Team) o).getPlayers();
+            preparedStatement.setLong(i++, players.get(0));
+            if (players.size() > 1)
+                preparedStatement.setLong(i, players.get(1));
+            else
+                preparedStatement.setNull(i, LongType.INSTANCE.sqlType());
         }
     }
 
@@ -76,11 +81,11 @@ public class TeamType implements UserType {
     public Object deepCopy(Object o) throws HibernateException {
         if (o == null)
             return null;
-        List<String> players = ((Team) o).getPlayers(), res = new ArrayList<>();
+        List<Long> players = ((Team) o).getPlayers(), res = new ArrayList<>();
         res.add(players.get(0));
         if (players.size() > 1) {
             res.add(players.get(1));
-            res.sort(String::compareTo);
+            res.sort(Long::compareTo);
         }
         return new Team(res);
     }
@@ -92,8 +97,8 @@ public class TeamType implements UserType {
 
     @Override
     public Serializable disassemble(Object o) throws HibernateException {
-        List<String> players = ((Team) o).getPlayers();
-        String[] res = new String[players.size()];
+        List<Long> players = ((Team) o).getPlayers();
+        Long[] res = new Long[players.size()];
         for (int i = 0; i < res.length; i++)
             res[i] = players.get(i);
         return res;
@@ -101,7 +106,7 @@ public class TeamType implements UserType {
 
     @Override
     public Object assemble(Serializable serializable, Object o) throws HibernateException {
-        String[] players = (String[]) serializable;
+        Long[] players = (Long[]) serializable;
         return new Team(new ArrayList<>(Arrays.asList(players)));
     }
 

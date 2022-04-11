@@ -21,7 +21,7 @@ public class SportDataProvider {
         }
     }
 
-    public static SportData getData(String sport) {
+    public static SportData getData(Long sport) {
         return new SportData(3, 3);
     }
 }

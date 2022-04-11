@@ -16,7 +16,7 @@ public class Tournament {
 
     private String name;
     private String description;
-    private String sport;
+    private Long sport;
     private Double price;
     private Double prize;
     private String level;
@@ -35,7 +35,7 @@ public class Tournament {
 
     public Tournament(String name,
                       String description,
-                      String sport,
+                      Long sport,
                       Double price,
                       Double prize,
                       String level,
@@ -73,11 +73,11 @@ public class Tournament {
         this.description = description;
     }
 
-    public String getSport() {
+    public Long getSport() {
         return sport;
     }
 
-    public void setSport(String sport) {
+    public void setSport(Long sport) {
         this.sport = sport;
     }
 

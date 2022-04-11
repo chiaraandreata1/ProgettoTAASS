@@ -23,7 +23,7 @@ public class TournamentController {
     public String test(@RequestBody Team[] teams) {
         StringBuilder builder = new StringBuilder();
         for (Team team : teams) {
-            for (String player : team.getPlayers()) {
+            for (Long player : team.getPlayers()) {
                 builder.append(player).append(' ');
             }
             builder.append('\n');
