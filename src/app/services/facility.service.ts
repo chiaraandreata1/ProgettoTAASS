@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Sport} from "../models/sport";
 import {map, Observable, of, tap} from "rxjs";
@@ -15,12 +15,20 @@ export class FacilityService {
 
   constructor(
     private http: HttpClient
-  ) { }
+  ) {
+  }
 
   public getSport(id: number): Observable<Sport> {
-    if (this.sports.has(id))
-      return of(this.sports.get(id) as Sport);
-    return this.http.get<Sport>(`${this.baseUrl}/sport`, {params: {id: id}});
+    let res;
+    if (this.sports.has(id)) {
+      let sport = this.sports.get(id);
+      if (!sport)
+        throw new Error("Missing sport");
+      else
+        res = of(sport);
+    }else
+      res = this.http.get<Sport>(`${this.baseUrl}/sport`, {params: {id: id}});
+    return res;
   }
 
   public getSports(): Observable<Sport[]> {
@@ -44,7 +52,7 @@ export class FacilityService {
           }
         })
       }),
-      map(() =>  {
+      map(() => {
         return Array.from(this.sports.values()).filter(sport => !sport.parent);
       })
     );
@@ -58,5 +66,5 @@ export class FacilityService {
     while (sport.parent)
       sport = sport.parent;
     return this.http.get<Court[]>(`${this.baseUrl}/courts`, {params: {sport: sport.id}});
-}
+  }
 }

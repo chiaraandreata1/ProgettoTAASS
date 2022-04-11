@@ -35,74 +35,27 @@ export class CreateTournamentComponent implements OnInit, AfterViewInit {
     private facilityService: FacilityService,
     private tournamentService: TournamentsService
   ) {
-    // this.tournament = new Tournament(
-    //   -1,
-    //   "Un torneo",
-    //   "Tennis singolo",
-    //   0,
-    //   0,
-    //   "Pro",
-    //   [
-    //     new TournamentRound([
-    //       new Match(
-    //         -1,
-    //         0,
-    //         0,
-    //         "1",
-    //         new Date(),
-    //         new Team([
-    //           new UserB("Alfio")
-    //         ]),
-    //         new Team([
-    //           new UserB("Betta")
-    //         ]),
-    //         6,
-    //         0
-    //       ),
-    //       new Match(
-    //         -1,
-    //         0,
-    //         1,
-    //         "1",
-    //         new Date(),
-    //         new Team([
-    //           new UserB("Claudio")
-    //         ]),
-    //         new Team([
-    //           new UserB("Diana")
-    //         ]),
-    //         0,
-    //         6
-    //       )
-    //     ]),
-    //     new TournamentRound([
-    //       new Match(
-    //         -1,
-    //         1,
-    //         0,
-    //         "1",
-    //         new Date(),
-    //         new Team([
-    //           new UserB("Alfio")
-    //         ]),
-    //         new Team([
-    //           new UserB("Diana")
-    //         ]),
-    //         4,
-    //         6
-    //       )
-    //     ]),
-    //   ],
-    //   "Nel mezzo del cammin di nostra vita mi ritrovai per una selva oscura"
-    // );
   }
 
   ngOnInit(): void {
     this.teams = [
       // new Team([new UserB("Alfio")])
     ];
+    const boundUpdateDates = this.updateDates.bind(this);
 
-    this.facilityService.getSports().subscribe(value => this.sports = value);
+    this.facilityService.getSports().subscribe(value => {
+      this.sports = value;
+      setTimeout(() => {
+        // @ts-ignore
+        $('#tournament-dates').datepicker({
+          multidate: true,
+          format: 'dd/mm/yyyy',
+          clearBtn: true
+        }).on(
+          'changeDate', boundUpdateDates
+        );
+      }, 0);
+    });
 
     this.tournamentBuilding = new TournamentBuilding(
       // @ts-ignore
@@ -177,6 +130,7 @@ export class CreateTournamentComponent implements OnInit, AfterViewInit {
       this.tournamentBuilding.teams = this.teams;
       this.tournamentBuilding.sport = this.sport as Sport;
       this.tournamentService.createTournament(this.tournamentBuilding).subscribe(value => {
+        console.log(value);
         this.tournament = value;
         this.waiting = false;
       });
@@ -197,5 +151,18 @@ export class CreateTournamentComponent implements OnInit, AfterViewInit {
 
   formatLevel(l: string): string {
     return l[0].toUpperCase() + l.substring(1).toLowerCase();
+  }
+
+  dateInit() {
+    const boundUpdateDates = this.updateDates.bind(this);
+    console.log("A");
+    // @ts-ignore
+    $('#tournament-dates').datepicker({
+      multidate: true,
+      format: 'dd/mm/yyyy',
+      clearBtn: true
+    }).on(
+      'changeDate', boundUpdateDates
+    );
   }
 }

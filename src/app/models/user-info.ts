@@ -17,4 +17,8 @@ export class UserInfo {
   public toJSON(): string {
     return this.userName;
   }
+
+  public static toJSON(user: UserInfo): number {
+    return user.id;
+  }
 }

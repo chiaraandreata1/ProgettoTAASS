@@ -30,7 +30,7 @@ export class TournamentsService {
   }
 
   createTournament(tournament: TournamentBuilding): Observable<Tournament> {
-    return this.http.post<Tournament>(`${this.baseUrl}/create`, tournament).pipe(
+    return this.http.post<Tournament>(`${this.baseUrl}/create`, TournamentBuilding.toJSON(tournament)).pipe(
       catchError(this.handleError<Tournament>("create"))
     );
   }
