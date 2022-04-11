@@ -9,15 +9,19 @@ export abstract class JsonParser {
 
 
 @Injectable()
+export abstract class JsonAdapter {
+  abstract adapt<T extends object>(obj: T): T;
+}
+
+
+@Injectable()
 export class JsonInterceptor implements HttpInterceptor {
 
-  constructor(private jsonParser: JsonParser) {
-
-  }
+  constructor(private jsonParser: JsonParser, private jsonAdapter: JsonAdapter) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let res: Observable<HttpEvent<any>>;
-
+    req = req.clone({body: this.jsonAdapter.adapt(req.body)});
     console.log(req.body)
 
     if (req.responseType === 'json') {

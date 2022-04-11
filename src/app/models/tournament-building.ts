@@ -31,6 +31,23 @@ export class TournamentBuilding {
     }
   }
 
+  public static toJSON(tournamentBuilding: TournamentBuilding): object {
+    const res = {
+      "name": tournamentBuilding.name,
+      "description": tournamentBuilding.description,
+      "sport": tournamentBuilding.sport.id,
+      "price": tournamentBuilding.price,
+      "prize": tournamentBuilding.prize,
+      "level": tournamentBuilding.level,
+      "teams": tournamentBuilding.teams.map(Team.toJSON),
+      "dates": tournamentBuilding.dates.map(value => Serialization.serializeDate(value, false))
+    }
+
+    console.log(res);
+
+    return res;
+  }
+
 //   toJSON(): object {
 //     // return '"name": '
 //     // return `{"name": ${this.name}}`;
