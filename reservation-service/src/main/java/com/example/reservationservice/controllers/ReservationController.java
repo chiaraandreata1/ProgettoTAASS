@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @RestController
@@ -22,13 +24,23 @@ public class ReservationController {
 
     @GetMapping("/date/{date}/sport/{sport}")
     public List<Reservation> findByDateAndSportReservations(@PathVariable String date, @PathVariable String sport) {
-        return reservationRepository.findAllByDateReservationAndSportReservation(date, sport);
+        SimpleDateFormat DAY_TIME_DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        StringBuilder startDateTime = new StringBuilder(); StringBuilder endDateTime = new StringBuilder();
+        startDateTime.append(date).append(" 09:00");
+        endDateTime.append(date).append(" 21:00");
+        try {
+            return reservationRepository.findAllByDateBetweenAndSportReservation(DAY_TIME_DATE_FORMAT.parse(startDateTime.toString()), DAY_TIME_DATE_FORMAT.parse(endDateTime.toString()), sport);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    /*
     @GetMapping("/player/{player}/date/{date}/sport/{sport}")
     public List<Reservation> findByPlayerAndDateAndSport(@PathVariable String player, @PathVariable String date, @PathVariable String sport) {
         return reservationRepository.getAllByPlayer(player, date, sport);
     }
+     */
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.OK)

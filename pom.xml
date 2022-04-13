@@ -22,6 +22,7 @@
 		<module>user-service</module>
 		<module>gateway</module>
 		<module>eureka-server</module>
+		<module>facility-service</module>
 	</modules>
 
 </project>
