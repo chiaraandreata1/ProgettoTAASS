@@ -15,6 +15,7 @@
 	</properties>
 
 	<modules>
+		<module>auth-service</module>
 		<module>board-service</module>
 		<module>lesson-service</module>
 		<module>reservation-service</module>
