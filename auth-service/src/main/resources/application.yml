@@ -1,9 +1,9 @@
 spring:
   application:
-    name: zuul-server
+    name: authentication
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/tournaments
+    url: jdbc:postgresql://localhost:5432/demo
     driver-class-name: org.postgresql.Driver
     username: taass
     password: asd
@@ -23,8 +23,40 @@ spring:
       # Hibernate ddl auto (create, create-drop, validate, update)
       hibernate:
         ddl-auto: update
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientID: 396344374894-7htvgeum5fk4ibrfhbh0r0v5t9lt5539.apps.googleusercontent.com
+            clientSecret: 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
+
+session:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/session
+    driver-class-name: org.postgresql.Driver
+    username: taass
+    password: asd
+
+    jpa:
+      properties:
+        hibernate:
+          temp.use_jdbc_metadata_defaults: false
+
+      # Because detection is disabled you have to set correct dialect by hand.
+      database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+
+      # Hibernate ddl auto (create, create-drop, validate, update)
+      hibernate:
+        ddl-auto: update
 
 taass:
   auth:
     tokenSecret: 926D96C90030DD58429D2751AC1BDBBC
     tokenExpirationMsec: 864000000
+  oauth2:
+    authorizedRedirectUris: http://localhost:8081/oauth2/redirect,myandroidapp://oauth2/redirect,myiosapp://oauth2/redirect
+
+
+server:
+  port: 8090
