@@ -17,23 +17,23 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 public class DatabaseConfig {
 
-//    @Bean
-//    @Primary
-//    @ConfigurationProperties("spring.datasource")
-//    public DataSourceProperties primaryDataSourceProperties() {
-//        DataSourceProperties dataSourceProperties = new DataSourceProperties();
-//        return dataSourceProperties;
-//    }
-//
-//    @Bean
-//    @Primary
-//    public DataSource primaryDataSource() {
-//        DataSourceProperties properties = primaryDataSourceProperties();
-//        DataSourceBuilder<?> builder = properties.initializeDataSourceBuilder();
-//        DataSourceBuilder<HikariDataSource> type = builder.type(HikariDataSource.class);
-//        HikariDataSource build = type.build();
-//        return build;
-//    }
+    @Bean
+    @Primary
+    @ConfigurationProperties("spring.datasource")
+    public DataSourceProperties primaryDataSourceProperties() {
+        DataSourceProperties dataSourceProperties = new DataSourceProperties();
+        return dataSourceProperties;
+    }
+
+    @Bean
+    @Primary
+    public DataSource primaryDataSource() {
+        DataSourceProperties properties = primaryDataSourceProperties();
+        DataSourceBuilder<?> builder = properties.initializeDataSourceBuilder();
+        DataSourceBuilder<HikariDataSource> type = builder.type(HikariDataSource.class);
+        HikariDataSource build = type.build();
+        return build;
+    }
 
     @Bean
     @ConfigurationProperties("session.datasource")

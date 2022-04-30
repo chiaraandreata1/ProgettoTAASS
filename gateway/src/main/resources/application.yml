@@ -41,10 +41,32 @@ zuul:
     lesson-service: /api/v1/lessons/**
     user-service: /api/v1/users/**
     facility-service: /api/v1/facility/**
-
+#    oauth2-start:
+#      path: /**/oauth2/**
+#      service-id: authentication-service
+#      strip-prefix: false
+    authentication-service: /api/v1/user/**
+#    oauth2-login:
+#      path: /login/oauth2/**
+#      service-id: authentication-service
+#      strip-prefix: false
+#    auth-service:
+#      path: /oauth2/**
+#      strip-prefix: false
     frontend:
       path: /**
       url: http://localhost:4200/
+  sensitive-headers:
+  ignored-patterns:
+    - /sockjs-node/**
+
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          netflix: debug
+
 
 #taass:
 #  auth:

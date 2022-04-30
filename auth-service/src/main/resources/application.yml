@@ -1,6 +1,6 @@
 spring:
   application:
-    name: authentication
+    name: authentication-service
 
   datasource:
     url: jdbc:postgresql://localhost:5432/demo
@@ -30,6 +30,15 @@ spring:
           google:
             clientID: 396344374894-7htvgeum5fk4ibrfhbh0r0v5t9lt5539.apps.googleusercontent.com
             clientSecret: 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
+            redirect-uri: http://localhost:8080/api/v1/user/login/oauth2/code/google
+          github:
+            client-id: 07a39614d79f8079e89c
+            client-secret: d2e8d149246c8e3f90bbafbd325c5140c9e47b4d
+            redirect-uri: http://localhost:8080/api/v1/user/login/oauth2/code/github
+  session:
+    jdbc:
+      initialize-schema: always
+    store-type: jdbc
 
 session:
   datasource:
@@ -55,7 +64,8 @@ taass:
     tokenSecret: 926D96C90030DD58429D2751AC1BDBBC
     tokenExpirationMsec: 864000000
   oauth2:
-    authorizedRedirectUris: http://localhost:8081/oauth2/redirect,myandroidapp://oauth2/redirect,myiosapp://oauth2/redirect
+    authorizedRedirectUris: http://localhost:8080/oauth2/redirect,myandroidapp://oauth2/redirect,myiosapp://oauth2/redirect
+
 
 
 server:

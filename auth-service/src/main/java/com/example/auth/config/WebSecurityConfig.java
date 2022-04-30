@@ -13,11 +13,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.HttpSecurityBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.oauth2.client.OAuth2LoginConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -38,6 +41,14 @@ import java.util.Arrays;
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 @EnableJdbcHttpSession()
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private static class CustomRedirectBaseUri implements Customizer<OAuth2LoginConfigurer.RedirectionEndpointConfig> {
+
+        @Override
+        public void customize(OAuth2LoginConfigurer.RedirectionEndpointConfig redirectionEndpointConfig) {
+            redirectionEndpointConfig.baseUri("http://localhost:8080");
+        }
+    }
 
     @Autowired
     private UserDetailsService userDetailsService;
