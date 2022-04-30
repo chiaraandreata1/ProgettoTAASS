@@ -19,11 +19,11 @@ export class JsonParsing {
     this.observables = [];
   }
 
-  public parse(): Observable<any> {
+  /*public parse(): Observable<any> {
     let obj = JSON.parse(this.body, (key, value) => this.revive(key, value));
 
     forkJoin(this.observables)
-  }
+  }*/
 
   private revive(key: string, value: any) {
     let ob;

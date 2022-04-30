@@ -37,7 +37,7 @@ import {ForLoopPipe} from "./utilities/for-loop-pipe";
 import { DatesComponent } from './shared/misc/dates/dates.component';
 import { CreateTeamListComponent } from './shared/team/create-team-list/create-team-list.component';
 import {JsonInterceptor, JsonParser} from "./utilities/json-interceptor";
-import {CustomJsonParser} from "./CustomJsonParser";
+import {CustomJsonParser} from "./custom-json-parser";
 import {Serialization} from "./utilities/serialization";
 import { TournamentViewComponent } from './tournaments/tournament-view/tournament-view.component';
 import { ShowTournamentComponent } from './tournaments/show-tournament/show-tournament.component';
