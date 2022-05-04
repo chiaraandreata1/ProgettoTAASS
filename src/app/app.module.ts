@@ -45,6 +45,7 @@ import { CourseMainComponent } from './course/course-main/course-main.component'
 import { CoursesListComponent } from './course/courses-list/courses-list.component';
 import { CourseDetailsComponent } from './course/course-details/course-details.component';
 import { CreateCourseComponent } from './course/create-course/create-course.component';
+import { LoginComponent } from './user/login/login.component';
 
 @NgModule({
   declarations: [
