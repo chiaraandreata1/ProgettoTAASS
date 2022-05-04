@@ -8,10 +8,11 @@ import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class LocalUser extends User implements OAuth2User, OidcUser {
+public class LocalUser extends User implements OAuth2User, OidcUser, Serializable {
 
     private final OidcIdToken idToken;
     private final OidcUserInfo userInfo;

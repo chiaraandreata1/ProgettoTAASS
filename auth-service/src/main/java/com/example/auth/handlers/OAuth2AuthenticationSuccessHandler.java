@@ -3,8 +3,10 @@ package com.example.auth.handlers;
 import com.example.auth.config.AuthProperties;
 import com.example.auth.config.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.auth.misc.CookieUtils;
+import com.example.auth.models.LocalUser;
 import com.example.auth.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -14,12 +16,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+
+    @Autowired
+    private HttpSession httpSession;
 
     @Autowired
     private TokenService tokenService;
@@ -38,6 +44,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
         }
+
+//        AuthenticatedPrincipal principal = (AuthenticatedPrincipal) authentication.getPrincipal();
+        httpSession.setAttribute("userName", ((LocalUser) authentication.getPrincipal()).getUsername());
+//        httpSession.setAttribute("principal", principal);
+        httpSession.setAttribute("authorities", ((LocalUser) authentication.getPrincipal()).getAuthorities());
 
         clearAuthenticationAttributes(request, response);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);

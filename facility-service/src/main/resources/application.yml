@@ -17,3 +17,18 @@ spring:
 
 server:
   port: '8086'
+
+xchange:
+  name: roytuts.rpc
+
+queue:
+  name: roytuts.rpc.queue
+
+
+rabbit:
+  facility:
+    exchange-name: rpc.facility
+    hours:
+      queue-name: rpc.facility.hours
+      key: facility.hours
+

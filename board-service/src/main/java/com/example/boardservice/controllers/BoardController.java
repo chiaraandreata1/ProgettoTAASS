@@ -7,10 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 public class BoardController {
 
     @Autowired
@@ -61,5 +62,13 @@ public class BoardController {
         boardRepository.deleteAll();
 
         return new ResponseEntity<>("All Boards have been deleted!", HttpStatus.OK);
+    }
+
+    @Autowired
+    private HttpSession httpSession;
+
+    @GetMapping("/test")
+    public String test() {
+        return httpSession.getId();
     }
 }

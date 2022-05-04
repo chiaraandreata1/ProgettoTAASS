@@ -2,6 +2,28 @@ spring:
   application:
     name: zuul-server
 
+  datasource:
+    url: jdbc:postgresql://localhost:5432/session
+    driver-class-name: org.postgresql.Driver
+    username: taass
+    password: asd
+
+  # The SQL dialect makes Hibernate generate better SQL for the chosen database
+  #spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
+
+  # Disable feature detection by this undocumented parameter. Check the org.hibernate.engine.jdbc.internal.JdbcServiceImpl.configure method for more details.
+  jpa:
+    properties:
+      hibernate:
+        temp.use_jdbc_metadata_defaults: false
+
+    # Because detection is disabled you have to set correct dialect by hand.
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+
+    # Hibernate ddl auto (create, create-drop, validate, update)
+    hibernate:
+      ddl-auto: update
+
 server:
   port: 8080
 
@@ -34,6 +56,10 @@ eureka:
 
 zuul:
   ignoredServices: '*'
+  ignored-patterns:
+    - /sockjs-node/**
+    - /a/test
+    - /error
   routes:
     tournament-service: /api/v1/tournaments/**
     reservation-service: /api/v1/reservations/**
@@ -57,8 +83,6 @@ zuul:
       path: /**
       url: http://localhost:4200/
   sensitive-headers:
-  ignored-patterns:
-    - /sockjs-node/**
 
 logging:
   level:
@@ -66,6 +90,7 @@ logging:
       springframework:
         cloud:
           netflix: debug
+        security: debug
 
 
 #taass:

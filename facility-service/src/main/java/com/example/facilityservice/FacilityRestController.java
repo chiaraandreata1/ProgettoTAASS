@@ -13,14 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
-public class FacilityController {
+@CrossOrigin(origins = "*")
+public class FacilityRestController {
 
     @Autowired
     private SportRepository sportRepository;
@@ -28,7 +25,8 @@ public class FacilityController {
     @Autowired
     private CourtRepository courtRepository;
 
-    private final Facility facility = new Facility();
+    @Autowired
+    private Facility facility;
 
     @GetMapping("init")
     public void init() {
@@ -76,6 +74,11 @@ public class FacilityController {
     @GetMapping("opening-hours")
     public Integer[] getOpeningHours() {
         return new Integer[]{facility.getOpeningTime(), facility.getClosingTime()};
+    }
+
+    @GetMapping("hours")
+    public Map<String, Integer> getHours() {
+        return facility.getHours();
     }
 
     @GetMapping("sports")

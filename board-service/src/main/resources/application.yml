@@ -16,3 +16,10 @@ spring:
       ddl-auto: update
 server:
   port: '8081'
+
+rabbit:
+  facility:
+    exchange-name: rpc.facility
+    hours:
+      queue-name: rpc.facility.hours
+      key: facility.hours
