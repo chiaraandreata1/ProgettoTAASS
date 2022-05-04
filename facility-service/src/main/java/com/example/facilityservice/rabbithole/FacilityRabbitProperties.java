@@ -1,5 +1,6 @@
 package com.example.facilityservice.rabbithole;
 
+import com.example.shared.models.QueueData;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 

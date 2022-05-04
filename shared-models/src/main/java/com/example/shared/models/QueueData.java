@@ -1,4 +1,4 @@
-package com.example.facilityservice.rabbithole;
+package com.example.shared.models;
 
 public class QueueData {
     

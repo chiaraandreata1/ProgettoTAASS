@@ -24,6 +24,7 @@
 		<module>gateway</module>
 		<module>eureka-server</module>
 		<module>facility-service</module>
-	</modules>
+        <module>shared-models</module>
+    </modules>
 
 </project>

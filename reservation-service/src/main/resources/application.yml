@@ -30,3 +30,10 @@ spring:
 
 server:
   port: 8083
+
+rabbit:
+  reservation:
+    exchange-name: rpc.reservation
+    reserve:
+      queue-name: rpc.reservation.reserve
+      key: reservation.reserve
