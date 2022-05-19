@@ -1,26 +1,29 @@
 package com.example.auth.models;
 
+import com.example.shared.models.users.UserInfo;
+import com.example.shared.models.users.UserType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class UserEntity implements Serializable {
 
     public enum Role {
-        USER(),
-        PLAYER (),
-        TRAINER (),
-        ADMIN ();
+        USER,
+        PLAYER,
+        TRAINER,
+        MANAGEMENT,
+        ADMIN;
 
-        Role() {
-        }
-
-        public String getAuthoritativeRole() {
-            return String.format("ROLE_%s", name());
+        public SimpleGrantedAuthority getSimpleGrantedAuthority() {
+            return new SimpleGrantedAuthority(String.format("ROLE_%s", name()));
         }
 
         public static Role fromAuthoritativeRole(String authoritativeRole) {
@@ -54,11 +57,9 @@ public class UserEntity implements Serializable {
 
     private String provider;
 
+    @Enumerated(EnumType.STRING)
+    private UserType type;
 
-    @JsonIgnore
-    @Enumerated
-    @ElementCollection
-    private Set<Role> roles;
     private String pictureLink;
 
     public UserEntity() {
@@ -124,16 +125,36 @@ public class UserEntity implements Serializable {
         return provider;
     }
 
+    public UserType getType() {
+        return type;
+    }
+
+    public void setType(UserType type) {
+        this.type = type;
+    }
+
     public void setProvider(String provider) {
         this.provider = provider;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
+    public Set<SimpleGrantedAuthority> getAuthoritativeRoles() {
+        HashSet<Role> roles = new HashSet<>();
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+        roles.add(Role.USER);
+
+        if (type == UserType.PLAYER)
+            roles.add(Role.PLAYER);
+
+        if (type == UserType.TRAINER)
+            roles.add(Role.TRAINER);
+
+        if (type == UserType.ADMIN)
+            roles.add(Role.ADMIN);
+
+        if (type == UserType.TRAINER || type == UserType.ADMIN)
+            roles.add(Role.MANAGEMENT);
+
+        return roles.stream().map(Role::getSimpleGrantedAuthority).collect(Collectors.toSet());
     }
 
     public String getPictureLink() {
@@ -147,5 +168,15 @@ public class UserEntity implements Serializable {
     public void update(OAuth2UserInfo userInfo) {
         this.displayName = userInfo.getName();
         this.pictureLink = userInfo.getImageUrl();
+    }
+
+    public UserInfo toUserInfo() {
+        return new UserInfo(
+                id,
+                email,
+                displayName,
+                pictureLink,
+                type
+        );
     }
 }

@@ -8,4 +8,6 @@ import java.util.List;
 public interface CourtRepository extends JpaRepository<Court, Long> {
 
     List<Court> getCourtBySport_Id(Long sportID);
+
+    Integer countCourtsBySport_Id(Long sportID);
 }

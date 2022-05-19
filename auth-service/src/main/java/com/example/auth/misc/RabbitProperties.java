@@ -1,23 +1,23 @@
-package com.example.reservationservice.rabbithole;
+package com.example.auth.misc;
 
-import QueueData;
+import com.example.shared.rabbithole.QueueData;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "rabbit.reservation")
-public class ReservationRabbitProperties {
+@ConfigurationProperties(prefix = "rabbit.users")
+public class RabbitProperties {
 
     private String exchangeName;
 
-    private final QueueData reserve = new QueueData();
+    private final QueueData verify = new QueueData();
 
     public String getExchangeName() {
         return exchangeName;
     }
 
-    public QueueData getReserve() {
-        return reserve;
+    public QueueData getVerify() {
+        return verify;
     }
 
     public void setExchangeName(String exchangeName) {

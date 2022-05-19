@@ -54,3 +54,21 @@ server:
 #
 #server.port=8084
 
+rabbit:
+  tournaments:
+    exchange-name: rpc.tournaments
+    upcoming:
+      queue-name: rpc.tournaments.upcoming
+      key: tournaments.upcoming
+
+  facility:
+    exchange-name: rpc.facility
+    hours:
+      key: facility.hours
+    sports:
+      key: facility.sports
+
+  reservation:
+    exchange-name: rpc.reservation
+    reserve:
+      key: reservation.reserve

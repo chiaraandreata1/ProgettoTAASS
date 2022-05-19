@@ -1,18 +1,24 @@
-package com.example.shared.models;
+package com.example.shared.rabbithole;
 
 import java.io.Serializable;
 
 public class ReservationRequest implements Serializable {
+
+    public enum OwnerType {
+        USER,
+        TOURNAMENT_MATCH,
+        COURSE
+    }
 
     private static final long serialVersionUID = 42L;
 
     // dd/mm/yyyy
     private String date;
     private String name;
-    private String ownerType;
-    private String ownerID;
+    private OwnerType ownerType;
+    private Long ownerID;
 
-    public ReservationRequest(String date, String name, String ownerType, String ownerID) {
+    public ReservationRequest(String date, String name, OwnerType ownerType, Long ownerID) {
         this.date = date;
         this.name = name;
         this.ownerType = ownerType;
@@ -35,19 +41,19 @@ public class ReservationRequest implements Serializable {
         this.name = name;
     }
 
-    public String getOwnerType() {
+    public OwnerType getOwnerType() {
         return ownerType;
     }
 
-    public void setOwnerType(String ownerType) {
+    public void setOwnerType(OwnerType ownerType) {
         this.ownerType = ownerType;
     }
 
-    public String getOwnerID() {
+    public Long getOwnerID() {
         return ownerID;
     }
 
-    public void setOwnerID(String ownerID) {
+    public void setOwnerID(Long ownerID) {
         this.ownerID = ownerID;
     }
 }

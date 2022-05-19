@@ -205,19 +205,19 @@ public class TournamentBuilding {
         }
     }
 
-    public Tournament build() {
-        checkRequestValidity();
-        buildRounds();
-        computeDates();
-        return new Tournament(
-                name,
-                description,
-                sport,
-                price,
-                prize,
-                level,
-                rounds
-        );
-    }
+//    public Tournament build() {
+//        checkRequestValidity();
+//        buildRounds();
+//        computeDates();
+//        return new Tournament(
+//                name,
+//                description,
+//                sport,
+//                price,
+//                prize,
+//                level,
+//                rounds
+//        );
+//    }
 
 }

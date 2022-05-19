@@ -3,26 +3,26 @@ spring:
     name: authentication-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/demo
+    url: jdbc:postgresql://localhost:5432/users
     driver-class-name: org.postgresql.Driver
     username: taass
     password: asd
 
-    # The SQL dialect makes Hibernate generate better SQL for the chosen database
-    #spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
+  # The SQL dialect makes Hibernate generate better SQL for the chosen database
+  #spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
 
-    # Disable feature detection by this undocumented parameter. Check the org.hibernate.engine.jdbc.internal.JdbcServiceImpl.configure method for more details.
-    jpa:
-      properties:
-        hibernate:
-          temp.use_jdbc_metadata_defaults: false
-
-      # Because detection is disabled you have to set correct dialect by hand.
-      database-platform: org.hibernate.dialect.PostgreSQL9Dialect
-
-      # Hibernate ddl auto (create, create-drop, validate, update)
+  # Disable feature detection by this undocumented parameter. Check the org.hibernate.engine.jdbc.internal.JdbcServiceImpl.configure method for more details.
+  jpa:
+    properties:
       hibernate:
-        ddl-auto: update
+        temp.use_jdbc_metadata_defaults: false
+
+    # Because detection is disabled you have to set correct dialect by hand.
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+
+    # Hibernate ddl auto (create, create-drop, validate, update)
+    hibernate:
+      ddl-auto: update
   security:
     oauth2:
       client:
@@ -76,3 +76,10 @@ logging:
     org:
       springframework:
         security: debug
+
+rabbit:
+  users:
+    exchange-name: rpc.users
+    verify:
+      queue-name: rpc.users.verify
+      key: users.verify

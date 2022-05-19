@@ -1,6 +1,6 @@
-package com.example.reservationservice.rabbithole;
+package com.example.tournamentservice.rabbithole;
 
-import QueueData;
+import com.example.shared.rabbithole.QueueData;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -18,9 +18,5 @@ public class ReservationRabbitProperties {
 
     public QueueData getReserve() {
         return reserve;
-    }
-
-    public void setExchangeName(String exchangeName) {
-        this.exchangeName = exchangeName;
     }
 }

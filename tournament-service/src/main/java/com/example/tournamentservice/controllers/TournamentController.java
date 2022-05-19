@@ -34,8 +34,8 @@ public class TournamentController {
     @PostMapping("create")
     @ResponseStatus(HttpStatus.OK)
     public Tournament createTournament(@RequestBody TournamentBuilding parameters) {
-
-        return parameters.build();
+        return null;
+//        return parameters.build();
     }
 
     @PostMapping("confirm")

@@ -65,7 +65,7 @@ zuul:
     reservation-service: /api/v1/reservations/**
     board-service: /api/v1/boards/**
     lesson-service: /api/v1/lessons/**
-    user-service: /api/v1/users/**
+#    user-service: /api/v1/users/**
     facility-service: /api/v1/facility/**
 #    oauth2-start:
 #      path: /**/oauth2/**

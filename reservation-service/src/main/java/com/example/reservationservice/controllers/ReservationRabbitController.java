@@ -1,8 +1,8 @@
 package com.example.reservationservice.controllers;
 
-import com.example.shared.models.RabbitResponse;
-import com.example.shared.models.ReservationRequest;
-import com.example.shared.models.ReservationResponse;
+import com.example.shared.rabbithole.RabbitResponse;
+import com.example.shared.rabbithole.ReservationRequest;
+import com.example.shared.rabbithole.ReservationResponse;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 

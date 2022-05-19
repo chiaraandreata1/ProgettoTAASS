@@ -6,7 +6,8 @@ import com.example.auth.models.LocalUser;
 import com.example.auth.models.OAuth2UserInfo;
 import com.example.auth.models.SocialProvider;
 import com.example.auth.models.UserEntity;
-import com.example.auth.repositories.UserRepository;
+import com.example.auth.repositories.UserEntityRepository;
+import com.example.shared.models.users.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
@@ -20,7 +21,7 @@ import java.util.*;
 public class UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserEntityRepository userRepository;
 
     @Transactional(value = "transactionManager")
     public UserEntity registerNewUser(final SocialProvider socialProvider, OAuth2UserInfo oAuth2UserInfo) {
@@ -36,10 +37,15 @@ public class UserService {
         final HashSet<UserEntity.Role> roles = new HashSet<>();
         roles.add(UserEntity.Role.USER);
         roles.add(UserEntity.Role.PLAYER);
-        if (userRepository.count() == 0)
-            roles.add(UserEntity.Role.ADMIN);
 
-        user.setRoles(roles);
+        if (userRepository.count() == 0) {
+//            roles.add(UserEntity.Role.ADMIN);
+            user.setType(UserType.ADMIN);
+        } else {
+            user.setType(UserType.PLAYER);
+        }
+
+//        user.setRoles(roles);
         user.setProvider(socialProvider.getProviderType());
         user.setEnabled(true);
         user.setProviderUserId(oAuth2UserInfo.getId());

@@ -12,6 +12,8 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.example.shared.models.users.UserInfo;
+
 public class LocalUser extends User implements OAuth2User, OidcUser, Serializable {
 
     private final OidcIdToken idToken;
@@ -29,20 +31,18 @@ public class LocalUser extends User implements OAuth2User, OidcUser, Serializabl
 
     public LocalUser(UserEntity user, OidcIdToken idToken, OidcUserInfo userInfo, Map<String, Object> attributes) {
 
-        super(user.getEmail(), "noPassAuth", user.isEnabled(), true, true, true, buildSimpleGrantedAuthorities(user.getRoles()));
+        super(user.getEmail(),
+                "noPassAuth",
+                user.isEnabled(),
+                true,
+                true,
+                true,
+                user.getAuthoritativeRoles());
 
         this.user = user;
         this.idToken = idToken;
         this.userInfo = userInfo;
         this.attributes = attributes;
-    }
-
-    private static Collection<? extends GrantedAuthority> buildSimpleGrantedAuthorities(Set<UserEntity.Role> roles) {
-        return roles
-                .stream()
-                .map(UserEntity.Role::getAuthoritativeRole)
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
     }
 
 
@@ -76,18 +76,11 @@ public class LocalUser extends User implements OAuth2User, OidcUser, Serializabl
     }
 
     public UserInfo toUserInfo() {
-        List<UserEntity.Role> roles =
-                getAuthorities()
-                        .stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .map(role -> role.substring(5))
-                        .map(UserEntity.Role::valueOf)
-                        .collect(Collectors.toList());
 
-        return new UserInfo(user.getId().toString(),
-                user.getDisplayName(),
+        return new UserInfo(user.getId(),
                 user.getEmail(),
+                user.getDisplayName(),
                 user.getPictureLink(),
-                roles);
+                user.getType());
     }
 }

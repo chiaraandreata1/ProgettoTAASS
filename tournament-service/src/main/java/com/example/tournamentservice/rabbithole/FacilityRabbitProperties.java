@@ -1,4 +1,4 @@
-package com.example.boardservice.rabbithole;
+package com.example.tournamentservice.rabbithole;
 
 import com.example.shared.rabbithole.QueueData;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,6 +12,8 @@ public class FacilityRabbitProperties {
 
     private final QueueData hours = new QueueData();
 
+    private final QueueData sports = new QueueData();
+
     public String getExchangeName() {
         return exchangeName;
     }
@@ -20,7 +22,12 @@ public class FacilityRabbitProperties {
         return hours;
     }
 
+    public QueueData getSports() {
+        return sports;
+    }
+
     public void setExchangeName(String exchangeName) {
         this.exchangeName = exchangeName;
     }
 }
+

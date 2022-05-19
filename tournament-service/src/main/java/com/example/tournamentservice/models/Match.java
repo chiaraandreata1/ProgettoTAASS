@@ -19,6 +19,8 @@ public class Match {
     private int round;
     private int roundHeight;
 
+    private Long reservationID;
+
 //    @OneToOne
     @Columns(columns = {@Column(name = "t1p1"), @Column(name = "t1p2")})
     @Type(type = "com.example.tournamentservice.models.TeamType")
@@ -153,5 +155,13 @@ public class Match {
 
     public void setCourt(String court) {
         this.court = court;
+    }
+
+    public Long getReservationID() {
+        return reservationID;
+    }
+
+    public void setReservationID(Long reservationID) {
+        this.reservationID = reservationID;
     }
 }

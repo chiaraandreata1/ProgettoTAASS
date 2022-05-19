@@ -1,15 +1,9 @@
 package com.example.facilityservice.rabbithole;
 
-import com.example.shared.models.FacilityHours;
-import com.example.shared.models.RabbitRequest;
 import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Map;
 
 @Configuration
 public class RabbitConfig {
@@ -23,16 +17,39 @@ public class RabbitConfig {
     }
 
     @Bean
+    public Queue sportsQueue() {
+        return new Queue(properties.getSports().getQueueName());
+    }
+
+    @Bean
     public DirectExchange rabbitDirectExchange() {
         return new DirectExchange(properties.getExchangeName());
     }
 
     @Bean
-    public Binding hoursBinding(@Autowired Queue hoursQueue, @Autowired DirectExchange directExchange) {
-
-        return BindingBuilder
+    public Declarables bindings(@Autowired DirectExchange directExchange,
+                                @Autowired Queue hoursQueue,
+                                @Autowired Queue sportsQueue) {
+        return new Declarables(
+                BindingBuilder
                 .bind(hoursQueue)
                 .to(directExchange)
-                .with(properties.getHours().getKey());
+                .with(properties.getHours().getKey()),
+
+                BindingBuilder
+                .bind(sportsQueue)
+                .to(directExchange)
+                .with(properties.getSports().getKey())
+        );
     }
+
+//    @Bean
+//    public Binding hoursBinding(@Autowired Queue hoursQueue, @Autowired DirectExchange directExchange) {
+//
+//        return BindingBuilder
+//                .bind(hoursQueue)
+//                .to(directExchange)
+//                .with(properties.getHours().getKey());
+//    }
+
 }

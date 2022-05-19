@@ -31,4 +31,7 @@ rabbit:
     hours:
       queue-name: rpc.facility.hours
       key: facility.hours
+    sports:
+      queue-name: rpc.facility.sports
+      key: facility.sports
 
