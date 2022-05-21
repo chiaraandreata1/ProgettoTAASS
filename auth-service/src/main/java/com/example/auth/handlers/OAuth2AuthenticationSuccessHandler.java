@@ -5,12 +5,16 @@ import com.example.auth.config.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.auth.misc.CookieUtils;
 import com.example.auth.models.LocalUser;
 import com.example.auth.services.TokenService;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.session.SessionRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.util.WebUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -25,6 +29,9 @@ import java.util.Optional;
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     @Autowired
+    private SessionRepository sessionRepository;
+
+    @Autowired
     private HttpSession httpSession;
 
     @Autowired
@@ -37,8 +44,26 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Authentication authentication) throws IOException, ServletException {
+
+
+
+        String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
+        sessionRepository.findById(sessionId);
+
+        if (!sessionId.equals(httpSession.getId()))
+            System.out.println("A");
+
+        Cookie cookie = WebUtils.getCookie(request, "SESSION");
+        if (cookie != null)
+            logger.info(String.format("\n\n%s: %s\n%s\n%s\n\n", cookie.getName(), cookie.getValue(), new String(Base64.decodeBase64(cookie.getValue())), sessionId));
+
         String targetUrl = determineTargetUrl(request, response, authentication);
+
+//        response.addCookie(new Cookie("SESSION", Base64.encodeBase64String(sessionId.getBytes())));
 
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);

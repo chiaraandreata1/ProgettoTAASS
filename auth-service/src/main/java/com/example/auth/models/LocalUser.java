@@ -1,7 +1,7 @@
 package com.example.auth.models;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import com.example.shared.models.users.UserDetails;
+import com.example.shared.models.users.UserInfo;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
@@ -9,10 +9,8 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.io.Serializable;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import com.example.shared.models.users.UserInfo;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LocalUser extends User implements OAuth2User, OidcUser, Serializable {
 
@@ -75,12 +73,15 @@ public class LocalUser extends User implements OAuth2User, OidcUser, Serializabl
         return user;
     }
 
-    public UserInfo toUserInfo() {
-
-        return new UserInfo(user.getId(),
-                user.getEmail(),
+    public UserDetails toUserDetails() {
+        return new UserDetails(
+                user.getId(),
                 user.getDisplayName(),
                 user.getPictureLink(),
-                user.getType());
+                user.getType(),
+                user.getEmail(),
+                user.isEnabled(),
+                user.getAuthoritativeRoles()
+        );
     }
 }

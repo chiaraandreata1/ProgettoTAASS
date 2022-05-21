@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.session.SessionRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
@@ -45,7 +46,7 @@ public class LoadAuthoritiesFilter extends ZuulFilter {
 
     @Override
     public int filterOrder() {
-        return -1;
+        return 1;
     }
 
     @Override
@@ -56,7 +57,10 @@ public class LoadAuthoritiesFilter extends ZuulFilter {
     @Override
     public Object run() throws ZuulException {
 
+        System.out.printf("\n\n%s\n\n", httpSession.getId());
+
         Collection<GrantedAuthority> authorities = (Collection<GrantedAuthority>) httpSession.getAttribute("authorities");
+        System.out.println(RequestContextHolder.currentRequestAttributes().getSessionId());
         String userName = (String) httpSession.getAttribute("userName");
 
 

@@ -27,6 +27,25 @@ spring:
 server:
   port: 8084
 
+session:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/session
+    driver-class-name: org.postgresql.Driver
+    username: taass
+    password: asd
+
+    jpa:
+      properties:
+        hibernate:
+          temp.use_jdbc_metadata_defaults: false
+
+      # Because detection is disabled you have to set correct dialect by hand.
+      database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+
+      # Hibernate ddl auto (create, create-drop, validate, update)
+      hibernate:
+        ddl-auto: update
+
 #spring.application.name=tournament-service
 ## si connette a DB in docker, istruzioni in:
 ## https://info.crunchydata.com/blog/easy-postgresql-10-and-pgadmin-4-setup-with-docker
@@ -54,6 +73,10 @@ server:
 #
 #server.port=8084
 
+management:
+  security:
+    session: never
+
 rabbit:
   tournaments:
     exchange-name: rpc.tournaments
@@ -72,3 +95,8 @@ rabbit:
     exchange-name: rpc.reservation
     reserve:
       key: reservation.reserve
+
+  users:
+    exchange-name: rpc.users
+    get-info:
+      key: users.info

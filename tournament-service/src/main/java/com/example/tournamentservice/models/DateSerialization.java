@@ -34,7 +34,7 @@ public class DateSerialization {
 
         @Override
         public Date deserialize(JsonParser jsonParser,
-                                DeserializationContext deserializationContext) throws IOException, JacksonException {
+                                DeserializationContext deserializationContext) throws IOException {
             String formatted = jsonParser.readValueAs(String.class);
             try {
                 return DAY_DATE_FORMAT.parse(formatted);
@@ -48,7 +48,7 @@ public class DateSerialization {
 
         @Override
         public List<Date> deserialize(JsonParser jsonParser,
-                                DeserializationContext deserializationContext) throws IOException, JacksonException {
+                                DeserializationContext deserializationContext) throws IOException {
             ArrayList<Date> dates = new ArrayList<>();
             for (Object o : jsonParser.readValueAs(List.class)) {
                 try {
@@ -76,7 +76,7 @@ public class DateSerialization {
 
         @Override
         public Date deserialize(JsonParser jsonParser,
-                                DeserializationContext deserializationContext) throws IOException, JacksonException {
+                                DeserializationContext deserializationContext) throws IOException {
             String formatted = jsonParser.readValueAs(String.class);
             try {
                 return DAY_TIME_DATE_FORMAT.parse(formatted);

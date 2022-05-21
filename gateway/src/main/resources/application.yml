@@ -24,6 +24,10 @@ spring:
     hibernate:
       ddl-auto: update
 
+#management:
+#  security:
+#    sessions: always
+
 server:
   port: 8080
 
@@ -67,6 +71,7 @@ zuul:
     lesson-service: /api/v1/lessons/**
 #    user-service: /api/v1/users/**
     facility-service: /api/v1/facility/**
+
 #    oauth2-start:
 #      path: /**/oauth2/**
 #      service-id: authentication-service
@@ -99,3 +104,10 @@ logging:
 #    tokenExpirationMsec: 864000000
 #  routes:
 #    tournaments-service: /myusers/**
+
+rabbit:
+  users:
+    exchange-name: rpc.users
+    auth:
+      queue-name: rpc.users.auth
+      key: users.auth

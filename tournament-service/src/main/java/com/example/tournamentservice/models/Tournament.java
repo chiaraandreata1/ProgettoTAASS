@@ -1,6 +1,5 @@
 package com.example.tournamentservice.models;
 
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.Type;
 
@@ -12,11 +11,21 @@ import java.util.List;
 //@Table(name="tournaments")
 public class Tournament {
 
+    public enum Status {
+        DRAFT,
+        CONFIRMED,
+        COMPLETE,
+        DONE,
+        CANCELLED
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private boolean confirmed;
+    private Status status;
+
+    private String owner;
 
     private String name;
     private String description;
@@ -27,19 +36,21 @@ public class Tournament {
 
     private Integer maxTeamsNumber;
 
+
     @Columns(columns = {@Column(name = "player1"), @Column(name = "player2")})
     @Type(type = "com.example.tournamentservice.models.TeamType")
     @ElementCollection
-    private List<Team> participants;
+    private List<Team> teams;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<TournamentRound> rounds;
 
     public Tournament() {}
 
-    public Tournament(TournamentDefinition tournamentDefinition, List<TournamentRound> rounds) {
+    public Tournament(TournamentDefinition tournamentDefinition, List<TournamentRound> rounds, String owner) {
 
-        this.confirmed = false;
+        this.status = Status.DRAFT;
+        this.owner = owner;
 
         this.name = tournamentDefinition.getName();
         this.description = tournamentDefinition.getDescription();
@@ -47,23 +58,7 @@ public class Tournament {
         this.price = tournamentDefinition.getPrice();
         this.prize = tournamentDefinition.getPrize();
         this.maxTeamsNumber = tournamentDefinition.getMaxTeamsNumber();
-        this.participants = new ArrayList<>();
-        this.rounds = rounds;
-    }
-
-    public Tournament(String name,
-                      String description,
-                      Long sport,
-                      Double price,
-                      Double prize,
-//                      String level,
-                      List<TournamentRound> rounds) {
-        this.name = name;
-        this.description = description;
-        this.sport = sport;
-        this.price = price;
-        this.prize = prize;
-//        this.level = level;
+        this.teams = new ArrayList<>();
         this.rounds = rounds;
     }
 
@@ -75,12 +70,20 @@ public class Tournament {
         this.id = id;
     }
 
-    public boolean isConfirmed() {
-        return confirmed;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setConfirmed(boolean confirmed) {
-        this.confirmed = confirmed;
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     public String getName() {
@@ -131,12 +134,12 @@ public class Tournament {
         this.maxTeamsNumber = maxTeamsNumber;
     }
 
-    public List<Team> getParticipants() {
-        return participants;
+    public List<Team> getTeams() {
+        return teams;
     }
 
-    public void setParticipants(List<Team> participants) {
-        this.participants = participants;
+    public void setTeams(List<Team> participants) {
+        this.teams = participants;
     }
 /*public String getLevel() {
         return level;
@@ -152,5 +155,11 @@ public class Tournament {
 
     public void setRounds(List<TournamentRound> rounds) {
         this.rounds = rounds;
+    }
+
+    public void addTeam(Team team) {
+        if (!(teams instanceof ArrayList))
+            teams = new ArrayList<>(teams);
+        teams.add(team);
     }
 }

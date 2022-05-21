@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
-@Order(1)
+@Order(2)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 //    @Autowired

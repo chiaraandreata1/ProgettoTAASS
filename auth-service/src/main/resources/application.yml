@@ -80,6 +80,12 @@ logging:
 rabbit:
   users:
     exchange-name: rpc.users
+    get-info:
+      queue-name: rpc.users.info
+      key: users.info
+    auth:
+      queue-name: rpc.users.auth
+      key: users.auth
     verify:
       queue-name: rpc.users.verify
       key: users.verify
