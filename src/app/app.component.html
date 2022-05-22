@@ -15,7 +15,7 @@
   <div *ngIf="loggedIn">
     <button mat-stroked-button routerLink="reservation-main" (click)="setUsername()" routerLinkActive="active">Reservations</button>
     <button mat-stroked-button routerLink="board-main" (click)="setUsername()" routerLinkActive="active">Boards</button>
-    <button mat-stroked-button routerLink="tournament" (click)="setUsername()" routerLinkActive="active">Tournament</button>
+    <button mat-stroked-button routerLink="tournaments/create" (click)="setUsername()" routerLinkActive="active">Tournament</button>
     <button mat-stroked-button routerLink="course-main" (click)="setUsername()" routerLinkActive="active">Course</button>
     <!-- TODO: button admin per dare la possibilità di dare privilegi (istruttore o admin) ad altri utenti -->
   </div>

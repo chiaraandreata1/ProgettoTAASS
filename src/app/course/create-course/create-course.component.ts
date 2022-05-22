@@ -6,34 +6,59 @@ import {map, Observable} from "rxjs";
 import {User} from "../../models/user";
 import {UserService} from "../../services/user.service";
 
+interface Courts {
+  value: number;
+  viewValue: string;
+}
+
 @Component({
   selector: 'app-create-course',
   templateUrl: './create-course.component.html',
   styleUrls: ['./create-course.component.css']
 })
-export class CreateCourseComponent implements OnInit { //RIGHE 35 E 110 sono commentate perchè per ora abbiamo un unico giorno di lezione a settimana (da array a stringa)
+export class CreateCourseComponent implements OnInit {
 
-  course: Course = new Course();
+  tennisCourts: Courts[] = [
+    {viewValue: 'Court 1', value: 1},
+    {viewValue: 'Court 2', value: 2},
+    {viewValue: 'Court 3', value: 3},
+  ]
+
+  padelCourts: Courts[] = [
+    {viewValue: 'Court 4', value: 4},
+    {viewValue: 'Court 5', value: 5},
+    {viewValue: 'Court 6', value: 6},
+  ]
 
   instructors = new Array();
+  levels = ['Beginner', 'Intermediate', 'Pro'];
 
+  //info del corso-----------
+  sporttype='';
   instructorCourse = new FormControl('', [this.validateInstructor]);
+  daycourse= '';
+  levelcourse = '';
   hourLesson = new FormControl('', [Validators.min(9), Validators.max(21)])
+  weeksLesson = new FormControl('', [Validators.min(0), Validators.max(52)])
+  priceCourse=NaN;
+  courtCourse=NaN;
+  dateEndRegistration = new FormControl();
+  //-------------------------
+
   filter: Observable<User[]>;
 
-  dateEndRegistration = new FormControl();
-
-  weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  weekday = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   submitted = false;
 
-  minDate: Date;
+  minDateEndRegistration: Date;
   isAdmin: Boolean;
+
+  today = new Date(); //utilizzato solo nel check che le date scelte non siano quelle di oggi
 
   constructor(private courseService: CourseService, private userService: UserService) {
     this.isAdmin = this.userService.getRoleUserLogged()=='admin';
-    this.minDate = new Date();
-    this.minDate.setDate(this.minDate.getDate() + 14);
-    //this.course.dayslesson = new Array();
+    this.minDateEndRegistration = new Date();
+    this.minDateEndRegistration.setDate(this.minDateEndRegistration.getDate() + 14);
     //costruisco l'array degli istruttori
     this.userService.getUsersByType('instructor').toPromise()
       .then(
@@ -42,8 +67,8 @@ export class CreateCourseComponent implements OnInit { //RIGHE 35 E 110 sono com
         }
       );
     this.filter = this.instructorCourse.valueChanges.pipe(
-      map(user => (typeof user === 'string' ? user : user.username)),
-      map(user => (user ? this._filter(user) : this.instructors.slice())),
+      map(value => (typeof value === 'string' ? value : value.username)),
+      map(name => (name ? this._filter(name) : this.instructors.slice())),
     );
   }
 
@@ -68,49 +93,51 @@ export class CreateCourseComponent implements OnInit { //RIGHE 35 E 110 sono com
     return null;
   }
   //----------------------------------------------------------------------------------------------------------------------------
-  //creerà dall'oggetto date la stringa con la sola data (senza ora)
-  setDate() {
-    this.course.endDateRegistration = new Date(this.dateEndRegistration.value.toString()).toISOString().split('T')[0];
-  }
-
-  /* nel caso volessimo più giorni è necessaria una onchange nel radio button con questa funzione, con i che è l'indice dell'array days
-  setDay(i: number) {
-    this.course.dayslesson[i] = i==0 ? this.day1.value : this.day2.value;
-  }
-  */
 
   //Per la gestione dinamica della label Instructor------------------------------------------------------
   enableInstructorInput(){
-    this.instructorCourse.reset(); this.instructorCourse.enable(); this.course.instructor="";
+    this.instructorCourse.setValue('');
+    this.instructorCourse.enable();
   }
 
   disableInstructorInput(){
-    this.instructorCourse.disable(); this.course.instructor = this.instructorCourse.value.username;
+    this.instructorCourse.disable();
   }
   //-----------------------------------------------------------------------------------------------------
 
   save(){
-    this.course.players = new Array();
-    this.courseService.createCourse(this.course)
+    let dateFirstLesson = new Date(this.dateEndRegistration.value);
+    dateFirstLesson.setDate(dateFirstLesson.getDate() + 7 - dateFirstLesson.getDay() + (this.weekday.indexOf(this.daycourse) + 1))
+    dateFirstLesson.setHours(this.hourLesson.value)
+    console.log(dateFirstLesson)
+    let course = new Course(-1, this.sporttype, this.instructorCourse.value.id, this.levelcourse, [], this.daycourse.toLowerCase(), this.hourLesson.value, this.weeksLesson.value, this.priceCourse, this.courtCourse, this.dateEndRegistration.value, dateFirstLesson);
+    let body = Course.toJSON(course);
+    this.courseService.createCourse(body)
       .subscribe(data => console.log(data), error => console.log(error));
-    this.course = new Course();
+    //this.course = new Course();
   }
 
   onSubmit() {
     this.submitted = true;
-    console.log(this.course);
     this.save();
   }
 
   newCourse(){
-    this.course = new Course();
-    this.instructorCourse.reset();
-    //this.course.dayslesson = new Array();
+    this.sporttype='';
+    this.instructorCourse.enable()
+    this.instructorCourse.reset()
+    this.daycourse= '';
+    this.hourLesson.reset()
+    this.weeksLesson.reset()
+    this.priceCourse=NaN;
+    this.courtCourse=NaN;
+    this.dateEndRegistration.reset()
+
     this.submitted = false;
   }
 
   debugButton(){
-
+    console.log(this.instructors[0])
   }
 
 }

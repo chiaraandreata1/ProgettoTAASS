@@ -17,7 +17,7 @@ export class Serialization {
     let d = date.getDate();
     let m = date.getMonth() + 1;
     let y = date.getFullYear();
-    return `${d < 10 ? '0' : ''}${d}/${m < 10 ? '0' : ''}/${y}`;
+    return `${d < 10 ? '0' : ''}${d}/${m < 10 ? '0' : ''}${m}/${y}`;
   }
 
   public static serializeDateTime(date: Date): string {
@@ -27,15 +27,15 @@ export class Serialization {
     const h = date.getHours();
     const m = date.getMinutes();
 
-    return `${d < 10 ? '0' : ''}${d}/${M < 10 ? '0' : ''}/${y} ${h < 10 ? '0' : ''}${h}:${m < 10 ? '0' : ''}${m}`;
+    return `${d < 10 ? '0' : ''}${d}/${M < 10 ? '0' : ''}${M}/${y} ${h < 10 ? '0' : ''}${h}:${m < 10 ? '0' : ''}${m}`;
   }
 
   public static deserializeDate(string: String): Date {
-    console.log(string);
+    //console.log(string);
     const date = new Date();
     const h = string.split(" ");
     const h0 = h[0].split("/").map(value => parseInt(value));
-    date.setUTCFullYear(h0[2], h0[1], h0[0]);
+    date.setUTCFullYear(h0[2], h0[1]-1, h0[0]); //modifica month perchè bisogna shiftare il numero mese di -1
     if (h.length > 1) {
       const h1 = h[1].split(":").map(value => parseInt(value));
       date.setUTCHours(h1[0] - 1, h1[1], 0);

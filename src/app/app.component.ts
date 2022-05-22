@@ -29,8 +29,8 @@ export class AppComponent {
     //riporta al root se non si è collegati. Evita problemi con il router outlet
     //SPIEGAZIONE: se rimani nel path ad esempio create course e non sei già loggato, tu sei già li ma prima devi loggarti.
     // Dopo che ti colleghi e riclicchi su quel percorso c'è l'errore, perchè stai andando in un percorso già attivato
-    if (!this.userService.getUserLogged())
-      this.location.go('/');
+    //if (!this.userService.getUserLogged())
+      //this.location.go('/');
   }
 
   ngOnInit() {
@@ -64,6 +64,7 @@ export class AppComponent {
       this.userLogged.subscribe(data => {
         this.userService.setUserLogged(data.username);
         this.userService.setRoleUserLogged(data.typeuser);
+        this.userService.setIdUserLogged(data.id);
         this.usernameSetted = true;
       });
   }

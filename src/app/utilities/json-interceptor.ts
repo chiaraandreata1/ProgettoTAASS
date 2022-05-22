@@ -17,12 +17,12 @@ export abstract class JsonAdapter {
 @Injectable()
 export class JsonInterceptor implements HttpInterceptor {
 
-  constructor(private jsonParser: JsonParser, private jsonAdapter: JsonAdapter) {}
+  constructor(private jsonParser: JsonParser) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let res: Observable<HttpEvent<any>>;
-    req = req.clone({body: this.jsonAdapter.adapt(req.body)});
-    console.log(req.body)
+
+    //console.log(req.body)
 
     if (req.responseType === 'json') {
       res = this.handleJSONResponse(req, next);
@@ -39,7 +39,7 @@ export class JsonInterceptor implements HttpInterceptor {
     return next.handle(httpRequest).pipe(map(value => this.parseJSONResponse(value)));
   }
 
-  private parseJSONResponse(event: HttpEvent<any>) {
+  private parseJSONResponse(event: HttpEvent<any>) { //non so perchè con course il body è string ma null. La post viene effettuata comunque correttamente
     if (event instanceof HttpResponse && typeof event.body === 'string') {
       return event.clone({body: this.jsonParser.parse(event.body)})
     } else {

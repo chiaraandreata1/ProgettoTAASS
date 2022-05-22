@@ -31,6 +31,9 @@
     <div>
       <label>END DATE REGISTRATION : </label> {{course.endDateRegistration}}
     </div>
+    <div>
+      <label>DATE LESSON'S FIRST DAY </label> {{ course.firstDayLesson }}
+    </div>
   </div>
   <button *ngIf="isAdmin && isPending" mat-raised-button color="warn" (click)='deleteCourse()'>Delete</button>
 </div>

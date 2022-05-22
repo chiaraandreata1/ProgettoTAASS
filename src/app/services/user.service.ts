@@ -12,6 +12,7 @@ export class UserService {
 
   private userLogged = '';
   private roleUserLogged = '';
+  private  idUserLogged = NaN;
 
   constructor(private http: HttpClient) { }
 
@@ -69,5 +70,13 @@ export class UserService {
 
   getRoleUserLogged() {
     return this.roleUserLogged;
+  }
+
+  setIdUserLogged(id: number) {
+    this.idUserLogged = id;
+  }
+
+  getIdUserLogged() {
+    return this.idUserLogged;
   }
 }
