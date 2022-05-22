@@ -64,7 +64,7 @@ public class TournamentRestController {
         return tournament;
     }
 
-    private Tournament getTournament(Long id, String owner) {
+    private Tournament getTournament(Long id, Long owner) {
         Tournament tournament = getTournament(id);
 
         if (!Objects.equals(tournament.getOwner(), owner))
@@ -73,7 +73,7 @@ public class TournamentRestController {
         return tournament;
     }
 
-    private Tournament getTournament(Long id, Tournament.Status status, String owner) {
+    private Tournament getTournament(Long id, Tournament.Status status, Long owner) {
         Tournament tournament = getTournament(id, status);
 
         if (!Objects.equals(tournament.getOwner(), owner))
@@ -155,8 +155,14 @@ public class TournamentRestController {
 
     @GetMapping("get")
     @ResponseStatus(HttpStatus.OK)
-    public Tournament get(@RequestParam Long id) {
-        return getTournament(id);
+    public Tournament get(@RequestParam Long id, @CurrentUser UserDetails userDetails) {
+        Tournament tournament = getTournament(id);
+
+        if (tournament.getStatus() == Tournament.Status.DRAFT
+                && !Objects.equals(userDetails.getId(), tournament.getOwner()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Draft tournament, for owner only");
+
+        return tournament;
     }
 
     @PostMapping("create")
@@ -190,7 +196,7 @@ public class TournamentRestController {
 
         tournamentDefinition.computeDates(rounds, sportInfo, hours);
 
-        Tournament tournament = new Tournament(tournamentDefinition, rounds, userDetails.getUsername());
+        Tournament tournament = new Tournament(tournamentDefinition, rounds, userDetails.getId());
 
         tournament = this.tournamentRepository.save(tournament);
 
@@ -231,7 +237,7 @@ public class TournamentRestController {
     @ResponseStatus(HttpStatus.OK)
     public Tournament confirmTournament(@RequestParam Long id, @CurrentUser UserDetails userDetails) {
 
-        Tournament tournament = getTournament(id, Tournament.Status.DRAFT, userDetails.getUsername());
+        Tournament tournament = getTournament(id, Tournament.Status.DRAFT, userDetails.getId());
 
         tournament.setStatus(Tournament.Status.CONFIRMED);
 
@@ -242,7 +248,7 @@ public class TournamentRestController {
     @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @ResponseStatus(HttpStatus.OK)
     public Tournament closeRegistrations(@RequestParam Long id, @CurrentUser UserDetails userDetails) {
-        Tournament tournament = getTournament(id, Tournament.Status.CONFIRMED, userDetails.getUsername());
+        Tournament tournament = getTournament(id, Tournament.Status.CONFIRMED, userDetails.getId());
 
         if (tournament.getTeams().size() < 2) {
             tournament.setStatus(Tournament.Status.CANCELLED);
@@ -257,7 +263,7 @@ public class TournamentRestController {
     @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @ResponseStatus(HttpStatus.OK)
     public Tournament cancel(@RequestParam Long id, @CurrentUser UserDetails userDetails) {
-        Tournament tournament = getTournament(id, userDetails.getUsername());
+        Tournament tournament = getTournament(id, userDetails.getId());
 
         if (Tournament.Status.CANCELLED.equals(tournament.getStatus()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tournament already cancelled");

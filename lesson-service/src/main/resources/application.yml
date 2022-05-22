@@ -14,5 +14,25 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     hibernate:
       ddl-auto: update
+
 server:
   port: '8082'
+
+session:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/session
+    driver-class-name: org.postgresql.Driver
+    username: taass
+    password: asd
+
+    jpa:
+      properties:
+        hibernate:
+          temp.use_jdbc_metadata_defaults: false
+
+      # Because detection is disabled you have to set correct dialect by hand.
+      database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+
+      # Hibernate ddl auto (create, create-drop, validate, update)
+      hibernate:
+        ddl-auto: update

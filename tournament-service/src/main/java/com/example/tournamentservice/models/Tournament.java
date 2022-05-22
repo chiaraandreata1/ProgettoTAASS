@@ -25,7 +25,7 @@ public class Tournament {
 
     private Status status;
 
-    private String owner;
+    private Long owner;
 
     private String name;
     private String description;
@@ -47,7 +47,7 @@ public class Tournament {
 
     public Tournament() {}
 
-    public Tournament(TournamentDefinition tournamentDefinition, List<TournamentRound> rounds, String owner) {
+    public Tournament(TournamentDefinition tournamentDefinition, List<TournamentRound> rounds, Long owner) {
 
         this.status = Status.DRAFT;
         this.owner = owner;
@@ -78,11 +78,11 @@ public class Tournament {
         this.status = status;
     }
 
-    public String getOwner() {
+    public Long getOwner() {
         return owner;
     }
 
-    public void setOwner(String owner) {
+    public void setOwner(Long owner) {
         this.owner = owner;
     }
 

@@ -1,19 +1,30 @@
 spring:
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    username: taass
-    url: jdbc:postgresql://localhost:5432/boards
-    password: asd
+
   application:
     name: board-service
-  jpa:
-    properties:
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/session
+    driver-class-name: org.postgresql.Driver
+    username: taass
+    password: asd
+
+    # The SQL dialect makes Hibernate generate better SQL for the chosen database
+    #spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
+
+    # Disable feature detection by this undocumented parameter. Check the org.hibernate.engine.jdbc.internal.JdbcServiceImpl.configure method for more details.
+    jpa:
+      properties:
+        hibernate:
+          temp.use_jdbc_metadata_defaults: false
+
+      # Because detection is disabled you have to set correct dialect by hand.
+      database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+
+      # Hibernate ddl auto (create, create-drop, validate, update)
       hibernate:
-        temp:
-          use_jdbc_metadata_defaults: 'false'
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
-    hibernate:
-      ddl-auto: update
+        ddl-auto: update
+
 server:
   port: '8081'
 
