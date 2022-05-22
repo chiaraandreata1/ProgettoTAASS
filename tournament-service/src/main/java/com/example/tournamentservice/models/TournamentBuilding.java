@@ -1,5 +1,6 @@
 package com.example.tournamentservice.models;
 
+import com.example.shared.tools.DateSerialization;
 import com.example.tournamentservice.tmpservices.FacilityDataProvider;
 import com.example.tournamentservice.tmpservices.SportDataProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

@@ -8,7 +8,7 @@ import com.example.shared.models.users.UserType;
 import com.example.shared.rabbithole.ReservationRequest;
 import com.example.shared.rabbithole.ReservationResponse;
 import com.example.shared.tools.CurrentUser;
-import com.example.shared.tools.WrappedRepositoryGet;
+import com.example.shared.tools.DateSerialization;
 import com.example.tournamentservice.models.*;
 import com.example.tournamentservice.rabbithole.FacilityRabbitClient;
 import com.example.tournamentservice.rabbithole.ReservationRabbitClient;
@@ -21,7 +21,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.http.HttpSession;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -124,12 +123,15 @@ public class TournamentRestController {
 
     private void complete(Tournament tournament) {
         List<Team> teams = tournament.getTeams();
+        List<Match> deleted = new ArrayList<>();
         List<TournamentRound> rounds = new ArrayList<>(tournament.getRounds());
+
         TournamentRound round0;
 
         while (teams.size() * 2 < (round0 = rounds.get(0)).getMatches().size()) {
             matchesRepository.deleteAll(round0.getMatches());
             rounds.remove(round0);
+            deleted.addAll(round0.getMatches());
         }
 
         Collections.shuffle(rounds);
@@ -143,6 +145,8 @@ public class TournamentRestController {
         }
 
         matchesRepository.saveAll(round0.getMatches());
+
+        reservationRabbitClient.delete(deleted.stream().map(Match::getReservationID).collect(Collectors.toList()));
     }
 
     /*
@@ -159,6 +163,18 @@ public class TournamentRestController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public Tournament createTournament(@RequestBody TournamentDefinition tournamentDefinition, @CurrentUser UserDetails userDetails) {
+
+        if (tournamentDefinition.getSport() == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing sport id");
+
+        if (tournamentDefinition.getMaxTeamsNumber() == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing max number of teams");
+
+        if (tournamentDefinition.getDates() == null || tournamentDefinition.getDates().isEmpty())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing dates");
+
+        if (tournamentDefinition.getCourtsCount() == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing number of courts");
 
         SportInfo sportInfo = facilityRabbitClient.getSportInfo(tournamentDefinition.getSport());
         FacilityHours hours = facilityRabbitClient.getHours();

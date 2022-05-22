@@ -1,4 +1,4 @@
-package com.example.tournamentservice;
+package com.example.facilityservice;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;

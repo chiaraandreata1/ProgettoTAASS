@@ -22,4 +22,9 @@ public class ReservationRabbitClient {
         return new RabbitTemplateWrapper(rabbitTemplate)
                 .send(properties.getExchangeName(), properties.getReserve(), requests);
     }
+
+    public boolean delete(List<Long> ids) {
+        return new RabbitTemplateWrapper(rabbitTemplate)
+                .send(properties.getExchangeName(), properties.getDelete(), ids);
+    }
 }

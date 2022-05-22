@@ -95,6 +95,8 @@ rabbit:
     exchange-name: rpc.reservation
     reserve:
       key: reservation.reserve
+    delete:
+      key: reservation.delete
 
   users:
     exchange-name: rpc.users

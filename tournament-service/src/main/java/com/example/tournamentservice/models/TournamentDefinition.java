@@ -2,8 +2,7 @@ package com.example.tournamentservice.models;
 
 import com.example.shared.models.FacilityHours;
 import com.example.shared.models.facility.SportInfo;
-import com.example.tournamentservice.tmpservices.FacilityDataProvider;
-import com.example.tournamentservice.tmpservices.SportDataProvider;
+import com.example.shared.tools.DateSerialization;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

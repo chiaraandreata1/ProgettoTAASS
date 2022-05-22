@@ -43,7 +43,7 @@ public class UserRabbitConfig {
                         .with(properties.getAuth().getKey()),
                 BindingBuilder.bind(getInfoQueue)
                         .to(directExchange)
-                        .with(properties.getAuth().getKey()),
+                        .with(properties.getGetInfo().getKey()),
                 BindingBuilder.bind(verifyQueue)
                         .to(directExchange)
                         .with(properties.getVerify().getKey())

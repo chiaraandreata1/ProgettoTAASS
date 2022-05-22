@@ -10,6 +10,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.session.config.SessionRepositoryCustomizer;
+import org.springframework.session.jdbc.JdbcIndexedSessionRepository;
+import org.springframework.session.jdbc.PostgreSqlJdbcIndexedSessionRepositoryCustomizer;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -66,5 +69,10 @@ public class GatewayApplication {
 
 //		return (headers.toString().replaceAll(";", "<br>") + "<br>" + authorities.toString() + RequestContextHolder.currentRequestAttributes().getSessionId());
 		return map;
+	}
+
+	@Bean
+	public SessionRepositoryCustomizer<JdbcIndexedSessionRepository> sessionRepositoryCustomizer() {
+		return new PostgreSqlJdbcIndexedSessionRepositoryCustomizer();
 	}
 }

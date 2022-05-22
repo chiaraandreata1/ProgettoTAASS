@@ -15,6 +15,13 @@ public class ReservationResponse implements Serializable {
 
         private Long reservationID;
 
+        public ReservationBinding() {
+        }
+
+        public ReservationBinding(ReservationRequest request, Long reservationID) {
+            this.request = request;
+            this.reservationID = reservationID;
+        }
         public ReservationRequest getRequest() {
             return request;
         }

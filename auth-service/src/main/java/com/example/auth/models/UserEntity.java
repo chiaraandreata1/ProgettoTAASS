@@ -2,7 +2,6 @@ package com.example.auth.models;
 
 import com.example.shared.models.users.UserInfo;
 import com.example.shared.models.users.UserType;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
@@ -18,7 +17,7 @@ public class UserEntity implements Serializable {
     public enum Role {
         USER,
         PLAYER,
-        TRAINER,
+        TEACHER,
         MANAGEMENT,
         ADMIN;
 
@@ -145,13 +144,13 @@ public class UserEntity implements Serializable {
         if (type == UserType.PLAYER)
             roles.add(Role.PLAYER);
 
-        if (type == UserType.TRAINER)
-            roles.add(Role.TRAINER);
+        if (type == UserType.TEACHER)
+            roles.add(Role.TEACHER);
 
         if (type == UserType.ADMIN)
             roles.add(Role.ADMIN);
 
-        if (type == UserType.TRAINER || type == UserType.ADMIN)
+        if (type == UserType.TEACHER || type == UserType.ADMIN)
             roles.add(Role.MANAGEMENT);
 
         return roles.stream().map(Role::getSimpleGrantedAuthority).collect(Collectors.toSet());

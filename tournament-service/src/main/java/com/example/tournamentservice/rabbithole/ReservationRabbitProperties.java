@@ -10,10 +10,15 @@ public class ReservationRabbitProperties {
 
     private String exchangeName;
 
+    private final QueueData delete = new QueueData();
     private final QueueData reserve = new QueueData();
 
     public String getExchangeName() {
         return exchangeName;
+    }
+
+    public QueueData getDelete() {
+        return delete;
     }
 
     public QueueData getReserve() {

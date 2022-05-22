@@ -1,4 +1,4 @@
-package com.example.tournamentservice.models;
+package com.example.shared.tools;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.DeserializationContext;

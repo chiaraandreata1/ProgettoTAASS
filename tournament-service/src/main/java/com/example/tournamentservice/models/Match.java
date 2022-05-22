@@ -1,5 +1,6 @@
 package com.example.tournamentservice.models;
 
+import com.example.shared.tools.DateSerialization;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.Columns;

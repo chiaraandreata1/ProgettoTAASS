@@ -43,29 +43,29 @@ public class SessionSavingZuulPreFilter extends ZuulFilter {
 
 //        HttpCookie.parse(context.)
         String cookiesString = context.getRequest().getHeader("Cookie");
-        String sessionID;
-        String clearSessionID;
-        if (cookiesString != null) {
-            List<HttpCookie> cookies = HttpCookie.parse(cookiesString);
-            sessionID = cookies
-                    .stream()
-                    .filter(c -> "SESSION".equalsIgnoreCase(c.getName()))
-                    .map(HttpCookie::getValue)
-                    .findFirst()
-                    .orElse(null);
-            cookies
-                    .stream()
-                    .filter(c -> c.getName().contains("AUTH"))
-                    .forEach(c -> {
-                        System.out.printf("%s = %s\n", c.getName(), c.getValue());
-                    });
-            clearSessionID = new String(Base64.getDecoder().decode(sessionID));
-        } else {
-            sessionID = null;
-            clearSessionID = null;
-        }
-        if (!Objects.equals(clearSessionID, httpSession.getId()))
-            System.out.printf("%s != %s\n", clearSessionID, httpSession.getId());
+//        String sessionID;
+//        String clearSessionID;
+//        if (cookiesString != null) {
+//            List<HttpCookie> cookies = HttpCookie.parse(cookiesString);
+//            sessionID = cookies
+//                    .stream()
+//                    .filter(c -> "SESSION".equalsIgnoreCase(c.getName()))
+//                    .map(HttpCookie::getValue)
+//                    .findFirst()
+//                    .orElse(null);
+//            cookies
+//                    .stream()
+//                    .filter(c -> c.getName().contains("AUTH"))
+//                    .forEach(c -> {
+//                        System.out.printf("%s = %s\n", c.getName(), c.getValue());
+//                    });
+//            clearSessionID = new String(Base64.getDecoder().decode(sessionID));
+//        } else {
+//            sessionID = null;
+//            clearSessionID = null;
+//        }
+//        if (!Objects.equals(clearSessionID, httpSession.getId()))
+//            System.out.printf("%s != %s\n", clearSessionID, httpSession.getId());
 
         StringBuilder cookieBuilder = new StringBuilder();
         if (cookiesString != null) {
