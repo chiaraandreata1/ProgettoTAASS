@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
 
     if (token) {
       this.tokens.saveToken(token);
-      this.userService.getCurrentUser().subscribe(
+      this.userService.me().subscribe(
         user => {
           this.tokens.saveUser(user);
           console.log("navigate");
@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
         }
       )
     } else if (this.tokens.getToken()) {
-      this.userService.getCurrentUser().subscribe(console.log);
+      this.userService.me().subscribe(console.log);
       console.log("navigate");
       this.router.navigate([""]);
     } else if (error) {

@@ -24,8 +24,19 @@
           <li class="nav-item">
             <button class="btn btn-link nav-link active" [routerLink]="['board-main']">Board</button>
           </li>
+          <li class="nav-item dropdown">
+            <button class="btn btn-link nav-link dropdown-toggle active" id="tournamentsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Tournaments
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="tournamentsDropdown">
+              <li><button class="btn btn-link dropdown-item">Upcoming</button></li>
+              <li><button class="btn btn-link dropdown-item">In progress</button></li>
+              <li><button class="btn btn-link dropdown-item">Mine</button></li>
+              <li *ngIf="isManager$ | async"><button class="btn btn-link dropdown-item">Create</button></li>
+            </ul>
+          </li>
           <li class="nav-item">
-            <button class="btn btn-link nav-link active" [routerLink]="['tournament']">Tournaments</button>
+            <button class="btn btn-link nav-link active" [routerLink]="['tournaments']">Tournaments</button>
           </li>
           <li class="nav-item">
             <button class="btn btn-link nav-link active" [routerLink]="['course-main']">Courses</button>
@@ -49,10 +60,10 @@
       <div class="d-flex nav-switch-main">
         <ul class="navbar-nav">
           <li class="nav-item dropdown">
-            <button class="btn btn-link nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" *ngIf="!user">
+            <button class="btn btn-link nav-link dropdown-toggle active" id="loginDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" *ngIf="!user">
               Login
             </button>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <ul class="dropdown-menu" aria-labelledby="loginDropdown">
               <li><a class="dropdown-item" href="{{loginLink('google')}}" *ngIf="!user"><i class="bi bi-google active"></i> Login with google</a></li>
               <li><a class="dropdown-item" href="{{loginLink('facebook')}}" *ngIf="!user"><i class="bi bi-facebook active"></i> Login with facebook</a></li>
             </ul>

@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Observable, of, tap} from 'rxjs';
-import {UserInfo} from "../models/user-info";
+import {map, Observable, of, ReplaySubject, tap} from 'rxjs';
+import {UserInfo, UserInfoType} from "../models/user-info";
+import {TokenStorageService} from "../services/token-storage.service";
 
 @Injectable({
   providedIn: 'root'
@@ -10,36 +11,20 @@ export class UserService {
 
   private baseUrl = "http://localhost:8080/api/v1/user";
 
-  private currentUser?: any;
+  private currentObs: ReplaySubject<UserInfo | undefined>;
+  private currentUser?: UserInfo;
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private tokenStorage: TokenStorageService
   ) {
-  }
+    this.currentObs = new ReplaySubject(1);
 
-  public getCurrentUser(force = false): Observable<any | undefined> {
-
-    let observable: Observable<any>;
-    if (!force && this.currentUser)
-      observable = of(this.currentUser);
-    else
-      observable = this.http.get(`${this.baseUrl}/me`, {
-        headers: new HttpHeaders({'Content-Type': 'application/json'})
-      })
-        .pipe(tap(console.log));
-    return observable;
-  }
-
-  public test(): Observable<any | undefined> {
-    console.log("Test inner");
-    let observable = this.http.get("http://localhost:8080/api/v1/boards/test");
-    return observable;
-  }
-
-  public a(): Observable<any | undefined> {
-    console.log("TEST A");
-    let obs = this.http.get("http://localhost:8080/a/test");
-    return obs;
+    if (tokenStorage.getToken()) {
+      console.log("found");
+      this.currentUser = tokenStorage.getUser();
+      this.currentObs.next(this.currentUser);
+    }
   }
 
   public getUser(userID: number): Observable<UserInfo> {
@@ -47,10 +32,36 @@ export class UserService {
   }
 
   public me(): Observable<UserInfo> {
-    return this.http.get<UserInfo>(`${this.baseUrl}/me`);
+    return this.http.get<UserInfo>(`${this.baseUrl}/me`)
+      .pipe(tap(me => this.currentUser = me)).pipe(tap(me => this.currentObs.next(me)));
   }
 
   public logout(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/log-out`);
+    return this.http.get(`${this.baseUrl}/log-out`).pipe(tap(() => this.currentObs.next(undefined)));
+  }
+
+  public isAdmin(): Observable<boolean> {
+    return this.currentObs.pipe(map(u => u != undefined && u.type == "ADMIN"));
+  }
+
+  public isTeacher(): Observable<boolean> {
+    return this.currentObs.pipe(map(u => u != undefined && u.type == "TEACHER"));
+  }
+
+  public isManager(): Observable<boolean> {
+    console.log("manager");
+    return this.currentObs.pipe(tap(console.log), map(u => {
+      console.log("A");
+      return u != undefined &&
+      (u.type == "ADMIN" || u.type == "TEACHER")
+    }));
+  }
+
+  public getCurrentUser(): UserInfo | undefined {
+    return this.currentUser;
+  }
+
+  public currentUserObserver(): Observable<UserInfo | undefined> {
+    return this.currentObs;
   }
 }

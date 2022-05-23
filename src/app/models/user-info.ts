@@ -10,7 +10,7 @@ export class UserInfo {
     public id: number,
     public email: string,
     public displayName: string,
-    public type: UserInfoType,
+    public type: string,
     public picture: string
   ) {
   }
@@ -22,4 +22,6 @@ export class UserInfo {
   public static toJSON(user: UserInfo): number {
     return user.id;
   }
+
+
 }
