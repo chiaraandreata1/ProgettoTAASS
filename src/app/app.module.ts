@@ -46,6 +46,10 @@ import { CoursesListComponent } from './course/courses-list/courses-list.compone
 import { CourseDetailsComponent } from './course/course-details/course-details.component';
 import { CreateCourseComponent } from './course/create-course/create-course.component';
 import { LoginComponent } from './user/login/login.component';
+import {authInterceptorProviders} from "./utilities/auth-interceptor";
+import { UserBadgeComponent } from './user/user-badge/user-badge.component';
+import { ShowUserComponent } from './user/show-user/show-user.component';
+import { MeComponent } from './user/me/me.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +77,10 @@ import { LoginComponent } from './user/login/login.component';
     CoursesListComponent,
     CourseDetailsComponent,
     CreateCourseComponent,
+    LoginComponent,
+    UserBadgeComponent,
+    ShowUserComponent,
+    MeComponent
   ],
   imports: [
     BrowserModule,
@@ -93,6 +101,7 @@ import { LoginComponent } from './user/login/login.component';
   ],
   //crea correttamente la data, ma mantiene anche le informazioni non utili (ad esempio l'ora)
   providers: [
+    authInterceptorProviders,
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE,
         MAT_MOMENT_DATE_ADAPTER_OPTIONS] },
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
@@ -109,9 +118,9 @@ import { LoginComponent } from './user/login/login.component';
         },
       }
     },
-    { provide: HTTP_INTERCEPTORS, useClass: JsonInterceptor, multi: true },
-    { provide: JsonParser, useClass: CustomJsonParser },
-    { provide: Serialization, useClass: Serialization},
+    // { provide: HTTP_INTERCEPTORS, useClass: JsonInterceptor, multi: true },
+    // { provide: JsonParser, useClass: CustomJsonParser },
+    // { provide: Serialization, useClass: Serialization},
   ],
   bootstrap: [AppComponent]
 })

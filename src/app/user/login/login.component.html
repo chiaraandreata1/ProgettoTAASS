@@ -1,1 +1,46 @@
-<p>login works!</p>
+
+
+<div class="col d-flex justify-content-center ">
+  <div class="card" style="width: 30rem">
+    <div class="card-header bg-primary text-white align-content-center">
+      <p class="fs-1 m-3 align-content-center">Login</p>
+    </div>
+    <div class="card-body">
+      <div *ngIf="errorMessage" class="bg-warning text-danger">
+        <p class="p-1">{{errorMessage}}</p>
+      </div>
+
+      <div class="container px-3">
+        <div class="row gy-3">
+          <div class="col-12">
+            <div class="p-3 border border-dark rounded-3">
+              <a href="{{loginLink('google')}}" class="btn fs-3 text-dark">
+                <i class="bi bi-google mx-1"></i>
+                Login with google
+              </a>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="p-3 border border-dark rounded-3">
+              <a href="{{loginLink('facebook')}}" class="btn fs-3 text-dark">
+                <i class="bi bi-facebook mx-1"></i>
+                Login with facebook
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+<!--      <div class="row ">-->
+<!--        <a href="{{loginLink('google')}}" class="btn fs-2 text-dark border-1 border-dark">-->
+<!--          <i class="bi bi-google fs-2 mx-1"></i>-->
+<!--          Login with google-->
+<!--        </a>-->
+<!--        <a href="{{loginLink('facebook')}}" class="btn fs-2 text-dark border-1 border-dark">-->
+<!--          <i class="bi bi-facebook fs-2 mx-1"></i>-->
+<!--          Login with facebook-->
+<!--        </a>-->
+<!--      </div>-->
+    </div>
+  </div>
+</div>

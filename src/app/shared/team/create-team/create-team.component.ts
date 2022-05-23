@@ -47,7 +47,7 @@ export class CreateTeamComponent implements OnInit, OnChanges {
     const inputs = this.elementRef.nativeElement.querySelectorAll("input");
     for (let i = 0; i < inputs.length; i++) {
       const player = this.players[i];
-      inputs[i].value = player instanceof UserInfo ? player.userName : player;
+      inputs[i].value = player instanceof UserInfo ? player.displayName : player;
     }
   }
 
@@ -82,10 +82,10 @@ export class CreateTeamComponent implements OnInit, OnChanges {
         .subscribe(
           value1 => {
             const users = value1.filter(user => !this.selectedIDs().includes(user.id));
-            if (users.length == 1 && users[0].userName.toLowerCase() === value.toLowerCase())
+            if (users.length == 1 && users[0].displayName.toLowerCase() === value.toLowerCase())
               this.updateValue(i, users[0]);
             else
-              this.suggestions = users.map(value => value.userName);
+              this.suggestions = users.map(value => value.displayName);
           }
         );
     }
@@ -109,7 +109,7 @@ export class CreateTeamComponent implements OnInit, OnChanges {
   onInput(i: number, $event: Event) {
     const el = ($event.target as HTMLInputElement);
     this.updateValue(i, el.value);
-    el.value = typeof this.players[i] === 'object' ? (this.players[i] as UserInfo).userName : this.players[i] as string;
+    el.value = typeof this.players[i] === 'object' ? (this.players[i] as UserInfo).displayName : this.players[i] as string;
     // this.update(el.value, i, el);
     // el.value = this.players[i] instanceof UserB ? (this.players[i] as UserB).username : this.players[i] as string;
   }

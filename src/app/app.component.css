@@ -1,0 +1,18 @@
+@import "~bootstrap-icons/font/bootstrap-icons.css";
+
+@media (min-width: 992px) {
+  .nav-switch-collapsed {
+    display: none !important;
+  }
+}
+
+
+@media (max-width: 991px) {
+  .nav-switch-main {
+    display: none !important;
+  }
+}
+
+.margin-center {
+  margin: auto;
+}

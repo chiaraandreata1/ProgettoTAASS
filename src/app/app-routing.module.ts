@@ -13,6 +13,9 @@ import {ShowTournamentComponent} from "./tournaments/show-tournament/show-tourna
 import {CourseMainComponent} from "./course/course-main/course-main.component";
 import {CoursesListComponent} from "./course/courses-list/courses-list.component";
 import {CreateCourseComponent} from "./course/create-course/create-course.component";
+import {LoginComponent} from "./user/login/login.component";
+import {ShowUserComponent} from "./user/show-user/show-user.component";
+import {MeComponent} from "./user/me/me.component";
 
 
 const routes: Routes = [
@@ -25,6 +28,9 @@ const routes: Routes = [
   { path: 'tournaments/info', component: ShowTournamentComponent },
   { path: 'course-main', component: CourseMainComponent,
     children: [{ path: 'course', component: CoursesListComponent }, { path: 'createCourse', component: CreateCourseComponent }]},
+  { path: 'login', component: LoginComponent},
+  { path: 'user/:id', component: ShowUserComponent},
+  { path: 'me', component: MeComponent }
 ];
 
 @NgModule({

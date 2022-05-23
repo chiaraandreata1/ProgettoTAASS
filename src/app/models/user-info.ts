@@ -8,14 +8,15 @@ export class UserInfo {
 
   constructor(
     public id: number,
-    public userName: string,
-    public shownName: string,
-    public type: UserInfoType
+    public email: string,
+    public displayName: string,
+    public type: UserInfoType,
+    public picture: string
   ) {
   }
 
   public toJSON(): string {
-    return this.userName;
+    return this.displayName;
   }
 
   public static toJSON(user: UserInfo): number {

@@ -21,6 +21,7 @@
     "@angular/platform-browser": "~13.1.0",
     "@angular/platform-browser-dynamic": "~13.1.0",
     "@angular/router": "~13.1.0",
+    "bootstrap-icons": "^1.8.1",
     "jquery": "^3.6.0",
     "moment": "^2.29.1",
     "ng-tournament-tree": "^2.0.2",

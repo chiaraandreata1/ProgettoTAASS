@@ -31,8 +31,8 @@ export class TournamentViewComponent implements OnInit {
     let res;
     console.log(team)
     if (team) {
-      res = team.players[0].userName;
-      for (let i = 1; i < team.players.length; i++) res += ` - ${team.players[i].userName}`
+      res = team.players[0].displayName;
+      for (let i = 1; i < team.players.length; i++) res += ` - ${team.players[i].displayName}`
     }
     return res;
   }

@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
+import {ReplaySubject, Subject} from "rxjs";
 
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'auth-user';
@@ -8,10 +9,23 @@ const USER_KEY = 'auth-user';
 })
 export class TokenStorageService {
 
-  constructor() { }
+  private currentUser: ReplaySubject<any> = new ReplaySubject<any>(1);
+
+  constructor() {
+    const _user = sessionStorage.getItem(USER_KEY)
+    if (_user)
+      this.currentUser.next(JSON.parse(_user));
+    else
+      this.currentUser.next(undefined);
+  }
+
+  public getCurrentUserSubject(): Subject<any> {
+    return this.currentUser;
+  }
 
   signOut(): void {
     window.sessionStorage.clear();
+    this.currentUser.next(undefined);
   }
 
   public saveToken(token: string): void {
@@ -26,6 +40,7 @@ export class TokenStorageService {
   public saveUser(user: any): void {
     window.sessionStorage.removeItem(USER_KEY);
     window.sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+    this.currentUser.next(user);
   }
 
   public getUser(): any | undefined {

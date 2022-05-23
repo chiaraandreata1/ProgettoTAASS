@@ -10,7 +10,10 @@ import {UserService} from "../user.service"
 })
 export class LoginComponent implements OnInit {
 
-  private errorMessage? : string = undefined;
+  loginLink = LoginComponent.loginLink;
+
+  errorMessage? : string;
+  error?: any;
 
   constructor(
     private tokens: TokenStorageService,
@@ -27,13 +30,28 @@ export class LoginComponent implements OnInit {
       this.tokens.saveToken(token);
       this.userService.getCurrentUser().subscribe(
         user => {
-          this.router.navigate([])
+          this.tokens.saveUser(user);
+          console.log("navigate");
+          this.router.navigate([""]);
         },
         error => {
           this.errorMessage = error.error.message;
         }
       )
+    } else if (this.tokens.getToken()) {
+      this.userService.getCurrentUser().subscribe(console.log);
+      console.log("navigate");
+      this.router.navigate([""]);
+    } else if (error) {
+      this.errorMessage = error;
     }
   }
 
+  public static loginLink(provider: string): string {
+    return `http://localhost:8080/api/v1/user/oauth2/authorization/${provider}?redirect_uri=http://localhost:8080/login`
+  }
+
+  logout() {
+    this.tokens.signOut();
+  }
 }
