@@ -1,9 +1,95 @@
-<h1>Active Reservations</h1>
-
-<div *ngFor="let reservation of reservations | async" style="width: 300px;">
-  <reservation-details [reservation]='reservation' ></reservation-details>
+<div class="card mb-3">
+  <div class="card-header bg-primary text-white">
+    <h1>Active Reservations</h1>
+  </div>
+  <div class="card-body">
+    <div class="mb-2 row">
+      <div class="col-4">
+        <div [class.card]=true class="mb-3">
+          <div class="card-header">SPORT RESERVATION</div>
+          <mat-radio-group class="row card-body" required [(ngModel)]="sportReservation" name='valueSport' (ngModelChange)="reloadData(); this.courts = (sportReservation == 'tennis' ? [1, 2 , 3] : [4, 5, 6])" aria-label="SPORT RESERVATION">
+            <mat-radio-button class="col-4" value="tennis">Tennis</mat-radio-button>
+            <mat-radio-button class="col-4" value="padel">Padel</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+      <div class="col-4"> <!-- prima c'era l'if con isAdmin -->
+        <mat-form-field>
+          <input readonly='true' matInput [matDatepicker] = "picker" name="dateReservation" id="dateReservation" (ngModelChange)="reloadData()" [min]="minDate"
+                 [formControl]="dateReservation" required>
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matSuffix [for] = "picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
 </div>
 
+<!--
+<div *ngFor="let reservation of reservations | async">
+  <reservation-details [reservation]='reservation' [isAdmin]="isAdmin" ></reservation-details>
+</div>
+-->
+<!--
+<ng-container *ngIf="reservationsAdmin">
+  <div class="mb-2 row" *ngFor="let row of reservationsAdmin">
+    <div class="col-3" *ngFor="let reservation of row">
+      <reservation-details [reservation]='reservation' [isAdmin]="isAdmin" ></reservation-details>
+    </div>
+  </div>
+</ng-container>
+-->
+<mat-tab-group *ngIf="dateReservation.value && sportReservation"> <!-- prima nell'if c'era anche isAdmin -->
+  <mat-tab *ngFor="let hour of HoursAvailable" label="{{hour}}:00">
+    <div class="contentmattab">
+      <ng-container *ngFor="let court of courts">
+        <ng-container *ngFor="let reservation of reservations | async">
+          <div *ngIf="reservation.date.getHours()-1==hour && reservation.courtReservation.id==court">
+            <reservation-details [reservation]='reservation' ></reservation-details> <!-- prima nel reservation details gli passavi anche isAdmin -->
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+
+<!-- prima nell'if c'era anche il NOT isAdmin -->
+<!--
+<mat-tab-group *ngIf="sportReservation">
+  <mat-tab *ngFor="let month of MonthsAvailable" label="{{month}}">
+    <div class="contentmattab">
+      <ng-container *ngFor="let court of courts">
+        <ng-container *ngFor="let reservation of reservations | async">
+          <div *ngIf="reservation.date.getMonth()==monthNames.indexOf(month) && reservation.courtReservation.id==court">
+            <reservation-details [reservation]='reservation'></reservation-details> prima nel reservation details gli passavi anche isAdmin
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+-->
+
+
+<!--
+<div *ngIf="courts && reservations">
+ <div class="row" *ngFor="let hour of HoursAvailable">
+   <ng-container *ngFor="let court of courts">
+     <ng-container *ngFor="let reservation of reservations | async">
+      <div class="col" *ngIf="reservation.date.getHours()==hour && reservation.courtReservation.id==court">
+        <reservation-details [reservation]='reservation' [isAdmin]="isAdmin" ></reservation-details>
+      </div>
+     </ng-container>
+   </ng-container>
+ </div>
+</div>
+-->
+<!--
 <div>
   <button mat-raised-button color="warn" (click)='deleteReservations()'>Delete All</button>
 </div>
+-->
+<!-- debug button-->
+<button mat-raised-button color="primary" (click)='debugBut()'>Debug</button>
+

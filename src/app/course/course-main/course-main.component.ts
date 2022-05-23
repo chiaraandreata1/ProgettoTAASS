@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {UserService} from "../../services/user.service";
 
 @Component({
   selector: 'app-course-main',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CourseMainComponent implements OnInit {
 
-  constructor() { }
+  //isAdmin = false;
+
+  constructor(private userService: UserService) { }
 
   ngOnInit(): void {
+    //this.isAdmin = this.userService.getRoleUserLogged() == "admin";
   }
 
 }

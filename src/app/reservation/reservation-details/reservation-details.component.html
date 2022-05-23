@@ -1,23 +1,101 @@
-<div *ngIf="reservation">
-  <div>
-    <label>Sport type: </label> {{ reservation.sportReservation }}
+<!-- prima riga: info sport
+    <div class="card row  justify-content-center" >
+      <div class="col-4" >
+        <label>SPORT: </label>
+      </div>
+      <div class="col-4">
+        {{ reservation.sportReservation }}
+      </div>
+
+    </div>
+
+    <div class="mb-3 row" class="card text-center">
+      <div class="col-4">
+        <label> TYPE: </label>
+      </div>
+      <div class="col-4">
+        {{ reservation.typeReservation }}
+      </div>
+    </div>
+
+
+    <div class="row-cols-xl-6" class="card text-center">
+      <div class="col-4" >
+        <label>DATE: </label>
+      </div>
+      <div class="col-4">
+        {{ reservation.date }}
+      </div>
+    </div>
+
+
+    <div class="mb-3" class="card text-center">
+      <label>COURT:</label>
+      <div class="col-4" >
+        <label>-type: </label> {{ reservation.courtReservation.type}}
+      </div>
+      <div class="col-4" >
+        <label>-number: </label> {{ reservation.courtReservation.id}}
+      </div>
+    </div>
+
+
+    <div class="mb-3" class="card text-center">
+      <div class="col-4">
+        <p>PLAYERS: </p> {{reservation.players}}
+      </div>
+    </div>
+  <div  class="card text-center">
+    <button *ngIf="reservation.typeReservation=='private' || isAdmin" mat-raised-button color="warn" (click)='deleteReservation()'>Delete</button>
   </div>
 
-  <div>
-    <label>Date reservation: </label> {{ reservation.dateReservation }}
   </div>
-  <div>
-    <label> Hour reservation: </label> {{ reservation.hourReservation }}
-  </div>
-  <div>
-  <label>INFO COURT RESERVED:</label>
-    <br>
-    <label>-type: </label> {{ reservation.courtReservation.type}}
-    <br>
-    <label>-number: </label> {{ reservation.courtReservation.id}}
-  </div>
-  <div>
-    <p>PLAYERS: </p> {{reservation.players}}
-  </div>
-  <button mat-raised-button color="warn" (click)='deleteReservation()'>Delete</button>
 </div>
+-->
+<mat-card class="reservationcard">
+  <mat-card-title-group>
+    <mat-card-title>  {{reservation.typeReservation.toUpperCase()}} </mat-card-title>
+    <mat-card-subtitle>Court {{ reservation.courtReservation.id}}, {{reservation.date.getHours()-1}}:00</mat-card-subtitle>
+    <img alt="TENNIS" mat-card-sm-image *ngIf="reservation.sportReservation=='tennis'" style="border-radius: 10%"
+         src="https://th.bing.com/th/id/R.520ee10dab51ea3d37d897144fa20a3a?rik=jcUy4wABurZaJA&riu=http%3a%2f%2fgetwallpapers.com%2fwallpaper%2ffull%2f7%2f9%2f6%2f383037.jpg&ehk=Xlg6MY%2fLOQl%2b6plsR8H9EVJcKXgM%2bugM0ueDEVgKGY8%3d&risl=&pid=ImgRaw&r=0"
+    />
+    <img alt="PADEL" mat-card-sm-image *ngIf="reservation.sportReservation=='padel'" style="border-radius: 10%"
+         src="https://img.wallpapersafari.com/desktop/1536/864/89/23/Cur3nw.jpg"
+    />
+  </mat-card-title-group>
+  <mat-card-content>
+    {{reservation.players}} are going to play
+  </mat-card-content>
+
+  <mat-divider inset></mat-divider>
+  <mat-card-actions>
+    <button *ngIf="reservation.typeReservation=='private'" mat-raised-button  color="warn" style="align-self: end" (click)='deleteReservation()'>DELETE</button> <!-- prima nell'if c'era OR isAdmin -->
+  </mat-card-actions>
+</mat-card>
+
+<!-- ORIGINALE
+<div *ngif="reservation">
+   <div>
+     <label>Sport type: </label> {{ reservation.sportReservation }}
+   </div>
+      <div>
+        <label>Date reservation: </label> {{ reservation.date }}
+      </div>
+
+      <div>
+        <label> TYPE reservation: </label> {{ reservation.typeReservation }}
+      </div>
+      <div>
+        <label>INFO COURT RESERVED:</label>
+        <br>
+        <label>-type: </label> {{ reservation.courtReservation.type}}
+        <br>
+        <label>-number: </label> {{ reservation.courtReservation.id}}
+      </div>
+      <div>
+        <p>PLAYERS: </p> {{reservation.players}}
+      </div>
+      <button *ngIf="reservation.typeReservation=='private' || isAdmin" mat-raised-button color="warn" (click)='deleteReservation()'>Delete</button>
+    </div>
+  </div>
+    -->

@@ -17,9 +17,8 @@ import { MatButtonModule } from "@angular/material/button";
 import { CreateReservationComponent } from './reservation/create-reservation/create-reservation.component';
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {DateAdapter, MAT_DATE_FORMATS, MatNativeDateModule} from "@angular/material/core";
+import {MatNativeDateModule} from "@angular/material/core";
 import {MatInputModule} from "@angular/material/input";
-import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { BoardMainComponent } from './board/board-main/board-main.component';
 import { ReservationMainComponent } from './reservation/reservation-main/reservation-main.component';
 import { BoardPersonalComponent } from './board/board-personal/board-personal.component';
@@ -42,9 +41,15 @@ import {Serialization} from "./utilities/serialization";
 import { TournamentViewComponent } from './tournaments/tournament-view/tournament-view.component';
 import { ShowTournamentComponent } from './tournaments/show-tournament/show-tournament.component';
 import { CourseMainComponent } from './course/course-main/course-main.component';
-import { CoursesListComponent } from './course/courses-list/courses-list.component';
 import { CourseDetailsComponent } from './course/course-details/course-details.component';
 import { CreateCourseComponent } from './course/create-course/create-course.component';
+import { UserDetailsComponent } from './user-details/user-details.component';
+import {MatSelectModule} from "@angular/material/select";
+import { CoursesCompletedComponent } from './course/courses-completed/courses-completed.component';
+import { CoursesPendingComponent } from './course/courses-pending/courses-pending.component';
+import {MatTabsModule} from "@angular/material/tabs";
+import {MatCardModule} from "@angular/material/card";
+import {MatDividerModule} from "@angular/material/divider";
 import { LoginComponent } from './user/login/login.component';
 
 @NgModule({
@@ -70,9 +75,11 @@ import { LoginComponent } from './user/login/login.component';
     TournamentViewComponent,
     ShowTournamentComponent,
     CourseMainComponent,
-    CoursesListComponent,
     CourseDetailsComponent,
     CreateCourseComponent,
+    UserDetailsComponent,
+    CoursesCompletedComponent,
+    CoursesPendingComponent,
   ],
   imports: [
     BrowserModule,
@@ -89,26 +96,14 @@ import { LoginComponent } from './user/login/login.component';
     MatAutocompleteModule,
     MatIconModule,
     MatRadioModule,
-    NgTournamentTreeModule
+    NgTournamentTreeModule,
+    MatSelectModule,
+    MatTabsModule,
+    MatCardModule,
+    MatDividerModule,
   ],
   //crea correttamente la data, ma mantiene anche le informazioni non utili (ad esempio l'ora)
   providers: [
-    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE,
-        MAT_MOMENT_DATE_ADAPTER_OPTIONS] },
-    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
-    {
-      provide: MAT_DATE_FORMATS, useValue: {
-        parse: {
-          dateInput: "L",
-        },
-        display: {
-          dateInput: "L",
-          monthYearLabel: "MMM YYYY",
-          dateA11yLabel: "LL",
-          monthYearA11yLabel: "MMMM YYYY",
-        },
-      }
-    },
     { provide: HTTP_INTERCEPTORS, useClass: JsonInterceptor, multi: true },
     { provide: JsonParser, useClass: CustomJsonParser },
     { provide: Serialization, useClass: Serialization},

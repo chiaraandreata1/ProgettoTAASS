@@ -1,70 +1,135 @@
-<h3>Create Reservation</h3>
-<div [hidden]="submitted" style="width: 300px;">
-  <form (ngSubmit)="onSubmit()">
-    <div>
-      <p>SPORT RESERVATION:</p>
-      <mat-radio-group required [(ngModel)]="sportReservation" name='valueSport' (ngModelChange)="checkRadioInputs()" aria-label="SPORT RESERVATION">
-        <mat-radio-button value="tennis">Tennis</mat-radio-button>
-        <mat-radio-button value="padel">Padel</mat-radio-button>
-      </mat-radio-group>
+<form (ngSubmit)="onSubmit()">
+  <div [hidden]="submitted" class="card mb-3">
+    <div class="card-header bg-primary text-white">
+      <h1>Create Reservation</h1>
     </div>
-    <div *ngIf="sportReservation == 'tennis'">
-      <p>PLAYERS NUMBER:</p>
-      <mat-radio-group required [(ngModel)]="numberplayers" name='valueNumberPlayers' (ngModelChange)="resetInputPlayers()" aria-label="PLAYERS NUMBER">
-        <mat-radio-button value=2>2</mat-radio-button>
-        <mat-radio-button value=4>4</mat-radio-button>
-      </mat-radio-group>
-    </div>
-    <div [formGroup]="playersForm" *ngFor="let player of arrplayers; let i = index">
-      <mat-form-field appearance="fill">
-        <mat-label>{{player}}</mat-label>
-        <input type="text" matInput [formControlName]=player [matAutocomplete]="auto" (ngModelChange)="playerlistready()" required>
-        <button *ngIf="playersForm.controls[player].value" matSuffix mat-icon-button aria-label="Clear" (click)="enableInputPlayer(playersForm.controls[player])">
-          <mat-icon>close</mat-icon>
-        </button>
-        <mat-error *ngIf="playersForm.controls[player].hasError('userInvalid')">Select one suggestion</mat-error>
-        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-          <ng-container *ngIf="playersForm.controls[player].value && playersForm.controls[player].value.length>1">
-            <mat-option *ngFor="let option of filtersOptions[i] | async" [value]="option" (click)="disableInputPlayer(playersForm.controls[player])">
-              {{option.username}}
-            </mat-option>
-          </ng-container>
-        </mat-autocomplete>
-      </mat-form-field>
-    </div>
-    <div *ngIf="listplayersready && numberplayers>0">
-      <label for="dateReservation">Choose your date</label>
-      <div class="input-group date">
+    <div class="card-body">
+      <!-- RIGA 1 -->
+      <div class="mb-2 row">
+        <div class="col-4">
+          <div [class.card]=true class="mb-3">
+            <div class="card-header">SPORT RESERVATION</div>
+            <mat-radio-group class="row card-body" required [(ngModel)]="sportReservation" (ngModelChange)="checkRadioInput()" name='valueSport' aria-label="SPORT RESERVATION">
+              <mat-radio-button class="col-4" value="tennis">Tennis</mat-radio-button>
+              <mat-radio-button class="col-4" value="padel">Padel</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+        <div class="col-4" *ngIf="sportReservation == 'tennis'">
+          <mat-form-field appearance="fill">
+            <mat-label>Type match</mat-label>
+            <mat-select [(ngModel)]="numberplayers" (ngModelChange)="resetInputPlayers()" name="numberPlayers">
+              <mat-option *ngFor="let option of OptionsTennis" [value]="option.numberplayers">
+                {{option.type}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <!-- RIGA 2 -->
+      <div class="row">
+        <div class="col-3" [formGroup]="playersForm" *ngFor="let player of arrplayers; let i = index">
+          <mat-form-field appearance="fill" >
+            <mat-label>{{player}}</mat-label>
+            <input type="text" matInput [formControlName]=player [matAutocomplete]="auto" required>
+            <mat-icon *ngIf="playersForm.controls[player].value" matSuffix (click)="enableInputPlayer(playersForm.controls[player])">close</mat-icon>
+            <mat-error *ngIf="playersForm.controls[player].hasError('userInvalid')">Select one suggestion</mat-error>
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+              <ng-container *ngIf="playersForm.controls[player].value && playersForm.controls[player].value.length>1">
+                <mat-option (onSelectionChange)="disableInputPlayer(playersForm.controls[player], player)" *ngFor="let option of filtersOptions[i] | async" [value]="option" >
+                  {{option.username}}
+                </mat-option>
+              </ng-container>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+      </div>
+      <!-- RIGA 3 -->
+      <div>
         <mat-form-field>
+          <mat-label>Choose your date</mat-label>
           <input readonly='true' matInput [matDatepicker] = "picker" name="dateReservation" id="dateReservation" [min]="minDate" [max]="maxDate"
-                 [(ngModel)]="reservation.dateReservation"  [formControl]="dateReservation" (ngModelChange)="reloadData()" required>
+                 [formControl]="dateReservation" (ngModelChange)="reloadData()">
+          <mat-hint>MM/DD/YYYY</mat-hint>
           <mat-datepicker-toggle matSuffix [for] = "picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
       </div>
-
-      <ng-container *ngIf="reservationsNOTAvailable && searchready">
-        <ng-container *ngFor="let hour of hoursAvailable" style="width: 300px;">
-          <ng-container *ngFor="let court of courts | async" style="width: 300px;">
-            <ng-container *ngIf="arrNOTAvailableForHours[hour-9]!=undefined && court.type == sportReservation">
-              <ng-container *ngIf="!arrNOTAvailableForHours[hour-9].includes(court.id); then ButtonAvailable else ButtonNotAvailable"></ng-container>
-              <ng-template #ButtonAvailable>
-                <button mat-raised-button color="primary" type="submit" (click)="createReservation(sportReservation, dateReservation.value, hour, court.id, court.type)">{{hour}}.00-Court{{court.id}}</button>
-              </ng-template>
-              <ng-template #ButtonNotAvailable>
-                <button mat-raised-button color="primary" [disabled]="true">{{hour}}.00-Court{{court.id}}</button>
-              </ng-template>
-            </ng-container>
-          </ng-container>
-        </ng-container>
-      </ng-container>
     </div>
-  </form>
+  </div>
+  <div *ngIf="searchready">
+    <mat-tab-group>
+      <mat-tab *ngFor="let hour of hoursAvailable; let i = index" label="{{hour}}:00">
+        <div class="contentmattab">
+          <ng-container *ngFor="let court of courts | async; let j = index">
+            <ng-container *ngIf="!arrALLReservationsOrdByHourAndCourt[i][j] && checkAvailableDate(hour); then ButtonAvailable else ButtonNotAvailable"></ng-container>
+            <ng-template #ButtonAvailable>
+              <button mat-raised-button class="reservationbutton" color="primary" type="submit" (click)="createReservation(sportReservation, dateReservation.value, hour, court.id, court.type)">Court{{court.id}}</button>
+            </ng-template>
+            <ng-template #ButtonNotAvailable>
+              <ng-container *ngIf="arrALLReservationsOrdByHourAndCourt[i][j]">
+                <button mat-raised-button class="reservationbutton" color="primary" [disabled]="true">
+                  Court{{court.id}}<br>{{arrALLReservationsOrdByHourAndCourt[i][j].players}} ({{arrALLReservationsOrdByHourAndCourt[i][j].typeReservation}})
+                </button>
+              </ng-container>
+              <ng-container *ngIf="!arrALLReservationsOrdByHourAndCourt[i][j]">
+                <button mat-raised-button class="reservationbutton" color="primary" [disabled]="true">Court{{court.id}}</button>
+              </ng-container>
+            </ng-template>
+          </ng-container>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</form>
+    <!--
+    <div>
+      <div class="mb-2 row" *ngFor="let i of rows | forLoop">
+        <div class="col-2" *ngFor="let j of cols | forLoop">
+          <h1>Ore {{8 + i*cols+j}}:00</h1>
+          <div *ngFor="let court of courts | async; let k = index">
+            <ng-container *ngIf="!arrALLReservationsOrdByHourAndCourt[i*cols+j][k] && checkAvailableDate(8 + i*cols+j); then ButtonAvailable else ButtonNotAvailable"></ng-container>
+            <ng-template #ButtonAvailable>
+              <button mat-raised-button color="primary" class="reservationbutton" type="submit" (click)="createReservation(sportReservation, dateReservation.value, 8 + i*cols+j, court.id, court.type)">Court{{court.id}}</button>
+            </ng-template>
+            <ng-template #ButtonNotAvailable>
+              <ng-container *ngIf="arrALLReservationsOrdByHourAndCourt[i*cols+j][k]">
+                <button mat-raised-button color="primary" class="reservationbutton" [disabled]="true">Court{{court.id}} - {{arrALLReservationsOrdByHourAndCourt[i*cols+j][k].players}} ({{arrALLReservationsOrdByHourAndCourt[i*cols+j][k].typeReservation}})</button>
+              </ng-container>
+              <ng-container *ngIf="!arrALLReservationsOrdByHourAndCourt[i*cols+j][k]">
+                <button mat-raised-button color="primary" class="reservationbutton" [disabled]="true">Court{{court.id}}</button>
+              </ng-container>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+    -->
+
+      <!--
+      <div *ngFor="let hour of hoursAvailable; let i = index" style="width: 300px;">
+        <h1>Ore {{hour}}:00</h1>
+        <ng-container *ngFor="let court of courts | async; let j = index" style="width: 300px;">
+          <ng-container *ngIf="!arrALLReservationsOrdByHourAndCourt[i][j] && checkAvailableDate(hour); then ButtonAvailable else ButtonNotAvailable"></ng-container>
+            <ng-template #ButtonAvailable>
+              <button mat-raised-button color="primary" type="submit" (click)="createReservation(sportReservation, dateReservation.value, hour, court.id, court.type)">Court{{court.id}}</button>
+            </ng-template>
+            <ng-template #ButtonNotAvailable>
+              <ng-container *ngIf="arrALLReservationsOrdByHourAndCourt[i][j]">
+                <button mat-raised-button color="primary" [disabled]="true">Court{{court.id}} - {{arrALLReservationsOrdByHourAndCourt[i][j].typeReservation}} - players: {{arrALLReservationsOrdByHourAndCourt[i][j].players}}</button>
+              </ng-container>
+              <ng-container *ngIf="!arrALLReservationsOrdByHourAndCourt[i][j]">
+                <button mat-raised-button color="primary" [disabled]="true">Court{{court.id}}</button>
+              </ng-container>
+            </ng-template>
+        </ng-container>
+      </div>
+      -->
   <!-- BOTTONE DEBUGGING
   <button mat-raised-button color="secondary" (click)='show()' >See</button>
-  -->
+-->
 
-</div>
+
 
  <div [hidden]="!submitted">
    <h4>You submitted successfully!</h4>

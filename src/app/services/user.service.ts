@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable, of} from "rxjs";
-import {User} from "../models/user";
 import {UserInfo} from "../models/user-info";
 
 @Injectable({
@@ -18,7 +17,7 @@ export class UserService {
   }
 
   getUsersList(): Observable<any> {
-    return this.http.get(`${this.baseUrlUsers}`);
+    return this.http.get(`${this.baseUrlUsers}/allusers`);
   }
 
   getUsersByType(typeuser: string): Observable<any> {
@@ -48,5 +47,4 @@ export class UserService {
       return of([]);
     return this.http.get<UserInfo[]>(`${this.baseUrlUsers}/user-info`, {params: {ids: ids}});
   }
-
 }

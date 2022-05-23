@@ -1,0 +1,16 @@
+.reservationbutton {
+  padding: 0px;
+  margin: 2%;
+  width: 30vh;
+  height: 12vh;
+}
+
+.contentmattab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.col-3 {
+  text-align: center;
+}

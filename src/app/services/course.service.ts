@@ -11,7 +11,7 @@ export class CourseService {
 
   constructor(private http: HttpClient) { }
 
-  getCourse(id: number): Observable<Object> {
+  getCourse(id: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/${id}`);
   }
 
@@ -33,5 +33,9 @@ export class CourseService {
 
   getCoursesList(): Observable<any> {
     return this.http.get(`${this.baseUrl}`);
+  }
+
+  getCoursesBySportAndYear(sport: string, year: number, ispending: boolean): Observable<any> {
+    return this.http.get(`${this.baseUrl}/sport/${sport}/year/${year}/ispending/${ispending}`);
   }
 }

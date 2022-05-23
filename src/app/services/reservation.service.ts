@@ -12,8 +12,9 @@ export class ReservationService {
 
   constructor(private http: HttpClient) { }
 
-  getReservation(id: number): Observable<Object> {
-    return this.http.get(`${this.baseUrlReservations}/${id}`);
+
+  getUserLoggedReservationsBySport(userLoggedId: number, sport: String): Observable<any> {
+    return this.http.get(`${this.baseUrlReservations}/sportuser/${sport}/user/${userLoggedId}`);
   }
 
   getReservationByDateAndSport(date: string, sport: string): Observable<any> {
@@ -24,10 +25,6 @@ export class ReservationService {
     return this.http.post(`${this.baseUrlReservations}` + `/create`, reservation);
   }
 
-  updateReservation(id: number, value: any): Observable<Object> {
-    return this.http.put(`${this.baseUrlReservations}/${id}`, value);
-  }
-
   deleteReservation(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrlReservations}/${id}`, { responseType: 'text' });
   }
@@ -36,8 +33,8 @@ export class ReservationService {
     return this.http.get(`${this.baseUrlReservations}`);
   }
 
-  getCourtsList(): Observable<any> {
-    return this.http.get(`${this.baseUrlCourts}`)
+  getCourtsListByType(sport: string): Observable<any> {
+    return this.http.get(`${this.baseUrlCourts}/sport/${sport}`)
   }
 
   deleteAllReservations(): Observable<any> {

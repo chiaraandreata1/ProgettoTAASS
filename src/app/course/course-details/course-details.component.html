@@ -1,33 +1,47 @@
 <div *ngIf="course">
-  <div>
-    <div>
-      <label>SPORT: </label> {{course.sporttype}}
-    </div>
-    <div>
-      <label>INSTRUCTOR: </label> {{course.instructor}}
-    </div>
-    <div>
-      <label>PLAYERS: </label> {{course.players}}
-    </div>
-  </div>
-
-  <div>
-    <h3>INFO FOR RESERVATIONS:</h3>
-    <div>
-      <label>DAY: </label> {{course.daycourse}}
-    </div>
-    <div>
-      <label>HOUR LESSON: </label> {{course.hourlesson}}
-    </div>
-    <div>
-      <label>NUMBER WEEKS</label> {{course.numberweeks}}
-    </div>
-    <div>
-      <label>PRICE: </label> {{course.priceCourse}}
-    </div>
-    <div>
-      <label>END DATE REGISTRATION : </label> {{course.endDateRegistration}}
-    </div>
-  </div>
-  <button mat-raised-button color="warn" (click)='deleteCourse()'>Delete</button>
+  <mat-card class="courtcard" *ngIf="course">
+    <mat-card-title-group>
+      <mat-card-title> {{course.sporttype.toUpperCase()}} COURSE </mat-card-title>
+      <mat-card-subtitle>
+        Instructor: {{course.instructor}}
+      </mat-card-subtitle>
+    </mat-card-title-group>
+    <mat-card-content>
+      Athletes currently registrated: {{course.players}}
+      <mat-divider inset></mat-divider>
+      Price: {{course.priceCourse}}
+      <mat-divider inset></mat-divider>
+      Registrations end on {{course.endDateRegistration.getDate()}}/{{course.endDateRegistration.getMonth()}}/{{course.endDateRegistration.getFullYear()}}
+      and First lesson on {{course.firstDayLesson.getDate()}}/{{course.firstDayLesson.getMonth()}}/{{course.firstDayLesson.getFullYear()}}
+      <mat-divider inset></mat-divider>
+      The course take place on  {{course.daycourse}} at {{course.hourlesson}}:00 for {{course.numberweeks}} weeks on court {{course.courtCourse}}
+      <div *ngIf="isPending" class="row">
+        <div class="col-5" style="text-align: left">
+      <mat-form-field appearance="fill">
+        <mat-label>NEW PLAYER</mat-label>
+        <input type="text" matInput [formControl]="formInputPendingCourse" [matAutocomplete]="auto" required>
+        <mat-icon *ngIf="formInputPendingCourse.value" matSuffix (click)="formInputPendingCourse.reset(); formInputPendingCourse.enable()">close</mat-icon>
+        <mat-error *ngIf="formInputPendingCourse.hasError('userInvalid')">Select one suggestion</mat-error>
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          <ng-container *ngIf="formInputPendingCourse.value && formInputPendingCourse.value.length>1">
+            <mat-option (onSelectionChange)="formInputPendingCourse.disable()" *ngFor="let option of filterOptions | async" [value]="option" >
+              {{option.username}}
+            </mat-option>
+          </ng-container>
+        </mat-autocomplete>
+      </mat-form-field>
+        <ng-container *ngIf="formInputPendingCourse.value && formInputPendingCourse.value.hasOwnProperty('username'); then ButtonAvailable else ButtonNotAvailable"></ng-container>
+        <ng-template #ButtonAvailable>
+          <button mat-raised-button color="secondary" (click)="addNewPlayer()">Add player</button>
+        </ng-template>
+        <ng-template #ButtonNotAvailable>
+          <button mat-raised-button color="secondary" style="height: 6.5vh; width: 10vw;" [disabled]="true">Add player</button>
+        </ng-template>
+        </div>
+        <div class="col" style="text-align: right;">
+          <button mat-raised-button  color="warn" style="height: 6vh; width: 20vw;" (click)='deleteCourse()'>DELETE</button> <!-- prima nell'if c'era anche isAdmin -->
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>
