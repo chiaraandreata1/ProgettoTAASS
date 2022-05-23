@@ -62,14 +62,15 @@ session:
 taass:
   auth:
     tokenSecret: 926D96C90030DD58429D2751AC1BDBBC
-    tokenExpirationMsec: 864000000
+    tokenExpirationMsec: 1800000 # 30 minutes
+#    tokenExpirationMsec: 864000000
   oauth2:
     authorizedRedirectUris: http://localhost:8080/oauth2/redirect,myandroidapp://oauth2/redirect,myiosapp://oauth2/redirect
 
 
 
 server:
-  port: 8090
+  port: 8081
 
 logging:
   level:

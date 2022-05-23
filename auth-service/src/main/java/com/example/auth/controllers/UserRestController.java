@@ -7,14 +7,13 @@ import com.example.auth.models.UserEntity;
 import com.example.auth.repositories.UserEntityRepository;
 import com.example.shared.models.users.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -46,14 +45,18 @@ public class UserRestController {
         return user.toUserInfo();
     }
 
-    @GetMapping("/session")
-    public String getSession(@CurrentUser UserInfo localUser) {
-        return String.format("%s %s\n", localUser.getEmail(),  RequestContextHolder.getRequestAttributes().getSessionId());
+    @GetMapping("boss")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String boss() {
+        return "boss";
     }
 
-    @GetMapping("/headers")
-    public String getHeaders(@RequestHeader Map<String, String> headers) {
-        return headers.toString().replaceAll(";", "<br>");
+    @GetMapping("{id}")
+    public UserInfo getUser(@PathVariable Long id) {
+        UserEntity userEntity = userEntityRepository
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        return userEntity.toUserInfo();
     }
 
     @GetMapping("find-users")
@@ -89,9 +92,9 @@ public class UserRestController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("fix-session")
-    public Object fixSession() {
-        return null;
+    @GetMapping("log-out")
+    public void logout() {
+        SecurityContextHolder.clearContext();
     }
 
 }

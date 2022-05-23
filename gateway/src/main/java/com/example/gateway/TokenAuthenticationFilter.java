@@ -26,6 +26,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
             FilterChain filterChain) throws ServletException, IOException {
+
         if (!Objects.equals("http://localhost:8080/ws", httpServletRequest.getRequestURL().toString())) {
             String jwt = getJwtFromRequest(httpServletRequest);
             if (jwt != null) {
@@ -35,7 +36,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(token);
             } else {
-                SecurityContextHolder.getContext().setAuthentication(null);
+                SecurityContextHolder.clearContext();
             }
         }
 
