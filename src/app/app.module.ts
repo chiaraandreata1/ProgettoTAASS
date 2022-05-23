@@ -43,7 +43,7 @@ import { ShowTournamentComponent } from './tournaments/show-tournament/show-tour
 import { CourseMainComponent } from './course/course-main/course-main.component';
 import { CourseDetailsComponent } from './course/course-details/course-details.component';
 import { CreateCourseComponent } from './course/create-course/create-course.component';
-import { UserDetailsComponent } from './user-details/user-details.component';
+// import { UserDetailsComponent } from './user-details/user-details.component';
 import {MatSelectModule} from "@angular/material/select";
 import { CoursesCompletedComponent } from './course/courses-completed/courses-completed.component';
 import { CoursesPendingComponent } from './course/courses-pending/courses-pending.component';
@@ -81,7 +81,7 @@ import { MeComponent } from './user/me/me.component';
     CourseMainComponent,
     CourseDetailsComponent,
     CreateCourseComponent,
-    UserDetailsComponent,
+    // UserDetailsComponent,
     CoursesCompletedComponent,
     CoursesPendingComponent,
     LoginComponent,
