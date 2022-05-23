@@ -11,12 +11,12 @@ import {TournamentsMainComponent} from "./tournaments/tournaments-main/tournamen
 import {CreateTournamentComponent} from "./tournaments/create-tournament/create-tournament.component";
 import {ShowTournamentComponent} from "./tournaments/show-tournament/show-tournament.component";
 import {CourseMainComponent} from "./course/course-main/course-main.component";
-import {CoursesListComponent} from "./course/courses-list/courses-list.component";
 import {CreateCourseComponent} from "./course/create-course/create-course.component";
+import {CoursesCompletedComponent} from "./course/courses-completed/courses-completed.component";
+import {CoursesPendingComponent} from "./course/courses-pending/courses-pending.component";
 import {LoginComponent} from "./user/login/login.component";
 import {ShowUserComponent} from "./user/show-user/show-user.component";
 import {MeComponent} from "./user/me/me.component";
-
 
 const routes: Routes = [
   { path: 'reservation-main', component: ReservationMainComponent,
@@ -27,7 +27,7 @@ const routes: Routes = [
   { path: 'tournaments/create', component: CreateTournamentComponent },
   { path: 'tournaments/info', component: ShowTournamentComponent },
   { path: 'course-main', component: CourseMainComponent,
-    children: [{ path: 'course', component: CoursesListComponent }, { path: 'createCourse', component: CreateCourseComponent }]},
+    children: [{ path: 'completedCourses', component: CoursesCompletedComponent }, { path: 'pendingCourses', component: CoursesPendingComponent }, { path: 'createCourse', component: CreateCourseComponent }]},
   { path: 'login', component: LoginComponent},
   { path: 'user/:id', component: ShowUserComponent},
   { path: 'me', component: MeComponent }

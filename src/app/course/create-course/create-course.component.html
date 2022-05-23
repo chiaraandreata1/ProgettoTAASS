@@ -1,77 +1,135 @@
-<h3>Create Reservation</h3>
-<div [hidden]="submitted" style="width: 300px;">
-  <form (ngSubmit)="onSubmit()">
-    <div>
-      <p>SPORT COURSE:</p>
-      <mat-radio-group required [(ngModel)]="course.sporttype" name='valueSport' aria-label="SPORT COURSE">
-        <mat-radio-button value="tennis">Tennis</mat-radio-button>
-        <mat-radio-button value="padel">Padel</mat-radio-button>
-      </mat-radio-group>
+<ng-container>
+  <div class="card mb-3" *ngIf="!submitted">
+    <div class="card-header bg-primary text-white">
+      <h2>Create new Course</h2>
     </div>
-    <div>
-      <p>PRICE COURSE:</p>
-      <mat-radio-group required [(ngModel)]="course.priceCourse" name='valuePriceCourse' (change)="setNumberWeeks()" aria-label="PRICE COURSE"> <!-- in base al prezzo cambiano il numero di settimane totali -->
-        <mat-radio-button value=240>240€ (12 weeks)</mat-radio-button>
-        <mat-radio-button value=400>400€ (24 weeks)</mat-radio-button>
-      </mat-radio-group>
-    </div>
-    <div>
-      <mat-form-field appearance="fill">
-        <mat-label>Instructor</mat-label>
-        <input type="text" matInput [formControl]="instructorCourse" name="Instructor" [matAutocomplete]="auto"  required>
-        <button *ngIf="instructorCourse.value" matSuffix mat-icon-button aria-label="Clear" (click)="enableInstructorInput()">
-          <mat-icon>close</mat-icon>
-        </button>
-        <mat-error *ngIf="instructorCourse.hasError('userInvalid')">Select one suggestion</mat-error>
-        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-          <ng-container *ngIf="instructorCourse.value && instructorCourse.value.length>1">
-            <mat-option *ngFor="let option of filter | async" [value]="option" (click)="disableInstructorInput()">
-              {{option.username}}
-            </mat-option>
-          </ng-container>
-        </mat-autocomplete>
-      </mat-form-field>
-    </div>
-    <div>
-      <p>DAYs COURSE:</p>
-      <mat-radio-group required name='valueDay' aria-label="DAY COURSE" [(ngModel)]="course.daycourse">
-        <mat-radio-button value="Monday">Mon</mat-radio-button> <mat-radio-button value="Tuesday">Tue</mat-radio-button> <mat-radio-button value="Wednesday">Wed</mat-radio-button>
-        <mat-radio-button value="Thursday">Thu</mat-radio-button> <mat-radio-button value="Friday">Fri</mat-radio-button> <mat-radio-button value="Saturday">Sat</mat-radio-button>
-      </mat-radio-group>
-    </div>
-    <div>
-      <p>HOUR COURS:</p>
-      <mat-radio-group required name='valueHour' [(ngModel)]="course.hourlesson" aria-label="HOUR LESSON">
-        <mat-radio-button value=9>9</mat-radio-button> <mat-radio-button value=10>10</mat-radio-button> <mat-radio-button value=11>11</mat-radio-button>
-        <mat-radio-button value=12>12</mat-radio-button> <mat-radio-button value=13>13</mat-radio-button> <mat-radio-button value=14>14</mat-radio-button>
-        <mat-radio-button value=15>15</mat-radio-button> <mat-radio-button value=16>16</mat-radio-button> <mat-radio-button value=17>17</mat-radio-button>
-        <mat-radio-button value=18>18</mat-radio-button> <mat-radio-button value=19>19</mat-radio-button> <mat-radio-button value=20>20</mat-radio-button>
-        <mat-radio-button value=21>21</mat-radio-button>
-      </mat-radio-group>
-    </div>
-    <div class="input-group date">
-      <mat-form-field>
-        <input readonly='true' matInput [matDatepicker] = "picker" name="dateEndRegistration" id="dateEndRegistration" [min]="minDate"
-               [formControl]="dateEndRegistration" (ngModelChange)="setDate()" required>
-        <mat-datepicker-toggle matSuffix [for] = "picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-    </div>
-    <ng-container *ngIf="course.priceCourse && course.daycourse && course.instructor && course.endDateRegistration && course.hourlesson && course.sporttype; then ButtonAvailable else ButtonNotAvailable"></ng-container>
-    <ng-template #ButtonAvailable>
-      <button mat-raised-button color="primary" type="submit">CREATE COURSE</button>
-    </ng-template>
-    <ng-template #ButtonNotAvailable>
-      <button mat-raised-button color="primary" [disabled]="true">CREATE COURSE</button>
-    </ng-template>
-  </form>
-</div>
+    <form (ngSubmit)="onSubmit()">
 
-<div [hidden]="!submitted">
-  <h4>You submitted successfully!</h4>
-  <button mat-raised-button color="primary" type="submit" (click)="newCourse()">Add new</button>
-</div>
+      <div class="card-body">
 
-<!--
-<button mat-raised-button color="secondary" (click)="debugButton()">DEBUG</button>
--->
+        <div class="mb-3 row">
+          <div class="col-4">
+            <div [class.card]=true class="mb-3">
+              <div class="card-header">SPORT COURSE</div>
+              <mat-radio-group class="row card-body" required [(ngModel)]="sporttype" name='valueSport' aria-label="SPORT COURSE">
+                  <mat-radio-button class="col-4" value="tennis">Tennis</mat-radio-button>
+                  <mat-radio-button class="col-4" value="padel">Padel</mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+          <div class="col-2">
+            <mat-form-field appearance="fill">
+              <mat-label>Level</mat-label>
+              <mat-select [(ngModel)]="levelcourse" name="levelSport">
+                <mat-option *ngFor="let level of levels" [value]="level">
+                  {{level}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-2">
+            <mat-form-field appearance="fill">
+              <mat-label>Court</mat-label>
+              <mat-select [(ngModel)]="courtCourse" [disabled]="sporttype==''" name="typeSport">
+                <ng-container *ngIf="sporttype=='tennis'; then optionsTennis else optionsPadel"></ng-container>
+                <ng-template #optionsTennis>
+                  <mat-option *ngFor="let court of tennisCourts" [value]="court.value">
+                    {{court.viewValue}}
+                  </mat-option>
+                </ng-template>
+                <ng-template #optionsPadel>
+                  <mat-option *ngFor="let court of padelCourts" [value]="court.value">
+                    {{court.viewValue}}
+                  </mat-option>
+                </ng-template>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <!-- SECONDA RIGA -->
+        <div class="mb-3 row">
+          <div class="col-3">
+            <mat-form-field appearance="fill">
+              <mat-label>Instructor</mat-label>
+              <input type="text" matInput [formControl]="instructorCourse" [matAutocomplete]="auto"  required>
+              <mat-icon *ngIf="instructorCourse.value" matSuffix (click)="enableInstructorInput()">close</mat-icon>
+              <mat-error *ngIf="instructorCourse.hasError('userInvalid')">Select one suggestion</mat-error>
+              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                <ng-container *ngIf="instructorCourse.value && instructorCourse.value.length>1">
+                  <mat-option *ngFor="let option of filter | async" [value]="option" (onSelectionChange)="disableInstructorInput()">
+                    {{option.username}}
+                  </mat-option>
+                </ng-container>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field appearance="standard">
+              <mat-label>Price course</mat-label>
+              <input matInput type="number" [(ngModel)]="priceCourse" name="valuePriceCourse" min="1" required>
+            </mat-form-field>
+          </div>
+        </div>
+        <!-- TERZA RIGA -->
+        <div class="mb-3 row">
+          <div class="col-3">
+            <mat-form-field appearance="fill">
+              <mat-label>Day Course</mat-label>
+              <mat-select [(ngModel)]="daycourse" name="daySport">
+                <mat-option *ngFor="let day of weekday" [value]="day">
+                  {{day}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field appearance="standard">
+              <mat-label>Hour course</mat-label>
+              <input matInput type="number" [formControl]="hourLesson" name="valueHourLesson" min="9" max="21" required>
+              <mat-error *ngIf="hourLesson.hasError('min') || hourLesson.hasError('max')">
+                Hours available from 9 to 21
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field appearance="standard">
+              <mat-label>Number weeks course</mat-label>
+              <input matInput type="number" [formControl]="weeksLesson" name="valueWeekLesson" min="1" max="52" required>
+              <mat-error *ngIf="weeksLesson.hasError('min') || weeksLesson.hasError('max')">
+                Number of weeks must be more than 1 week & less than 52
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <mat-form-field class="col-2">
+            <mat-label>Date end registration</mat-label>
+            <input readonly='true' matInput [matDatepicker] = "picker" name="dateEndRegistration" id="dateEndRegistration"
+                   [formControl]="dateEndRegistration" [min]="minDateEndRegistration" required>
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matSuffix [for] = "picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <ng-container *ngIf="priceCourse && weeksLesson.value && daycourse && instructorCourse.value && levelcourse && dateEndRegistration.value && (hourLesson.value>=9 && hourLesson.value<=21) && sporttype && courtCourse && dateEndRegistration.value.toISOString().split('T')[0]!=today.toISOString().split('T')[0] && (weeksLesson.value>0 && weeksLesson.value<53); then ButtonAvailable else ButtonNotAvailable"></ng-container>
+        <ng-template #ButtonAvailable>
+          <button mat-raised-button color="primary" type="submit">CREATE COURSE</button>
+        </ng-template>
+        <ng-template #ButtonNotAvailable>
+          <button mat-raised-button color="primary" [disabled]="true">CREATE COURSE</button>
+        </ng-template>
+
+      </div>
+   <!-- numberweeks, instructor, endDateRegistration, hourlesson -->
+    </form>
+  </div>
+
+  <div *ngIf="submitted">
+    <h4>You submitted successfully!</h4>
+    <button mat-raised-button color="primary" type="submit" (click)="newCourse()">Add new</button>
+  </div>
+</ng-container>
+
+

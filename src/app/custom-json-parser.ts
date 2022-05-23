@@ -80,6 +80,8 @@ export class CustomJsonParser implements JsonParser {
   private revive(key: string, value: any, serialization: Serialization) {
 
     switch (key) {
+      case 'endDateRegistration':
+      case 'firstDayLesson':
       case 'date':
         value = Serialization.deserializeDate(value as string);
         break;

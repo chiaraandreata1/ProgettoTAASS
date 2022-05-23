@@ -12,8 +12,10 @@ import {ReservationsListComponent} from "../reservations-list/reservations-list.
 export class ReservationDetailsComponent implements OnInit {
 
   @Input() reservation!: Reservation;
+  //@Input() isAdmin!: boolean;
 
   constructor(private reservationService: ReservationService, private listComponent: ReservationsListComponent) { }
+
 
   ngOnInit(): void {
   }
