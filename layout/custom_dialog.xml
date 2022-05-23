@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+    tools:context=".MainActivity">
+
+
+    <TextView
+        android:id="@+id/titoloDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Your reservation:"
+        android:textColor="#3C3B3B"
+        android:textSize="24dp" />
+
+    <TextView
+        android:id="@+id/testoDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignStart="@+id/titoloDialog"
+        android:layout_below="@+id/titoloDialog"
+        android:text="Data"
+        android:textColor="#020900"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/testoSport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignStart="@+id/titoloDialog"
+        android:layout_below="@+id/testoDate"
+        android:text="Ora: 13:00"
+        android:textColor="#020900"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/testoIdRes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignStart="@+id/titoloDialog"
+        android:layout_below="@+id/testoSport"
+        android:text="Id-reserv"
+        android:textColor="#020900"
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/dialogButtonDel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/testoIdRes"
+
+        android:layout_centerInParent="true"
+        android:layout_marginStart="3dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="3dp"
+        android:text="Delete"
+        android:textColor="#FFF"
+        android:visibility="invisible"/>
+
+    <Button
+        android:id="@+id/dialogButtonBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dialogButtonDel"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="3dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="3dp"
+        android:text="Back"
+        android:textColor="#FFF" />
+
+</RelativeLayout>
+
+

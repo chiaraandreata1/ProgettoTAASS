@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".MainActivity">
+
+
+    <RadioGroup
+        android:id="@+id/radioSport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/radioTennis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="5dp"
+            android:checked="true"
+            android:text="tennis" />
+
+        <RadioButton
+            android:id="@+id/radioPadel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_toRightOf="@+id/radioTennis"
+            android:text="padel" />
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/txtHour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/radioSport"
+        android:hint="Insert Hour"
+        android:layout_marginLeft="20dp"
+        android:layout_alignParentRight="true"
+        android:inputType="number"/>
+
+    <DatePicker
+        android:id="@+id/datePicker"
+        android:calendarViewShown="false"
+        android:datePickerMode="spinner"
+        android:layout_width="331dp"
+        android:layout_height="150dp"
+        android:layout_below="@+id/radioSport"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="3dp" />
+
+    <EditText
+        android:id="@+id/txtPlayer1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/datePicker"
+        android:layout_marginLeft="20dp"
+        android:hint="Add Player" />
+
+    <EditText
+        android:id="@+id/txtPlayer2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/datePicker"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/txtPlayer1"
+        android:hint="Add Player" />
+    <EditText
+        android:id="@+id/txtPlayer3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtPlayer1"
+        android:layout_marginLeft="20dp"
+        android:hint="Add Player" />
+    <EditText
+        android:id="@+id/txtPlayer4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtPlayer2"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/txtPlayer3"
+        android:hint="Add Player" />
+
+    <ListView
+        android:id="@+id/list_view1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtPlayer3"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"></ListView>
+
+    <Button
+        android:id="@+id/btnClose"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_below="@+id/list_view1"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:text="Close" />
+
+
+    <Button
+        android:id="@+id/btnDisplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/list_view1"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="182dp"
+        android:text="Display" />
+
+
+</RelativeLayout>

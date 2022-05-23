@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+    tools:context=".Activity2">
+
+    <TextView
+        android:id="@+id/createDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text=""
+        android:textColor="#3C3B3B"
+        android:textSize="24dp" />
+
+    <TextView
+        android:id="@+id/createHour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/createDate"
+        android:text=""
+        android:textColor="#3C3B3B"
+        android:textSize="24dp" />
+
+    <TextView
+        android:id="@+id/createSport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/createHour"
+        android:layout_centerHorizontal="true"
+        android:text=""
+        android:textColor="#3C3B3B"
+        android:textSize="24dp" />
+    <TextView
+        android:id="@+id/createCourtNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/createSport"
+        android:layout_centerHorizontal="true"
+        android:text=""
+        android:textColor="#3C3B3B"
+        android:textSize="24dp" />
+
+    <Button
+        android:id="@+id/createButtonBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/createCourtNumber"
+        android:layout_marginStart="3dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="3dp"
+        android:text="Back"
+        android:textColor="#FFF" />
+    <Button
+        android:id="@+id/createReservButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/createCourtNumber"
+        android:layout_toRightOf="@+id/createButtonBack"
+        android:layout_marginStart="3dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="3dp"
+        android:text="Create"
+        android:textColor="#FFF" />
+
+</RelativeLayout>
