@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 
 import { ReservationService } from '../../services/reservation.service';
 import { Reservation } from '../../models/reservation';
-import {UserService} from "../../services/user.service";
+import {OldUserService} from "../../services/user.service";
 import {FormControl} from "@angular/forms";
+import {UserService} from "../../user/user.service";
 
 @Component({
   selector: 'reservations-list',
@@ -19,25 +20,31 @@ export class ReservationsListComponent implements OnInit {
   dateReservation = new FormControl();
   sportReservation = '';
 
-  //isAdmin = false;
+  isAdmin = false;
 
   courts = new Array();
   HoursAvailable = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
   monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   MonthsAvailable = new Array();
 
+  subscription = new Subscription()
+
   minDate: Date;
 
-  constructor(private reservationService: ReservationService, private userService: UserService) {
+  constructor(private reservationService: ReservationService, private userService: OldUserService, private NewUserService: UserService) {
     this.minDate = new Date();
   }
 
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
   ngOnInit(): void {
-    //this.isAdmin = this.userService.getRoleUserLogged() == "admin";
     this.reloadData();
     const firstMonthIndex = new Date().getMonth()
     for (let i=firstMonthIndex; i<firstMonthIndex+6; i++)
       this.MonthsAvailable.push(this.monthNames[i]);
+    this.subscription = this.NewUserService.isAdmin().subscribe(data => { this.isAdmin = data; });
   }
 
   deleteReservations() {
@@ -59,10 +66,11 @@ export class ReservationsListComponent implements OnInit {
     let stringDate = `${d < 10 ? '0' : ''}${d}-${m < 10 ? '0' : ''}${m}-${y}`;
     if (this.sportReservation != "") //1970-01-01 è la data default se non scegli una data
     {
-      //if (!this.isAdmin)
-        //this.reservations = this.reservationService.getUserLoggedReservationsBySport(this.userService.getIdUserLogged(), this.sportReservation);
-      if (stringDate!='01-01-1970') //PRIMA C'ERA L'ELSE, SE È ADMIN PRENDE TUTTE LE RESERVATIONS, SE E' USER SOLO
+      if (!this.isAdmin)
+        this.reservations = this.reservationService.getUserLoggedReservationsBySport(0, this.sportReservation); //TODO: userLoggedId deve essere l'id dell'utente loggato
+      else if (stringDate!='01-01-1970')
         this.reservations = this.reservationService.getReservationByDateAndSport(stringDate, this.sportReservation);
+
         /*
         this.reservationService.getReservationByDateAndSport(stringDate, this.sportReservation).toPromise()
             .then(

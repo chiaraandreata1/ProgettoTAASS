@@ -5,7 +5,7 @@ import {CoursesPendingComponent} from "../courses-pending/courses-pending.compon
 import {AbstractControl, FormControl} from "@angular/forms";
 import {User} from "../../models/user";
 import {map, Observable} from "rxjs";
-import {UserService} from "../../services/user.service";
+import {OldUserService} from "../../services/user.service";
 
 @Component({
   selector: 'course-details',
@@ -16,7 +16,7 @@ import {UserService} from "../../services/user.service";
 export class CourseDetailsComponent implements OnInit {
 
   @Input() course!: Course;
-  //@Input() isAdmin!: boolean;
+  @Input() isAdmin!: boolean;
   @Input() isPending!: boolean;
 
   user1!: User;
@@ -25,9 +25,7 @@ export class CourseDetailsComponent implements OnInit {
   users = new Array()
   filterOptions = new Observable<User[]>();
 
-  constructor(private courseService: CourseService, private listPending: CoursesPendingComponent, private userService: UserService) {
-
-  }
+  constructor(private courseService: CourseService, private listPending: CoursesPendingComponent, private userService: OldUserService) {}
 
   ngOnInit(): void {
     let obsUsers = this.userService.getUsersList();

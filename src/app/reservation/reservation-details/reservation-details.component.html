@@ -69,7 +69,7 @@
 
   <mat-divider inset></mat-divider>
   <mat-card-actions>
-    <button *ngIf="reservation.typeReservation=='private'" mat-raised-button  color="warn" style="align-self: end" (click)='deleteReservation()'>DELETE</button> <!-- prima nell'if c'era OR isAdmin -->
+    <button *ngIf="reservation.typeReservation=='private' || isAdmin" mat-raised-button  color="warn" style="align-self: end" (click)='deleteReservation()'>DELETE</button>
   </mat-card-actions>
 </mat-card>
 

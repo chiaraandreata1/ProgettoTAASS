@@ -1,5 +1,5 @@
 import {Team} from "../models/team";
-import {UserService} from "../services/user.service";
+import {OldUserService} from "../services/user.service";
 import {Injectable} from "@angular/core";
 
 @Injectable()
@@ -8,7 +8,7 @@ export class Serialization {
   private getUsers;
 
   constructor(
-    private userService: UserService
+    private userService: OldUserService
   ) {
     this.getUsers = userService.getUsersInfo.bind(this.userService);
   }

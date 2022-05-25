@@ -9,7 +9,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 import {UserInfo} from "../../../models/user-info";
-import {UserService} from "../../../services/user.service";
+import {OldUserService} from "../../../services/user.service";
 import {Team} from "../../../models/team";
 
 @Component({
@@ -31,7 +31,7 @@ export class CreateTeamComponent implements OnInit, OnChanges {
   public suggestions: string[] = [];
 
   constructor(
-    private userService: UserService,
+    private userService: OldUserService,
     private elementRef: ElementRef
   ) {
 

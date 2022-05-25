@@ -13,7 +13,7 @@
           </mat-radio-group>
         </div>
       </div>
-      <div class="col-4"> <!-- prima c'era l'if con isAdmin -->
+      <div class="col-4" *ngIf="isAdmin">
         <mat-form-field>
           <input readonly='true' matInput [matDatepicker] = "picker" name="dateReservation" id="dateReservation" (ngModelChange)="reloadData()" [min]="minDate"
                  [formControl]="dateReservation" required>
@@ -40,13 +40,13 @@
   </div>
 </ng-container>
 -->
-<mat-tab-group *ngIf="dateReservation.value && sportReservation"> <!-- prima nell'if c'era anche isAdmin -->
+<mat-tab-group *ngIf="dateReservation.value && sportReservation && isAdmin">
   <mat-tab *ngFor="let hour of HoursAvailable" label="{{hour}}:00">
     <div class="contentmattab">
       <ng-container *ngFor="let court of courts">
         <ng-container *ngFor="let reservation of reservations | async">
           <div *ngIf="reservation.date.getHours()-1==hour && reservation.courtReservation.id==court">
-            <reservation-details [reservation]='reservation' ></reservation-details> <!-- prima nel reservation details gli passavi anche isAdmin -->
+            <reservation-details [reservation]='reservation' [isAdmin]="isAdmin"></reservation-details>
           </div>
         </ng-container>
       </ng-container>
