@@ -7,6 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -33,6 +36,33 @@ public class CourseController {
         courseRepository.deleteById(id);
 
         return new ResponseEntity<>("Course deleted!", HttpStatus.OK);
+    }
+
+    @GetMapping("/courses/year/{year}/ispending/{ispending}")
+    public List<Course> findCompleteCoursesByYear(@PathVariable Integer year, @PathVariable Boolean ispending){
+        SimpleDateFormat DAY_TIME_DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+        StringBuilder startDateTime = new StringBuilder(); StringBuilder endDateTime = new StringBuilder();
+        startDateTime.append("01-01-").append(year.toString()); endDateTime.append("31-12-").append(year);
+        /*
+        try {
+            return courseRepository.findAllByEndDateRegistrationBetweenAndPlayersIsLessThanEqual(DAY_TIME_DATE_FORMAT.parse(startDateTime.toString()), DAY_TIME_DATE_FORMAT.parse(endDateTime.toString()), 3);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+         */
+        try {
+            List<Course> allCoursesByYear = courseRepository.findAllByEndDateRegistrationBetween(DAY_TIME_DATE_FORMAT.parse(startDateTime.toString()), DAY_TIME_DATE_FORMAT.parse(endDateTime.toString()));
+            List<Course> allCourses = new ArrayList<>();
+            for (Course course : allCoursesByYear) {
+                if (course.getPlayers().size() == 3 && !ispending)
+                    allCourses.add(course);
+                else if (course.getPlayers().size() < 3 && ispending)
+                    allCourses.add(course);
+            }
+            return allCourses;
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PutMapping("/courses/{id}")

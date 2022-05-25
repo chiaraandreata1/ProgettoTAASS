@@ -1,166 +1,230 @@
-version: '3'
+version: '3.7'
 
 services:
-  eureka-client:
-    build:
-      context: ./eureka-client
-      dockerfile: Dockerfile
-    image: eurekaclient
-    container_name: eurekaclient
-    ports:
-      - "8080:8080"
-    depends_on:
-      - eureka-server
-    environment:
-      eureka.client.serviceUrl.defaultZone: http://eureka-server:8761/eureka/
-  eureka-server:
-    build:
-      context: ./eureka-server
-      dockerfile: Dockerfile
-    image: eurekaserver
-    container_name: eurekaserver
-    ports:
-      - "8761:8761"
-    environment:
-      eureka.instance.hostname: eureka-server
-      eureka.client.serviceUrl.defaultZone: http://eureka-server:8761/eureka/
+#  #GATEWAY
+#  dbsession:
+#      container_name: dbsession
+#      image: "postgres"
+#      ports:
+#        - "5432"
+#      environment:
+#        POSTGRES_DB: session
+#        POSTGRES_USER: taass
+#        POSTGRES_PASSWORD: asd
+#        restart: unless-stopped
+#  gateway:
+#    build:
+#      context: ./gateway
+#      dockerfile: Dockerfile
+#    image: gateway
+#    container_name: gateway
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - dbsession
+#      - eureka-server
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbsession:5432/session
+#      - SPRING_DATASOURCE_USERNAME=taass
+#      - SPRING_DATASOURCE_PASSWORD=asd
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+#      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+#    networks:
+#      - rabbitmq_net
+#
+#  #EUREKA-SERVER
+#  eureka-server:
+#    build:
+#      context: ./eureka-server
+#      dockerfile: Dockerfile
+#    image: eurekaserver
+#    container_name: eurekaserver
+#    ports:
+#      - "8761:8761"
+#    environment:
+#      eureka.instance.hostname: eureka-server
+#      eureka.client.serviceUrl.defaultZone: http://eureka-server:8761/eureka/
+#    networks:
+#      - rabbitmq_net
 
-  #SERVICE: RESERVATION
-  dbreservations:
-    image: "postgres"
-    ports:
-      - "5432"
-    environment:
-      POSTGRES_DB: reservations
-      POSTGRES_USER: peppe
-      POSTGRES_PASSWORD: asd
-      restart: unless-stopped
-  reservation-service:
-    build:
-      context: ./reservation-service
-      dockerfile: Dockerfile
-    image: reservation-service
-    container_name: reservation-service
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbreservations:5432/reservations
-      - SPRING_DATASOURCE_USERNAME=peppe
-      - SPRING_DATASOURCE_PASSWORD=asd
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
-    ports:
-      - "8083:8083"
-    depends_on:
-    - dbreservations
-    - eureka-server
+#  #SERVICE: RESERVATION
+#  dbreservations:
+#    image: "postgres"
+#    ports:
+#      - "5432"
+#    environment:
+#      POSTGRES_DB: reservations
+#      POSTGRES_USER: taass
+#      POSTGRES_PASSWORD: asd
+#      restart: unless-stopped
+#  reservation-service:
+#    build:
+#      context: ./reservation-service
+#      dockerfile: Dockerfile
+#    image: reservation-service
+#    container_name: reservation-service
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbreservations:5432/reservations
+#      - SPRING_DATASOURCE_USERNAME=taass
+#      - SPRING_DATASOURCE_PASSWORD=asd
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+#      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+#    ports:
+#      - "8083:8083"
+#    depends_on:
+#    - dbreservations
+#    - eureka-server
+#    networks:
+#      - rabbitmq_net
 
-  #SERVICE BOARD
-  dbboards:
-    image: "postgres"
-    ports:
-      - "5432"
-    environment:
-      POSTGRES_DB: boards
-      POSTGRES_USER: peppe
-      POSTGRES_PASSWORD: asd
-      restart: unless-stopped
-  board-service:
-    build:
-      context: ./board-service
-      dockerfile: Dockerfile
-    image: board-service
-    container_name: board-service
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbboards:5432/boards
-      - SPRING_DATASOURCE_USERNAME=peppe
-      - SPRING_DATASOURCE_PASSWORD=asd
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
-    ports:
-      - "8081:8081"
-    depends_on:
-      - dbboards
-      - eureka-server
+#  #SERVICE AUTH
+#  dbusers:
+#    image: "postgres"
+#    ports:
+#      - "5432"
+#    environment:
+#      POSTGRES_DB: users
+#      POSTGRES_USER: taass
+#      POSTGRES_PASSWORD: asd
+#      restart: unless-stopped
+#  auth-service:
+#    build:
+#      context: ./auth-service
+#      dockerfile: Dockerfile
+#    image: auth-service
+#    container_name: auth-service
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbusers:5432/users
+#      - SPRING_DATASOURCE_USERNAME=taass
+#      - SPRING_DATASOURCE_PASSWORD=asd
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+#      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+#    ports:
+#      - "8081:8081"
+#    depends_on:
+#      - dbusers
+#      - eureka-server
+#    networks:
+#      - rabbitmq_net
+#
+#  #SERVICE LESSON
+#  dblessons:
+#    image: "postgres"
+#    ports:
+#      - "5432"
+#    environment:
+#      POSTGRES_DB: lessons
+#      POSTGRES_USER: taass
+#      POSTGRES_PASSWORD: asd
+#      restart: unless-stopped
+#  lesson-service:
+#    build:
+#      context: ./lesson-service
+#      dockerfile: Dockerfile
+#    image: lesson-service
+#    container_name: lesson-service
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://dblessons:5432/lessons
+#      - SPRING_DATASOURCE_USERNAME=taass
+#      - SPRING_DATASOURCE_PASSWORD=asd
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+#      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+#    ports:
+#      - "8082:8082"
+#    depends_on:
+#      - dblessons
+#      - eureka-server
+#    networks:
+#      - rabbitmq_net
+#
+#  #SERVICE TOURNAMENT
+#  dbtournaments:
+#    image: "postgres"
+#    ports:
+#      - "5432"
+#    environment:
+#      POSTGRES_DB: tournaments
+#      POSTGRES_USER: taass
+#      POSTGRES_PASSWORD: asd
+#      restart: unless-stopped
+#  tournaments-service:
+#    build:
+#      context: ./tournament-service
+#      dockerfile: Dockerfile
+#    image: tournament-service
+#    container_name: tournament-service
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbtournaments:5432/tournaments
+#      - SPRING_DATASOURCE_USERNAME=taass
+#      - SPRING_DATASOURCE_PASSWORD=asd
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+#      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+#    ports:
+#      - "8084:8084"
+#    depends_on:
+#      - dbtournaments
+#      - eureka-server
+#    networks:
+#      - rabbitmq_net
+#
+#  #SERVICE BOARD
+#  dbboards:
+#    image: "postgres"
+#    ports:
+#      - "5432"
+#    environment:
+#      POSTGRES_DB: boards
+#      POSTGRES_USER: taass
+#      POSTGRES_PASSWORD: asd
+#      restart: unless-stopped
+#  board-service:
+#    build:
+#      context: ./board-service
+#      dockerfile: Dockerfile
+#    image: board-service
+#    container_name: board-service
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbboards:5432/boards
+#      - SPRING_DATASOURCE_USERNAME=taass
+#      - SPRING_DATASOURCE_PASSWORD=asd
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+#      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+#    ports:
+#      - "8081:8081"
+#    depends_on:
+#      - dbboards
+#      - eureka-server
+#    networks:
+#      - rabbitmq_net
 
-  #SERVICE LESSON
-  dblessons:
-    image: "postgres"
-    ports:
-      - "5432"
-    environment:
-      POSTGRES_DB: lessons
-      POSTGRES_USER: peppe
-      POSTGRES_PASSWORD: asd
-      restart: unless-stopped
-  lesson-service:
+  frontend:
+    container_name: frontend
     build:
-      context: ./lesson-service
-      dockerfile: Dockerfile
-    image: lesson-service
-    container_name: lesson-service
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://dblessons:5432/lessons
-      - SPRING_DATASOURCE_USERNAME=peppe
-      - SPRING_DATASOURCE_PASSWORD=asd
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+          context: ./tennispadel-app-v2
+          dockerfile: Dockerfile
     ports:
-      - "8082:8082"
-    depends_on:
-      - dblessons
-      - eureka-server
+      - "4200:4200"
+    volumes:
+      - ./tennispadel-app-v2/app/node_modules
+      - .:/tennispadel-app-v2/app
 
-  #SERVICE TOURNAMENT
-  dbtournaments:
-    image: "postgres"
-    ports:
-      - "5432"
-    environment:
-      POSTGRES_DB: tournaments
-      POSTGRES_USER: peppe
-      POSTGRES_PASSWORD: asd
-      restart: unless-stopped
-  tournaments-service:
-    build:
-      context: ./tournament-service
-      dockerfile: Dockerfile
-    image: tournament-service
-    container_name: tournament-service
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbtournaments:5432/tournaments
-      - SPRING_DATASOURCE_USERNAME=peppe
-      - SPRING_DATASOURCE_PASSWORD=asd
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
-    ports:
-      - "8084:8084"
-    depends_on:
-      - dbtournaments
-      - eureka-server
 
-  #SERVICE USER
-  dbusers:
-    image: "postgres"
-    ports:
-      - "5432"
-    environment:
-      POSTGRES_DB: users
-      POSTGRES_USER: peppe
-      POSTGRES_PASSWORD: asd
-      restart: unless-stopped
-  user-service:
-    build:
-      context: ./user-service
-      dockerfile: Dockerfile
-    image: user-service
-    container_name: user-service
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbusers:5432/users
-      - SPRING_DATASOURCE_USERNAME=peppe
-      - SPRING_DATASOURCE_PASSWORD=asd
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
-    ports:
-      - "8085:8085"
-    depends_on:
-      - dbusers
-      - eureka-server
+#  rabbitmq:
+#    image: rabbitmq:3.8-management
+#    hostname: rabbitmq
+#    ports:
+#      - 5672:5672
+#      - 15672:15672
+#    volumes:
+#      - rabbitmq_data:/var/lib/rabbitmq/
+#      - rabbitmq_log:/var/log/rabbitmq/
+#    networks:
+#      - rabbitmq_net
+#
+#volumes:
+#  rabbitmq_data:
+#  rabbitmq_log:
+#
+#networks:
+#  rabbitmq_net:
+#    driver: bridge
