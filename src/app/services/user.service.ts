@@ -28,8 +28,8 @@ export class UserService {
     console.log(hint);
     if (hint == "")
       return of([]);
-    return this.http.get<UserInfo[]>(`${this.baseUrlUsers}/suggestions`, {params: {
-        input: hint,
+    return this.http.get<UserInfo[]>(`${this.baseUrlUsers}/find-users`, {params: {
+        query: hint,
         limit: limit
       }});
   }

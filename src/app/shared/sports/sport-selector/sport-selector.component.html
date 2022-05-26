@@ -1,14 +1,14 @@
-<div [class.card]="level == 0" class="mb-3">
-  <div *ngIf="level == 0" class="card-header">
-    Sport
-  </div>
-  <div class="row card-body">
-    <div class="col-2" *ngFor="let sport of sports">
-      <div class="form-check">
+<div [class.form-control]="level == 0" class="mb-3">
+<!--  <div *ngIf="level == 0" class="card-header">-->
+<!--    Sport-->
+<!--  </div>-->
+  <div class="row m-3">
+<!--    <div class="col-4" *ngFor="let sport of sports">-->
+      <div class="form-check col-4" *ngFor="let sport of sports">
         <label class="form-check-label" for="sport-{{sport.id}}">{{sport.name}}</label>
         <input class="form-check-input" type="radio" id="sport-{{sport.id}}" name="sports-{{level}}" value="{{sport.name}}" (input)="onSelect(sport)">
       </div>
-    </div>
+<!--    </div>-->
   </div>
   <app-sport-selector *ngIf="innerSelection && sports.includes(innerSelection) && innerSelection.children" (selectedChange)="selectedChange.emit($event)" [selected]="fromAbove" [sports]="innerSelection.children" [level]="level + 1"></app-sport-selector>
 </div>

@@ -1,12 +1,14 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {Sport} from "../../models/sport";
 import {TournamentBuilding} from "../../models/tournament-building";
-import {Team} from "../../models/team";
 import {UserInfo} from "../../models/user-info";
 import {TournamentsService} from "../tournaments.service";
-import {Match, Tournament, TournamentRound} from "../../models/tournament";
+import {Match, Team, Tournament, TournamentRound} from "../../models/tournament";
 import {Router} from "@angular/router";
 import {FacilityService} from "../../services/facility.service";
+import {TournamentDefinition} from "../../models/tournament-definition";
+import {UserService} from "../../user/user.service";
+import {Serialization} from "../../utilities/serialization";
 
 @Component({
   selector: 'app-create-tournaments',
@@ -22,25 +24,33 @@ export class CreateTournamentComponent implements OnInit, AfterViewInit {
 
   tournament?: Tournament;
 
-  tournamentBuilding!: TournamentBuilding;
-  teams: Team[] = [];
+  tournamentBuilding!: TournamentDefinition;
+  // teams: Team[] = [];
 
   selectedPlayers!: UserInfo[];
-  editing?: Team;
+  // editing?: Team;
   waiting: boolean = false;
-  level?: string;
+  // level?: string;
+  error?: string;
 
   constructor(
     private router: Router,
     private facilityService: FacilityService,
-    private tournamentService: TournamentsService
+    private tournamentService: TournamentsService,
+    private userService: UserService
   ) {
   }
 
   ngOnInit(): void {
-    this.teams = [
-      // new Team([new UserB("Alfio")])
-    ];
+    // this.teams = [
+    //   // new Team([new UserB("Alfio")])
+    // ];
+
+    let user = this.userService.getCurrentUser();
+
+    if (!user || user.type == "PLAYER")
+      this.router.navigate(["login"]);
+
     const boundUpdateDates = this.updateDates.bind(this);
 
     this.facilityService.getSports().subscribe(value => {
@@ -57,7 +67,7 @@ export class CreateTournamentComponent implements OnInit, AfterViewInit {
       }, 0);
     });
 
-    this.tournamentBuilding = new TournamentBuilding(
+    this.tournamentBuilding = new TournamentDefinition(
       // @ts-ignore
       undefined,
       undefined,
@@ -65,6 +75,7 @@ export class CreateTournamentComponent implements OnInit, AfterViewInit {
       undefined,
       undefined,
       undefined,
+      undefined
     );
 
     this.selectedPlayers = [];
@@ -85,7 +96,7 @@ export class CreateTournamentComponent implements OnInit, AfterViewInit {
   }
 
   updateDates(e: any): void {
-    this.tournamentBuilding.dates = e.dates;
+    this.tournamentBuilding.dates = e.dates.map((value: Date) => Serialization.serializeDate(value, false));
   }
 
   selectedSport(sport?: Sport) {
@@ -97,43 +108,49 @@ export class CreateTournamentComponent implements OnInit, AfterViewInit {
     // this.tournamentBuilding.sport = sport;
   }
 
-  createdTeam(team: Team) {
-    this.teams.push(team);
-    for (const player of team.players)
-      this.selectedPlayers.push(player);
-  }
-
-  updatedTeam(team: Team) {
-    for (const player of team.players)
-      this.selectedPlayers.push(player);
-    this.editing = undefined;
-  }
-
-  deleteTeam(team: Team) {
-    this.teams = this.teams.filter(value => value !== team);
-    this.selectedPlayers = this.selectedPlayers.filter(value => !team.players.includes(value))
-  }
-
-  updateTeam(team: Team) {
-    console.log("updated", team);
-    this.selectedPlayers = this.selectedPlayers.filter(value => !team.players.includes(value))
-    this.editing = team;
-  }
+  // createdTeam(team: Team) {
+  //   this.teams.push(team);
+  //   for (const player of team.players)
+  //     this.selectedPlayers.push(player);
+  // }
+  //
+  // updatedTeam(team: Team) {
+  //   for (const player of team.players)
+  //     this.selectedPlayers.push(player);
+  //   this.editing = undefined;
+  // }
+  //
+  // deleteTeam(team: Team) {
+  //   this.teams = this.teams.filter(value => value !== team);
+  //   this.selectedPlayers = this.selectedPlayers.filter(value => !team.players.includes(value))
+  // }
+  //
+  // updateTeam(team: Team) {
+  //   console.log("updated", team);
+  //   this.selectedPlayers = this.selectedPlayers.filter(value => !team.players.includes(value))
+  //   this.editing = team;
+  // }
 
   externalValid() {
-    return this.sport && this.teams && this.teams.length > 0 && this.tournamentBuilding.dates && this.tournamentBuilding.dates.length > 0;
+    return this.sport;
   }
 
   submit() {
-    if (this.externalValid()) {
-      this.waiting = true;
-      this.tournamentBuilding.teams = this.teams;
-      this.tournamentBuilding.sport = this.sport as Sport;
-      this.tournamentService.createTournament(this.tournamentBuilding).subscribe(value => {
-        console.log(value);
-        this.tournament = value;
-        this.waiting = false;
+    if (this.sport) {
+      // this.waiting = true;
+      // this.tournamentBuilding.teams = this.teams;
+      this.tournamentBuilding.sport = this.sport?.id;
+
+      this.tournamentService.create(this.tournamentBuilding).subscribe({
+        next: tournament => this.tournament = tournament,
+        error: msg => this.error = msg
       });
+
+      // this.tournamentService.createTournament(this.tournamentBuilding).subscribe(value => {
+      //   console.log(value);
+      //   this.tournament = value;
+      //   this.waiting = false;
+      // });
     }
   }
 
@@ -146,7 +163,7 @@ export class CreateTournamentComponent implements OnInit, AfterViewInit {
   confirmDraft() {
     this.waiting = true;
     if (this.tournament)
-      this.tournamentService.confirm(this.tournament).subscribe(value => this.router.navigate(['tournaments', 'info'], {queryParams: {'id': value.id}}));
+      this.tournamentService.confirm(this.tournament.id).subscribe(value => this.router.navigate(['tournaments', 'info'], {queryParams: {'id': value.id}}));
   }
 
   formatLevel(l: string): string {

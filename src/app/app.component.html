@@ -32,7 +32,7 @@
               <li><button class="btn btn-link dropdown-item">Upcoming</button></li>
               <li><button class="btn btn-link dropdown-item">In progress</button></li>
               <li><button class="btn btn-link dropdown-item">Mine</button></li>
-              <li *ngIf="isManager$ | async"><button class="btn btn-link dropdown-item">Create</button></li>
+              <li *ngIf="users.isManager$ | async"><button class="btn btn-link dropdown-item">Create</button></li>
             </ul>
           </li>
           <li class="nav-item">
@@ -49,7 +49,8 @@
             <a class="nav-link active" href="{{loginLink('facebook')}}" *ngIf="!user"><i class="bi bi-facebook active"></i> Login with facebook</a>
           </li>
           <li class="nav-item nav-switch-collapsed">
-            <button class="btn btn-link nav-link active" *ngIf="user">{{user.displayName}}</button>
+            <button class="btn btn-link nav-link active" [routerLink]="'me'" *ngIf="user"><img *ngIf="user.picture" style="height: 25px" class="rounded-circle" src="{{user.picture}}"> {{user.displayName}}</button>
+<!--            <button class="btn btn-link nav-link active" *ngIf="user">{{user.displayName}}</button>-->
           </li>
           <li class="nav-item nav-switch-collapsed">
             <button class="btn btn-link nav-link active" *ngIf="user" (click)="logout()">Logout</button>

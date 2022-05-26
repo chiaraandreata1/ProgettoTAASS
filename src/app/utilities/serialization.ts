@@ -1,6 +1,6 @@
-import {Team} from "../models/team";
 import {UserService} from "../services/user.service";
 import {Injectable} from "@angular/core";
+import {Team} from "../models/tournament";
 
 @Injectable()
 export class Serialization {

@@ -23,7 +23,7 @@ export class JsonInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let res: Observable<HttpEvent<any>>;
     req = req.clone({body: this.jsonAdapter.adapt(req.body)});
-    console.log(req.body)
+    // console.log(req.body)
 
     if (req.responseType === 'json') {
       res = this.handleJSONResponse(req, next);

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {TokenStorageService} from "../../services/token-storage.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {UserService} from "../user.service"
@@ -12,7 +12,7 @@ export class LoginComponent implements OnInit {
 
   loginLink = LoginComponent.loginLink;
 
-  errorMessage? : string;
+  errorMessage?: string;
   error?: any;
 
   constructor(
@@ -20,27 +20,29 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private userService: UserService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     const token = this.route.snapshot.queryParamMap.get("token");
     const error = this.route.snapshot.queryParamMap.get("error");
 
     if (token) {
+      this.tokens.signOut();
       this.tokens.saveToken(token);
-      this.userService.me().subscribe(
-        user => {
-          this.tokens.saveUser(user);
-          console.log("navigate");
-          this.router.navigate([""]);
-        },
-        error => {
-          this.errorMessage = error.error.message;
+      this.userService.me().subscribe({
+          next: user => {
+            this.tokens.saveUser(user);
+            this.router.navigate([""]);
+          },
+          error: error => {
+            this.errorMessage = error.error.message;
+          }
         }
       )
     } else if (this.tokens.getToken()) {
-      this.userService.me().subscribe(console.log);
-      console.log("navigate");
+      // this.userService.me().subscribe(console.log);
+      // console.log("navigate");
       this.router.navigate([""]);
     } else if (error) {
       this.errorMessage = error;

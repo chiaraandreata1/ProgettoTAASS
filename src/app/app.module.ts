@@ -55,6 +55,8 @@ import {authInterceptorProviders} from "./utilities/auth-interceptor";
 import { UserBadgeComponent } from './user/user-badge/user-badge.component';
 import { ShowUserComponent } from './user/show-user/show-user.component';
 import { MeComponent } from './user/me/me.component';
+import { MatchComponent } from './tournaments/match/match.component';
+import { TeamComponent } from './tournaments/team/team.component';
 
 @NgModule({
   declarations: [
@@ -87,7 +89,9 @@ import { MeComponent } from './user/me/me.component';
     LoginComponent,
     UserBadgeComponent,
     ShowUserComponent,
-    MeComponent
+    MeComponent,
+    MatchComponent,
+    TeamComponent
   ],
   imports: [
     BrowserModule,

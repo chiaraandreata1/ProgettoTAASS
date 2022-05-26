@@ -3,9 +3,9 @@ import {JsonParser} from "./utilities/json-interceptor";
 import {Serialization} from "./utilities/serialization";
 import {UserService} from "./services/user.service";
 import {UserInfo} from "./models/user-info";
-import {Team} from "./models/team";
 import {firstValueFrom, forkJoin, Observable} from "rxjs";
 import {FacilityService} from "./services/facility.service";
+import {Team} from "./models/tournament";
 
 export class JsonParsing {
 

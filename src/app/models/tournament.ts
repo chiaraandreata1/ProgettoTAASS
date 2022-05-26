@@ -1,6 +1,18 @@
-import {Team} from "./team";
-import {Serialization} from "../utilities/serialization";
-import {Sport} from "./sport";
+import {UserInfo} from "./user-info";
+
+export class Team {
+
+  constructor(
+    public players: number[]
+  ) {
+  }
+
+  public static toJSON(team: Team): object {
+    return {
+      // players: team.players.map(UserInfo.toJSON)
+    }
+  }
+}
 
 export class Match {
 
@@ -9,7 +21,7 @@ export class Match {
     public round: number,
     public roundHeight: number,
     public court: string,
-    public date: Date,
+    public date: string,
     public side0: Team,
     public side1: Team,
     public points0: number,
@@ -23,7 +35,7 @@ export class Match {
       'round': match.round,
       'roundHeight': match.roundHeight,
       'court': match.court,
-      'date': Serialization.serializeDateTime(match.date),
+      // 'date': Serialization.serializeDateTime(match.date),
       'side0': match.side0,
       'side1': match.side1,
       'points0': match.points0,
@@ -51,26 +63,29 @@ export class Tournament {
 
   constructor(
     public id: number,
+    public status: string,
+    public owner: number,
     public name: string,
-    public sport: Sport,
+    public sport: number,
     public price: number,
     public prize: number,
-    public level: string,
     public rounds: TournamentRound[],
+    public teams: Team[],
+    public maxTeamsNumber: number,
     public description?: string,
   ) {
   }
 
   static toJSON(tournament: Tournament) {
     return {
-      'id': tournament.id,
-      'name': tournament.name,
-      'sport': tournament.sport.id,
-      'price': tournament.price,
-      'prize': tournament.prize,
-      'level': tournament.level,
-      'rounds': tournament.rounds.map(TournamentRound.toJSON),
-      'description': tournament.description
+      // 'id': tournament.id,
+      // 'name': tournament.name,
+      // 'sport': tournament.sport.id,
+      // 'price': tournament.price,
+      // 'prize': tournament.prize,
+      // 'level': tournament.level,
+      // 'rounds': tournament.rounds.map(TournamentRound.toJSON),
+      // 'description': tournament.description
     }
   }
 }

@@ -1,6 +1,6 @@
-import {Team} from "./team";
 import {Sport} from "./sport";
 import {Serialization} from "../utilities/serialization";
+import {Team} from "./tournament";
 
 export class TournamentBuilding {
 

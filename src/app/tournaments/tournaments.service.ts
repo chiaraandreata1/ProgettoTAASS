@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {TournamentBuilding} from "../models/tournament-building";
 import {catchError, Observable, of, tap} from "rxjs";
 import {Tournament} from "../models/tournament";
+import {TournamentDefinition} from "../models/tournament-definition";
 
 @Injectable({
   providedIn: 'root'
@@ -29,22 +30,33 @@ export class TournamentsService {
     };
   }
 
+  create(tournament: TournamentDefinition): Observable<Tournament> {
+    return this.http.post<Tournament>(`${this.baseUrl}/create`, tournament)
+      .pipe(
+        catchError(this.handleError<Tournament>("create"))
+      );
+  }
+
   createTournament(tournament: TournamentBuilding): Observable<Tournament> {
     return this.http.post<Tournament>(`${this.baseUrl}/create`, TournamentBuilding.toJSON(tournament)).pipe(
       catchError(this.handleError<Tournament>("create"))
     );
   }
 
-  confirm(tournament: Tournament): Observable<Tournament> {
-    let body = Tournament.toJSON(tournament);
-    return this.http.post<Tournament>(`${this.baseUrl}/confirm`, body).pipe(
-      catchError(this.handleError<Tournament>("confirm"))
+  confirm(id: number): Observable<Tournament> {
+    return this.http.get<Tournament>(`${this.baseUrl}/confirm`, {params: {id: id}}).pipe(
+      // catchError(this.handleError<Tournament>("confirm"))
     );
   }
 
   get(id: number): Observable<Tournament> {
-    return this.http.get<Tournament>(`${this.baseUrl}/${id}`).pipe(
+    console.log(`${this.baseUrl}/get?id=${id}`);
+    return this.http.get<Tournament>(`${this.baseUrl}/get?id=${id}`).pipe(
       catchError(this.handleError<Tournament>("confirm"))
     );
+  }
+
+  addPlayers(tournamentID: number, ids: number[]): Observable<Tournament> {
+    return this.http.get<Tournament>(`${this.baseUrl}/register-players`, {params: {id: tournamentID, players: ids}});
   }
 }

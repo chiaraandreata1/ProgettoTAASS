@@ -28,23 +28,23 @@ export class AppComponent implements OnInit {
   me: any;
   a: any;
 
-  public isManager$: Observable<boolean>;
+  // public isManager$: Observable<boolean>;
 
   constructor(
     private tokens: TokenStorageService,
     public users: UserService,
     private router: Router
   ) {
-    users.currentUserObserver().subscribe(console.log);
-    this.isManager$ = users.isManager().pipe(tap(console.log));
+    // users.currentUserObserver().subscribe(console.log);
+    // this.isManager$ = users.isManager();
   }
 
   ngOnInit(): void {
     this.tokens.getCurrentUserSubject().subscribe(
       user => {
-        console.log(user);
+        // console.log(user);
         this.user = user;
-        console.log(this.user);
+        // console.log(this.user);
       }
     )
   }
@@ -53,7 +53,7 @@ export class AppComponent implements OnInit {
   logout() {
     this.users.logout().subscribe(() => {
       this.tokens.signOut();
-      this.router.navigate([]);
+      this.router.navigate([""]);
     })
   }
 

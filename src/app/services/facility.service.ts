@@ -9,7 +9,7 @@ import {Court} from "../models/court";
 })
 export class FacilityService {
 
-  private baseUrl = 'http://localhost:8080/api/v1/facility/';
+  private baseUrl = 'http://localhost:8080/api/v1/facility';
 
   private sports: Map<number, Sport> = new Map<number, Sport>();
 
