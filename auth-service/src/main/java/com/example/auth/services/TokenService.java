@@ -5,8 +5,10 @@ import com.example.auth.models.LocalUser;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 
@@ -35,6 +37,27 @@ public class TokenService {
         Claims claims = Jwts.parser().setSigningKey(authProperties.getAuth().getTokenSecret()).parseClaimsJws(token).getBody();
 
         return Long.parseLong(claims.getSubject());
+    }
+
+    public void validateTokenThrow(String authToken) {
+        try {
+            Jwts.parser().setSigningKey(authProperties.getAuth().getTokenSecret()).parseClaimsJws(authToken);
+        } catch (SignatureException ex) {
+            logger.error("Invalid JWT signature");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid JWT signature");
+        } catch (MalformedJwtException ex) {
+            logger.error("Invalid JWT token");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid JWT token");
+        } catch (ExpiredJwtException ex) {
+            logger.error("Expired JWT token");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        } catch (UnsupportedJwtException ex) {
+            logger.error("Unsupported JWT token");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported JWT token");
+        } catch (IllegalArgumentException ex) {
+            logger.error("JWT claims string is empty.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "JWT claims string is empty.");
+        }
     }
 
     public boolean validateToken(String authToken) {

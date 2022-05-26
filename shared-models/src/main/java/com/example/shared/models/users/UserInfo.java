@@ -1,6 +1,10 @@
 package com.example.shared.models.users;
 
-public class UserInfo {
+import java.io.Serializable;
+
+public class UserInfo implements Serializable {
+
+    private static final long serialVersionUID = 42L;
 
     private Long id;
     private String email;

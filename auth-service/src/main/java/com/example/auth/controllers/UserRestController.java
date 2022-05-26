@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -51,12 +52,20 @@ public class UserRestController {
         return "boss";
     }
 
-    @GetMapping("{id}")
-    public UserInfo getUser(@PathVariable Long id) {
+    @GetMapping("get")
+    public UserInfo getUser(@RequestParam Long id) {
         UserEntity userEntity = userEntityRepository
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         return userEntity.toUserInfo();
+    }
+
+    @GetMapping("get-users")
+    public List<UserInfo> getUsers(@RequestParam List<Long> ids) {
+        return this.userEntityRepository.findAllById(ids).stream()
+                .sorted(Comparator.comparingInt(o -> ids.indexOf(o.getId())))
+                .map(UserEntity::toUserInfo)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("find-users")

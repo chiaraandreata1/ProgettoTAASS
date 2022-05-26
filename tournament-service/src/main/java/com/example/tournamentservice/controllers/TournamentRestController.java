@@ -15,10 +15,12 @@ import com.example.tournamentservice.rabbithole.ReservationRabbitClient;
 import com.example.tournamentservice.rabbithole.UserRabbitClient;
 import com.example.tournamentservice.repositories.MatchesRepository;
 import com.example.tournamentservice.repositories.TournamentRepository;
+import org.apache.juli.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
@@ -153,13 +155,27 @@ public class TournamentRestController {
     Controller's methods
      */
 
-    @GetMapping("get")
+//    @GetMapping("get")
     @ResponseStatus(HttpStatus.OK)
+//    @PreAuthorize("hasRole('USER')")
     public Tournament get(@RequestParam Long id, @CurrentUser UserDetails userDetails) {
         Tournament tournament = getTournament(id);
 
+        LogFactory.getLog(TournamentRestController.class).error(RequestContextHolder.getRequestAttributes() != null ? RequestContextHolder.getRequestAttributes().getSessionId() : null);
         if (tournament.getStatus() == Tournament.Status.DRAFT
-                && !Objects.equals(userDetails.getId(), tournament.getOwner()))
+                && (userDetails == null || !Objects.equals(userDetails.getId(), tournament.getOwner())))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Draft tournament, for owner only");
+
+        return tournament;
+    }
+
+    @GetMapping("get")
+//    @PreAuthorize("hasRole('USER')")
+    public Tournament me(@RequestParam Long id, @CurrentUser UserDetails userDetails) {
+        Tournament tournament = getTournament(id);
+
+        if (tournament.getStatus() == Tournament.Status.DRAFT
+                && (userDetails == null || !Objects.equals(userDetails.getId(), tournament.getOwner())))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Draft tournament, for owner only");
 
         return tournament;
@@ -237,7 +253,7 @@ public class TournamentRestController {
     @ResponseStatus(HttpStatus.OK)
     public Tournament confirmTournament(@RequestParam Long id, @CurrentUser UserDetails userDetails) {
 
-        Tournament tournament = getTournament(id, Tournament.Status.DRAFT, userDetails.getId());
+        Tournament tournament = getTournament(id, Tournament.Status.DRAFT/*, userDetails.getId()*/);
 
         tournament.setStatus(Tournament.Status.CONFIRMED);
 
@@ -263,7 +279,7 @@ public class TournamentRestController {
     @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @ResponseStatus(HttpStatus.OK)
     public Tournament cancel(@RequestParam Long id, @CurrentUser UserDetails userDetails) {
-        Tournament tournament = getTournament(id, userDetails.getId());
+        Tournament tournament = getTournament(id/*, userDetails.getId()*/);
 
         if (Tournament.Status.CANCELLED.equals(tournament.getStatus()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tournament already cancelled");

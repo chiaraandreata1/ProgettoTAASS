@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -60,7 +61,8 @@ public class UserRabbitController {
         try {
             String jwt = request.getRequestBody();
 
-            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+            if (StringUtils.hasText(jwt)) {
+                tokenProvider.validateTokenThrow(jwt);
                 Long userId = tokenProvider.getUserIdFromToken(jwt);
 
                 UserDetails userDetails = customUserDetailsService.loadUserById(userId).toUserDetails();
@@ -74,6 +76,8 @@ public class UserRabbitController {
                 response = new RabbitResponse<>(authentication);
             } else
                 response = new RabbitResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, "");
+        } catch (ResponseStatusException ex) {
+            response = new RabbitResponse<>(ex.getStatus(), ex.getMessage());
         } catch (Exception ex) {
             response = new RabbitResponse<>(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
