@@ -34,5 +34,8 @@
       <div style="font-size: 16px" *ngIf="users[i]">{{users[i]?.email}}</div>
     </div>
   </form>
-  <button class="btn btn-success" [disabled]="!enableSubmit()" (click)="onAdd()">Submit</button>
+  <div class="btn-group">
+    <button class="btn btn-success" [disabled]="!enableSubmit()" (click)="onAdd()">Submit</button>
+    <button class="btn btn-danger" (click)="close()">Close</button>
+  </div>
 </div>

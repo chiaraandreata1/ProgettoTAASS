@@ -87,4 +87,16 @@ export class UserService {
         tap(console.log)
     );
   }
+
+  public findPlayers(hint: string, limit: number = 5, excluded: number[] = []): Observable<UserInfo[]> {
+    if (hint == "")
+      return of([]);
+    return this.http.get<UserInfo[]>(`${this.baseUrl}/find-players`, {params: {
+        query: hint,
+        excluded: excluded,
+        limit: limit
+      }}).pipe(
+      tap(console.log)
+    );
+  }
 }
