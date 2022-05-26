@@ -6,7 +6,7 @@ import {UserInfo} from "../models/user-info";
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
+export class OldUserService {
 
   private baseUrlUsers = 'http://localhost:8080/api/v1/users';
 

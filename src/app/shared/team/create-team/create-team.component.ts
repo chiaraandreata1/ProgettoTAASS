@@ -13,6 +13,7 @@ import {Team} from "../../../models/tournament";
 import {debounceTime, distinctUntilChanged, Subject, switchMap} from "rxjs";
 import {UserService} from "../../../user/user.service";
 import {MatOptionSelectionChange} from "@angular/material/core";
+import {OldUserService} from "../../../services/user.service";
 
 @Component({
   selector: 'app-create-team',
@@ -39,7 +40,7 @@ export class CreateTeamComponent implements OnInit, OnChanges {
   private partial = new Subject<string>();
 
   constructor(
-    private userService: UserService,
+    private userService: OldUserService,
     private elementRef: ElementRef
   ) {}
 

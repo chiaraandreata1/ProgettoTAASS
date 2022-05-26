@@ -1,8 +1,9 @@
 import {Component, Injectable, OnInit} from '@angular/core';
-import {Observable} from "rxjs";
+import {Observable, Subscription} from "rxjs";
 import {Course} from "../../models/course";
 import {CourseService} from "../../services/course.service";
-import {UserService} from "../../services/user.service";
+import {OldUserService} from "../../services/user.service";
+import {UserService} from "../../user/user.service";
 
 @Component({
   selector: 'app-courses-completed',
@@ -16,7 +17,7 @@ import {UserService} from "../../services/user.service";
 
 export class CoursesCompletedComponent implements OnInit {
 
-  //isAdmin = false;
+  isAdmin = false;
 
   completeCourses!: Observable<Course[]>;
   rangeYears!: any;
@@ -25,7 +26,9 @@ export class CoursesCompletedComponent implements OnInit {
 
   levels = ["Beginner", "Intermediate", "Pro"];
 
-  constructor(private courseService: CourseService, private userService: UserService) {
+  subscription = new Subscription()
+
+  constructor(private courseService: CourseService, private userService: OldUserService, private NewUserService: UserService) {
     let year = new Date().getFullYear();
     this.rangeYears = new Array();
     for (let i=0; i<5; i++)
@@ -33,12 +36,16 @@ export class CoursesCompletedComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //this.isAdmin = this.userService.getRoleUserLogged() == "admin";
+    this.subscription = this.NewUserService.isAdmin().subscribe(data => { this.isAdmin = data; });
   }
 
   findCompleteCoursesBySportAndYear() {
     if (this.sportCourse!='' && this.yearCourse)
       this.completeCourses = this.courseService.getCoursesBySportAndYear(this.sportCourse,this.yearCourse, false);
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   debugButton() {

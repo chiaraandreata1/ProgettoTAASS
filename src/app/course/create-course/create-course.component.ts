@@ -4,7 +4,7 @@ import {CourseService} from "../../services/course.service";
 import {AbstractControl, FormControl, Validators} from "@angular/forms";
 import {map, Observable} from "rxjs";
 import {User} from "../../models/user";
-import {UserService} from "../../services/user.service";
+import {OldUserService} from "../../services/user.service";
 
 interface Courts {
   value: number;
@@ -51,12 +51,10 @@ export class CreateCourseComponent implements OnInit {
   submitted = false;
 
   minDateEndRegistration: Date;
-  //isAdmin: Boolean;
 
   today = new Date(); //utilizzato solo nel check che le date scelte non siano quelle di oggi
 
-  constructor(private courseService: CourseService, private userService: UserService) {
-    //this.isAdmin = this.userService.getRoleUserLogged()=='admin';
+  constructor(private courseService: CourseService, private userService: OldUserService) {
     this.minDateEndRegistration = new Date();
     this.minDateEndRegistration.setDate(this.minDateEndRegistration.getDate() + 14);
     //costruisco l'array degli istruttori

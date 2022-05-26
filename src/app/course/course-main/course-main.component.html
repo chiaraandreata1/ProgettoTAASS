@@ -1,6 +1,6 @@
 <button mat-stroked-button routerLink="completedCourses" routerLinkActive="active">Completed Courses</button>
 <button mat-stroked-button routerLink="pendingCourses" routerLinkActive="active">Pending Courses</button>
-<button mat-stroked-button routerLink="createCourse" routerLinkActive="active">Create Course</button> <!-- prima c'era un if con isAdmin -->
+<button *ngIf="isAdmin" mat-stroked-button routerLink="createCourse" routerLinkActive="active">Create Course</button>
 <!-- TODO: se passa la data di scadenza automaticamente eliminare il corso (OPERAZIONE SERVER)-->
 <nav>
   <router-outlet></router-outlet>

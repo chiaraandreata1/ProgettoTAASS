@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import {Reservation} from "../../models/reservation";
 import {ReservationService} from "../../services/reservation.service";
-import {UserService} from "../../services/user.service";
+import {OldUserService} from "../../services/user.service";
 import {map, Observable} from "rxjs";
 
 
@@ -63,7 +63,7 @@ export class CreateReservationComponent implements OnInit {
   minDate: Date;
   maxDate: Date;
 
-  constructor(private reservationService: ReservationService, private  userService: UserService) {
+  constructor(private reservationService: ReservationService, private  userService: OldUserService) {
     let date = new Date()
     if (date.getHours()<23)
       this.minDate = date;

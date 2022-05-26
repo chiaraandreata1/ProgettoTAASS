@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {JsonParser} from "./utilities/json-interceptor";
 import {Serialization} from "./utilities/serialization";
-import {UserService} from "./services/user.service";
+import {OldUserService} from "./services/user.service";
 import {UserInfo} from "./models/user-info";
 import {firstValueFrom, forkJoin, Observable} from "rxjs";
 import {FacilityService} from "./services/facility.service";
@@ -12,7 +12,7 @@ export class JsonParsing {
   private observables: Observable<any>[];
 
   constructor(
-    private userService: UserService,
+    private userService: OldUserService,
     private facilityService: FacilityService,
     private body: string
   ) {
@@ -29,6 +29,8 @@ export class JsonParsing {
     let ob;
 
     switch (key) {
+      case 'firstDayLesson':
+      case 'endDateRegistration':
       case 'date':
         value = Serialization.deserializeDate(value as string);
         break;
@@ -67,7 +69,7 @@ export class CustomJsonParser implements JsonParser {
 
   constructor(
     private serialization: Serialization,
-    private userService: UserService,
+    private userService: OldUserService,
     private facilityService: FacilityService
   ) {
   }

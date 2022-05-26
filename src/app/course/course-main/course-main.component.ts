@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {UserService} from "../../services/user.service";
+import {Observable, Subscription} from "rxjs";
+import {AppComponent} from "../../app.component";
+import {UserService} from "../../user/user.service";
 
 @Component({
   selector: 'app-course-main',
@@ -8,12 +10,19 @@ import {UserService} from "../../services/user.service";
 })
 export class CourseMainComponent implements OnInit {
 
-  //isAdmin = false;
+  isAdmin = false;
+  subscription = new Subscription();
 
-  constructor(private userService: UserService) { }
+
+  constructor(private NewUserService: UserService, private app: AppComponent) {
+  }
 
   ngOnInit(): void {
-    //this.isAdmin = this.userService.getRoleUserLogged() == "admin";
+    this.subscription = this.NewUserService.isAdmin().subscribe(data => { this.isAdmin = data; });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
 }
