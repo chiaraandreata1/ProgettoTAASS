@@ -25,10 +25,12 @@ public class TokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Session session = sessionRepository.findById(RequestContextHolder.getRequestAttributes().getSessionId());
 
-        UsernamePasswordAuthenticationToken token = session.getAttribute("TOKEN");
+        if (session != null) {
+            UsernamePasswordAuthenticationToken token = session.getAttribute("TOKEN");
 
-        SecurityContextHolder.getContext().setAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(token);
 
-        filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
+        }
     }
 }

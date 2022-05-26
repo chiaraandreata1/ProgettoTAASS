@@ -16,6 +16,7 @@ import com.example.tournamentservice.rabbithole.ReservationRabbitClient;
 import com.example.tournamentservice.rabbithole.UserRabbitClient;
 import com.example.tournamentservice.repositories.MatchesRepository;
 import com.example.tournamentservice.repositories.TournamentRepository;
+import org.apache.catalina.User;
 import org.apache.juli.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -85,71 +86,87 @@ public class TournamentRestController {
         return tournament;
     }
 
-    private Tournament addTeam(Long id, List<Long> players) {
+    private Tournament addTeam(Long id, List<Long> playerIDs) {
 
         Tournament tournament = getTournament(id, Tournament.Status.CONFIRMED);
 
         SportInfo sportInfo = facilityRabbitClient.getSportInfo(tournament.getSport());
 
-        if (players.size() != sportInfo.getPlayerPerTeam())
+        if (playerIDs.size() != sportInfo.getPlayerPerTeam())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     String.format("Wrong team size: required %d, given %d",
                             sportInfo.getPlayerPerTeam(),
-                            players.size()));
+                            playerIDs.size()));
 
         if (tournament.getTeams().size() == tournament.getMaxTeamsNumber())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No more team allowed to join this tournament");
 
-        List<UserInfo> nonPlayers = userRabbitClient.getUsersInfo(players).stream()
+        List<UserInfo> players = userRabbitClient.getUsersInfo(playerIDs);
+
+
+
+        List<UserInfo> nonPlayers = players.stream()
                 .filter(userInfo -> userInfo.getType() != UserType.PLAYER)
                 .collect(Collectors.toList());
 
         if (!nonPlayers.isEmpty())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    String.format("Following users are not players: %s", nonPlayers));
+                    String.format("Following users are not players: %s",
+                            nonPlayers.stream().map(UserInfo::getEmail).collect(Collectors.toList())));
 
-        List<Long> alreadyRegistered =
-                tournament.getTeams().stream()
-                        .map(Team::getPlayers)
-                        .flatMap(Collection::stream)
-                        .filter(players::contains)
-                        .collect(Collectors.toList());
+        Set<Long> registered = tournament.getTeams().stream()
+                .map(Team::getPlayers)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
 
-        if (!alreadyRegistered.isEmpty()) {
+        List<UserInfo> duplicate = players.stream().filter(ui -> registered.contains(ui.getId()))
+                .collect(Collectors.toList());
+
+        if (!duplicate.isEmpty()) {
+
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    String.format("Following players' id already registered: %s", alreadyRegistered));
+                    String.format("Following players' already registered for this tournament: %s",
+                            duplicate.stream().map(UserInfo::getEmail).collect(Collectors.toList())));
         }
 
-        tournament.addTeam(new Team(players));
+        tournament.addTeam(new Team(playerIDs));
         return tournamentRepository.save(tournament);
     }
 
     private void complete(Tournament tournament) {
+
         List<Team> teams = tournament.getTeams();
-        List<Match> deleted = new ArrayList<>();
-        List<TournamentRound> rounds = new ArrayList<>(tournament.getRounds());
+        List<Long> toFree = new ArrayList<>();
+//        List<Match> deleted = new ArrayList<>();
+        int toKeep = (int) Math.ceil(teams.size() * 1. / 2);
 
-        TournamentRound round0;
-
-        while (teams.size() * 2 < (round0 = rounds.get(0)).getMatches().size()) {
-            matchesRepository.deleteAll(round0.getMatches());
-            rounds.remove(round0);
-            deleted.addAll(round0.getMatches());
+        while (tournament.getRounds().size() > 1 && tournament.getRounds().get(1).size() >= toKeep) {
+            toFree.addAll(tournament.getRounds().get(0).getMatches().stream().map(Match::getReservationID).collect(Collectors.toList()));
+//            deleted.addAll(tournament.getRounds().get(0).getMatches());
+            tournament.getRounds().remove(0);
         }
 
-        Collections.shuffle(rounds);
+        while (tournament.getRounds().get(0).size() > toKeep) {
+            toFree.add(tournament.getRounds().get(0).getMatches().get(toKeep).getReservationID());
+            tournament.getRounds().get(0).getMatches().remove(toKeep);
+        }
+
+
+        Collections.shuffle(teams);
 
         for (int i = 0; i < teams.size(); i += 2) {
-            Match match = round0.getMatches().get(i / 2);
+            Match match = tournament.getRounds().get(0).getMatches().get(i / 2);
             match.setSide0(teams.get(i));
 
             if (i + 1 < teams.size())
                 match.setSide1(teams.get(i + 1));
         }
 
-        matchesRepository.saveAll(round0.getMatches());
+        matchesRepository.saveAll(tournament.getRounds().get(0).getMatches());
 
-        reservationRabbitClient.delete(deleted.stream().map(Match::getReservationID).collect(Collectors.toList()));
+        tournament.setStatus(Tournament.Status.COMPLETE);
+
+        reservationRabbitClient.delete(toFree, tournament.getId());
     }
 
     /*
@@ -310,5 +327,50 @@ public class TournamentRestController {
     @ResponseStatus(HttpStatus.OK)
     public Tournament addParticipants(@RequestParam Long id, @RequestParam List<Long> players) {
         return addTeam(id, players);
+    }
+
+    private void subTest(Tournament tournament) {
+        List<Team> teams = tournament.getTeams();
+        List<Long> toFree = new ArrayList<>();
+//        List<Match> deleted = new ArrayList<>();
+        int toKeep = (int) Math.ceil(teams.size() * 1. / 2);
+        toKeep = 3;
+
+
+        while (tournament.getRounds().size() > 1 && tournament.getRounds().get(1).size() >= toKeep) {
+            toFree.addAll(tournament.getRounds().get(0).getMatches().stream().map(Match::getReservationID).collect(Collectors.toList()));
+//            deleted.addAll(tournament.getRounds().get(0).getMatches());
+            tournament.getRounds().remove(0);
+        }
+
+        while (tournament.getRounds().get(0).size() > toKeep) {
+            toFree.add(tournament.getRounds().get(0).getMatches().get(0).getReservationID());
+            tournament.getRounds().get(0).getMatches().remove(0);
+        }
+
+        Collections.shuffle(teams);
+
+        for (int i = 0; i < teams.size(); i += 2) {
+            Match match = tournament.getRounds().get(0).getMatches().get(i / 2);
+            match.setSide0(teams.get(i));
+
+            if (i + 1 < teams.size())
+                match.setSide1(teams.get(i + 1));
+        }
+
+        reservationRabbitClient.delete(toFree, tournament.getId());
+        tournament.setStatus(Tournament.Status.COMPLETE);
+
+    }
+
+    @GetMapping("test")
+    public Object test() {
+        Tournament tournament = tournamentRepository.findById(677L).orElse(null);
+
+        subTest(tournament);
+
+        tournamentRepository.save(tournament);
+
+        return tournament;
     }
 }

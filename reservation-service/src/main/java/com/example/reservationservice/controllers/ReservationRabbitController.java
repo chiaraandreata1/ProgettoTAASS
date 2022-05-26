@@ -1,7 +1,9 @@
 package com.example.reservationservice.controllers;
 
+import com.example.reservationservice.rabbithole.FacilityRabbitClient;
 import com.example.shared.rabbithole.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -11,14 +13,19 @@ import java.util.stream.Collectors;
 @Component
 public class ReservationRabbitController {
 
+    @Autowired
+    private FacilityRabbitClient facilityRabbitClient;
+
     @RabbitListener(queues = "${rabbit.reservation.reserve.queue-name}")
     public RabbitResponse<ReservationResponse> reservationRequest(RabbitRequest<List<ReservationRequest>> request) {
 
         // TODO scrivi sto metodo
 
+        List<ReservationRequest> requestBody = request.getRequestBody();
+
         // Dummy
 
-        List<ReservationResponse.ReservationBinding> bindings = request.getRequestBody().stream()
+        List<ReservationResponse.ReservationBinding> bindings = requestBody.stream()
                 .map(rr -> new ReservationResponse.ReservationBinding(rr, -1L))
                 .collect(Collectors.toList());
 
@@ -38,7 +45,7 @@ public class ReservationRabbitController {
 
         try {
             response = new RabbitResponse<>(true);
-            throw new IllegalArgumentException();
+//            throw new IllegalArgumentException();
         }  catch (Exception ex) {
             response = new RabbitResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         }

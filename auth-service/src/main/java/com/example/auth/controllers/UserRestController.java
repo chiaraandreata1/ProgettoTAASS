@@ -1,6 +1,7 @@
 package com.example.auth.controllers;
 
 import com.example.shared.models.users.UserDetails;
+import com.example.shared.models.users.UserType;
 import com.example.shared.tools.CurrentUser;
 import com.example.auth.models.LocalUser;
 import com.example.auth.models.UserEntity;
@@ -71,7 +72,7 @@ public class UserRestController {
     @GetMapping("find-users")
     public List<UserInfo> findUser(@CurrentUser UserInfo user,
                                    @RequestParam(name = "query") String partEmail,
-                                   @RequestParam(required = false) List<String> excluded,
+                                   @RequestParam(required = false) List<Long> excluded,
                                    @RequestParam(required = false, defaultValue = "5") int limit) {
 
         if (excluded == null)
@@ -80,7 +81,7 @@ public class UserRestController {
             excluded = new ArrayList<>(excluded);
 
         if (user != null)
-            excluded.add(user.getEmail());
+            excluded.add(user.getId());
 
         if (limit > 20)
             limit = 20;
@@ -92,7 +93,41 @@ public class UserRestController {
                     .findUserEntitiesByEmailContainingIgnoreCase(partEmail);
         else
             res = userEntityRepository
-                    .findUserEntitiesByEmailContainingIgnoreCaseAndEmailNotIn(partEmail, excluded);
+                    .findUserEntitiesByEmailContainingIgnoreCaseAndIdNotIn(partEmail, excluded);
+
+        return res
+                .stream()
+                .limit(limit)
+                .map(UserEntity::toUserInfo)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("find-players")
+    public List<UserInfo> findPlayers(@CurrentUser UserInfo user,
+                                      @RequestParam(name = "query") String partEmail,
+                                      @RequestParam(required = false) List<Long> excluded,
+                                      @RequestParam(required = false, defaultValue = "5") int limit) {
+
+        if (excluded == null)
+            excluded = new ArrayList<>();
+        else
+            excluded = new ArrayList<>(excluded);
+
+        if (user != null)
+            excluded.add(user.getId());
+
+        if (limit > 20)
+            limit = 20;
+
+        List<UserEntity> res;
+
+        if (excluded.isEmpty())
+            res = userEntityRepository
+                    .findUserEntitiesByEmailContainingIgnoreCaseAndTypeIs(partEmail, UserType.PLAYER);
+        else
+            res = userEntityRepository.findUserEntitiesByEmailContainingIgnoreCaseAndTypeIsAndIdNotIn(partEmail,
+                    UserType.PLAYER,
+                    excluded);
 
         return res
                 .stream()

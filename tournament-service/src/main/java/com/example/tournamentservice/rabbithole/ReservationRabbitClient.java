@@ -1,8 +1,6 @@
 package com.example.tournamentservice.rabbithole;
 
-import com.example.shared.rabbithole.RabbitTemplateWrapper;
-import com.example.shared.rabbithole.ReservationRequest;
-import com.example.shared.rabbithole.ReservationResponse;
+import com.example.shared.rabbithole.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,8 +21,8 @@ public class ReservationRabbitClient {
                 .send(properties.getExchangeName(), properties.getReserve(), requests);
     }
 
-    public boolean delete(List<Long> ids) {
+    public boolean delete(List<Long> ids, Long userID) {
         return new RabbitTemplateWrapper(rabbitTemplate)
-                .send(properties.getExchangeName(), properties.getDelete(), ids);
+                .send(properties.getExchangeName(), properties.getDelete(), new ReservationDeleteRequest(ReservationOwnerType.TOURNAMENT_MATCH, userID, ids));
     }
 }
