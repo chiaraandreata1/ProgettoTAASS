@@ -113,13 +113,11 @@ public class TournamentDefinition {
         return rounds;
     }
 
-    public int requiredDaysCount(List<TournamentRound> rounds,
-                                        Integer matchMaxTime,
-                                        FacilityHours facilityHours) {
+    public int requiredDaysCount(List<TournamentRound> rounds, FacilityHours facilityHours) {
 
         int matchesPerDay, requiredDays;
 
-        matchesPerDay = Math.floorDiv(facilityHours.getClosingTime() - facilityHours.getOpeningTime(), matchMaxTime);
+        matchesPerDay = Math.floorDiv(facilityHours.getClosingTime() - facilityHours.getOpeningTime(), 3);
         matchesPerDay *= courtsCount;
 
         requiredDays = 0;
@@ -131,13 +129,11 @@ public class TournamentDefinition {
         return requiredDays;
     }
 
-    public void computeDates(List<TournamentRound> rounds,
-                             SportInfo sportInfo,
-                             FacilityHours facilityHours) {
+    public void computeDates(List<TournamentRound> rounds, FacilityHours facilityHours) {
 
-        int openingHour = facilityHours.getOpeningTime() / 60, closingHour = facilityHours.getClosingTime() / 60;
+        int openingHour = facilityHours.getOpeningTime(), closingHour = facilityHours.getClosingTime();
 
-        int hoursPerMatch = sportInfo.getMinutesPerMatch() / 60,
+        int hoursPerMatch = 3,
                 lastMatchHour = closingHour - hoursPerMatch,
                 matchesForDay = Math.floorDiv(closingHour - openingHour, hoursPerMatch) * courtsCount;
 

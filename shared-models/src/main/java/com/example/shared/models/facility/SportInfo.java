@@ -1,21 +1,19 @@
 package com.example.shared.models.facility;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class SportInfo implements Serializable {
 
-    private static final long serialVersionUID = 42L;
+    private static final long serialVersionUID = 43L;
 
     private Integer playerPerTeam;
 
-    private Integer availableCourts;
+    private List<Long> courtIDs;
 
-    private Integer minutesPerMatch;
-
-    public SportInfo(Integer playerPerTeam, Integer availableCourts, Integer minutesPerMatch) {
+    public SportInfo(Integer playerPerTeam, List<Long> courtIDs) {
         this.playerPerTeam = playerPerTeam;
-        this.availableCourts = availableCourts;
-        this.minutesPerMatch = minutesPerMatch;
+        this.courtIDs = courtIDs;
     }
 
     public Integer getPlayerPerTeam() {
@@ -26,19 +24,11 @@ public class SportInfo implements Serializable {
         this.playerPerTeam = playerPerTeam;
     }
 
-    public Integer getAvailableCourts() {
-        return availableCourts;
+    public List<Long> getCourtIDs() {
+        return courtIDs;
     }
 
-    public void setAvailableCourts(Integer availableCourts) {
-        this.availableCourts = availableCourts;
-    }
-
-    public Integer getMinutesPerMatch() {
-        return minutesPerMatch;
-    }
-
-    public void setMinutesPerMatch(Integer minutesPerMatch) {
-        this.minutesPerMatch = minutesPerMatch;
+    public void setCourtIDs(List<Long> courtIDs) {
+        this.courtIDs = courtIDs;
     }
 }

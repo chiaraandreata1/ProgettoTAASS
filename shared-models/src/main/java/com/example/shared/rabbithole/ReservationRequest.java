@@ -4,24 +4,24 @@ import java.io.Serializable;
 
 public class ReservationRequest implements Serializable {
 
-    public enum OwnerType {
-        USER,
-        TOURNAMENT_MATCH,
-        COURSE
-    }
-
     private static final long serialVersionUID = 42L;
 
     // dd/mm/yyyy
     private String date;
-    private String name;
-    private OwnerType ownerType;
+    private ReservationOwnerType ownerType;
+
+    private Integer hoursCount;
+
+    private Integer courtID;
     private Long ownerID;
 
-    public ReservationRequest(String date, String name, OwnerType ownerType, Long ownerID) {
+    // TODO courtID, remove name
+
+    public ReservationRequest(String date, ReservationOwnerType ownerType, Integer hoursCount, Integer courtID, Long ownerID) {
         this.date = date;
-        this.name = name;
         this.ownerType = ownerType;
+        this.hoursCount = hoursCount;
+        this.courtID = courtID;
         this.ownerID = ownerID;
     }
 
@@ -33,19 +33,27 @@ public class ReservationRequest implements Serializable {
         this.date = date;
     }
 
-    public String getName() {
-        return name;
+    public Integer getHoursCount() {
+        return hoursCount;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setHoursCount(Integer hoursCount) {
+        this.hoursCount = hoursCount;
     }
 
-    public OwnerType getOwnerType() {
+    public Integer getCourtID() {
+        return courtID;
+    }
+
+    public void setCourtID(Integer courtID) {
+        this.courtID = courtID;
+    }
+
+    public ReservationOwnerType getOwnerType() {
         return ownerType;
     }
 
-    public void setOwnerType(OwnerType ownerType) {
+    public void setOwnerType(ReservationOwnerType ownerType) {
         this.ownerType = ownerType;
     }
 

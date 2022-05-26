@@ -85,6 +85,10 @@ public class RabbitResponse<T> implements Serializable {
         return new RabbitResponse<>(HttpStatus.BAD_REQUEST, message);
     }
 
+    public static <T> RabbitResponse<T> forbidden(String message) {
+        return new RabbitResponse<>(HttpStatus.FORBIDDEN, message);
+    }
+
     public static void check(RabbitResponse<?> response) {
 
         if (response == null)

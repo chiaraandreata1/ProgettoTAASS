@@ -5,6 +5,7 @@ import com.example.shared.models.facility.SportInfo;
 import com.example.shared.models.users.UserDetails;
 import com.example.shared.models.users.UserInfo;
 import com.example.shared.models.users.UserType;
+import com.example.shared.rabbithole.ReservationOwnerType;
 import com.example.shared.rabbithole.ReservationRequest;
 import com.example.shared.rabbithole.ReservationResponse;
 import com.example.shared.tools.CurrentUser;
@@ -203,14 +204,12 @@ public class TournamentRestController {
 
         List<TournamentRound> rounds = tournamentDefinition.buildRounds();
 
-        int requiredDaysCount = tournamentDefinition.requiredDaysCount(rounds,
-                sportInfo.getMinutesPerMatch(),
-                hours);
+        int requiredDaysCount = tournamentDefinition.requiredDaysCount(rounds, hours);
 
         if (requiredDaysCount > tournamentDefinition.getDates().size())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not enough days");
 
-        tournamentDefinition.computeDates(rounds, sportInfo, hours);
+        tournamentDefinition.computeDates(rounds, hours);
 
         Tournament tournament = new Tournament(tournamentDefinition, rounds, userDetails.getId());
 
@@ -220,8 +219,9 @@ public class TournamentRestController {
                 .flatMap(round -> round.getMatches()
                         .stream()
                         .map(match -> new ReservationRequest(DateSerialization.serializeDate(match.getDate()),
-                                tournamentDefinition.getName(),
-                                ReservationRequest.OwnerType.TOURNAMENT_MATCH,
+                                ReservationOwnerType.TOURNAMENT_MATCH,
+                                3,
+                                -1, //TODO
                                 match.getId())))
                 .collect(Collectors.toList());
 

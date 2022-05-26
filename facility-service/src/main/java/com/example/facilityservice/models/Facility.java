@@ -8,9 +8,9 @@ import java.util.Map;
 
 public class Facility {
 
-    private Integer openingTime = 12 * 60;
+    private Integer openingTime = 8;
 
-    private Integer closingTime = 24 * 60;
+    private Integer closingTime = 24;
 
     public Integer getOpeningTime() {
         return openingTime;

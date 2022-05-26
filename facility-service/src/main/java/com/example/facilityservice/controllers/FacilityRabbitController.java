@@ -1,6 +1,7 @@
 package com.example.facilityservice.controllers;
 
 
+import com.example.facilityservice.models.Court;
 import com.example.facilityservice.models.Facility;
 import com.example.facilityservice.models.Sport;
 import com.example.facilityservice.repositories.CourtRepository;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class FacilityRabbitController {
@@ -43,7 +45,7 @@ public class FacilityRabbitController {
 
         Long id;
         Sport sport;
-        Integer courtCount;
+//        Integer courtCount;
         Optional<Sport> optSport;
 
         id = request.getRequestBody();
@@ -53,8 +55,12 @@ public class FacilityRabbitController {
             sport = optSport.get();
 
             if (sport.getPlayersPerTeam() != null) {
-                courtCount = courtRepository.countCourtsBySport_Id(id);
-                res = new RabbitResponse<>(new SportInfo(sport.getPlayersPerTeam(), courtCount, 180));
+//                courtCount = courtRepository.countCourtsBySport_Id(id);
+                res = new RabbitResponse<>(new SportInfo(
+                        sport.getPlayersPerTeam(),
+                        courtRepository.getCourtBySport_Id(sport.getId()).stream()
+                                .map(Court::getId)
+                                .collect(Collectors.toList())));
             } else
                 res = RabbitResponse.badRequest("Referenced sport is not a leaf");
 

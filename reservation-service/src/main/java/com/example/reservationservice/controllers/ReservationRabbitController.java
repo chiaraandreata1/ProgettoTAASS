@@ -1,10 +1,8 @@
 package com.example.reservationservice.controllers;
 
-import com.example.shared.rabbithole.RabbitRequest;
-import com.example.shared.rabbithole.RabbitResponse;
-import com.example.shared.rabbithole.ReservationRequest;
-import com.example.shared.rabbithole.ReservationResponse;
+import com.example.shared.rabbithole.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -28,12 +26,26 @@ public class ReservationRabbitController {
     }
 
     @RabbitListener(queues = "${rabbit.reservation.delete.queue-name}")
-    public RabbitResponse<Boolean> deletionRequest(List<Long> ids) {
+    public RabbitResponse<Boolean> deletionRequest(RabbitRequest<ReservationDeleteRequest> request) {
+
+        ReservationDeleteRequest requestBody = request.getRequestBody();
+
+        Long ownerID = requestBody.getOwnerID(); // TODO combacia con l'owner delle reservation
+        List<Long> reservationIDs = requestBody.getReservationIDs(); // TOODO reservation da cancellare
 
         // TODO scrivi sto metodo
+        RabbitResponse<Boolean> response;
+
+        try {
+            response = new RabbitResponse<>(true);
+            throw new IllegalArgumentException();
+        }  catch (Exception ex) {
+            response = new RabbitResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+        }
 
         // Dummy
 
-        return new RabbitResponse<>(true);
+
+        return response;
     }
 }

@@ -41,6 +41,13 @@ rabbit:
       queue-name: rpc.reservation.delete
       key: reservation.delete
 
+  facility:
+    exchange-name: rpc.facility
+    hours:
+      key: facility.hours
+    sports:
+      key: facility.sports
+
 session:
   datasource:
     url: jdbc:postgresql://localhost:5432/session
