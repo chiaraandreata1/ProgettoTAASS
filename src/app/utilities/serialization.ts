@@ -1,4 +1,4 @@
-import {UserService} from "../services/user.service";ù
+import {UserService} from "../user/user.service";
 import {OldUserService} from "../services/user.service";
 import {Injectable} from "@angular/core";
 import {Team} from "../models/tournament";

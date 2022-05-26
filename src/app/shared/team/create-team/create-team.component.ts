@@ -40,7 +40,7 @@ export class CreateTeamComponent implements OnInit, OnChanges {
   private partial = new Subject<string>();
 
   constructor(
-    private userService: OldUserService,
+    private userService: UserService,
     private elementRef: ElementRef
   ) {}
 
