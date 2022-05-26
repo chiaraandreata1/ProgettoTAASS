@@ -22,11 +22,12 @@ import {MatOptionSelectionChange} from "@angular/material/core";
 export class CreateTeamComponent implements OnInit, OnChanges {
 
   @Input() playersCount!: number;
-  @Input() selectedPlayers!: number[];
+  @Input() selectedPlayers: number[] = [];
   @Input() team?: Team;
 
   @Output() created: EventEmitter<Team> = new EventEmitter<Team>();
   @Output() updated: EventEmitter<Team> = new EventEmitter<Team>();
+  @Output() closed: EventEmitter<void> = new EventEmitter<void>();
 
   public players!: (string | UserInfo)[];
   public touched!: boolean[];
@@ -40,9 +41,7 @@ export class CreateTeamComponent implements OnInit, OnChanges {
   constructor(
     private userService: UserService,
     private elementRef: ElementRef
-  ) {
-
-  }
+  ) {}
 
   private init(team?: Team) {
     // this.players = team ? team.players : [];
@@ -73,7 +72,7 @@ export class CreateTeamComponent implements OnInit, OnChanges {
     this._init();
     // this.init(this.team)
 
-    const boundSuggestedUsers = this.userService.suggestedUsers.bind(this.userService);
+    const findPlayers = this.userService.findPlayers.bind(this.userService);
 
     this.partial.pipe(
 
@@ -81,18 +80,19 @@ export class CreateTeamComponent implements OnInit, OnChanges {
 
       distinctUntilChanged(),
 
-      switchMap(p => boundSuggestedUsers(p, 5))
+      switchMap(p => findPlayers(p, 5, this.selectedIDs()))
 
     ).subscribe(
       candidates => {
-        console.log(candidates)
-        this.candidates = candidates
+        // console.log(candidates)
+        this.candidates =   candidates
       }
     );
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this._init();
+
+    // this._init();
     // this.init(this.team);
   }
 
@@ -110,6 +110,7 @@ export class CreateTeamComponent implements OnInit, OnChanges {
   private selectedIDs(): number[] {
     let res = this.users.filter(p => p != undefined).map(p => (p as UserInfo).id);
     res.push(...this.selectedPlayers);
+    console.log(res);
     return res;
   }
 
@@ -135,7 +136,7 @@ export class CreateTeamComponent implements OnInit, OnChanges {
   selected(index: number, user: UserInfo, event: MatOptionSelectionChange<UserInfo>) {
     this.users[index] = user;
     (event.source._getHostElement() as HTMLInputElement).value = user?.displayName;
-    console.log((event.source._getHostElement() as HTMLInputElement).value);
+    // console.log((event.source._getHostElement() as HTMLInputElement).value);
   }
 
   /*suggestionSelected(suggestion: string, i: number) {
@@ -197,5 +198,9 @@ export class CreateTeamComponent implements OnInit, OnChanges {
 
   deselect(index: number) {
     this.users[index] = undefined;
+  }
+
+  close() {
+    this.closed.emit();
   }
 }

@@ -19,7 +19,8 @@ export class ShowTournamentComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const idParam = this.route.snapshot.queryParamMap.get("id");
+    const idParam = this.route.snapshot.paramMap.get("id");
+
     if (idParam) {
       this.tournamentService.get(parseInt(idParam)).subscribe(
         tournament => {

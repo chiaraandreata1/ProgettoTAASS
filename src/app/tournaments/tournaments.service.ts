@@ -59,4 +59,12 @@ export class TournamentsService {
   addPlayers(tournamentID: number, ids: number[]): Observable<Tournament> {
     return this.http.get<Tournament>(`${this.baseUrl}/register-players`, {params: {id: tournamentID, players: ids}});
   }
+
+  cancel(tournamentID: number): Observable<Tournament> {
+    return this.http.get<Tournament>(`${this.baseUrl}/cancel`, {params: {id: tournamentID}})
+  }
+
+  complete(tournamentID: number): Observable<Tournament> {
+    return this.http.get<Tournament>(`${this.baseUrl}/close-registrations`, {params: {id: tournamentID}})
+  }
 }

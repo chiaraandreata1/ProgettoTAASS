@@ -32,7 +32,7 @@
               <li><button class="btn btn-link dropdown-item">Upcoming</button></li>
               <li><button class="btn btn-link dropdown-item">In progress</button></li>
               <li><button class="btn btn-link dropdown-item">Mine</button></li>
-              <li *ngIf="users.isManager$ | async"><button class="btn btn-link dropdown-item">Create</button></li>
+              <li *ngIf="users.isManager$ | async"><button class="btn btn-link dropdown-item" [routerLink]="['/', 'tournaments', 'create']">Create</button></li>
             </ul>
           </li>
           <li class="nav-item">

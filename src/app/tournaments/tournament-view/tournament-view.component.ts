@@ -27,7 +27,7 @@ export class TournamentViewComponent implements OnInit {
   public selected?: Match;
   public waiting: boolean;
   public error: any;
-  public create_team: boolean = true;
+  public create_team: boolean = false;
 
   constructor(
     public userService: UserService,
@@ -95,17 +95,48 @@ export class TournamentViewComponent implements OnInit {
   }
 
   onTeamCreate(team: Team) {
+    this.waiting = true;
     this.tournamentService.addPlayers(this.tournament.id, team.players)
       .subscribe({
         next: t => {
           this.tournament = t;
           this.create_team = false;
+          this.waiting = false;
         },
         error: msg => {
-          console.log(msg);
-          console.log(msg.error.message)
           this.error = msg.error.message;
+          this.waiting = false;
         }
       })
+  }
+
+  cancel() {
+    this.waiting = true;
+    this.tournamentService.cancel(this.tournament.id)
+      .subscribe({
+        next: t => {
+          this.tournament = t;
+          this.waiting = false;
+        },
+        error: e => {
+          this.error = e.error.message;
+          this.waiting = false;
+        }
+      })
+  }
+
+  complete() {
+    this.waiting = true
+    this.tournamentService.complete(this.tournament.id)
+      .subscribe({
+        next: t => {
+          this.tournament = t;
+          this.waiting = false;
+        },
+        error: e => {
+          this.error = e.error.message;
+          this.waiting = false;
+        }
+      });
   }
 }

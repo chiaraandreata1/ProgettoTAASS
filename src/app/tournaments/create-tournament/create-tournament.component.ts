@@ -142,7 +142,7 @@ export class CreateTournamentComponent implements OnInit, AfterViewInit {
       this.tournamentBuilding.sport = this.sport?.id;
 
       this.tournamentService.create(this.tournamentBuilding).subscribe({
-        next: tournament => this.tournament = tournament,
+        next: tournament => this.router.navigate(['/', 'tournament', tournament.id]),
         error: msg => this.error = msg
       });
 

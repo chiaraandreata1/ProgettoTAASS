@@ -26,6 +26,7 @@ const routes: Routes = [
   { path: 'tournaments', component: TournamentsMainComponent },
   { path: 'tournaments/create', component: CreateTournamentComponent },
   { path: 'tournaments/info', component: ShowTournamentComponent },
+  { path: 'tournament/:id', component: ShowTournamentComponent },
   { path: 'course-main', component: CourseMainComponent,
     children: [{ path: 'completedCourses', component: CoursesCompletedComponent }, { path: 'pendingCourses', component: CoursesPendingComponent }, { path: 'createCourse', component: CreateCourseComponent }]},
   { path: 'login', component: LoginComponent},
