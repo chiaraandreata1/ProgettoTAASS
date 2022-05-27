@@ -1,6 +1,4 @@
-<div>
-  <ng-container *ngFor="let i of players.length | forLoop">
-    <span *ngIf="i > 0"> - </span>
-    <button class="btn btn-link" [routerLink]="['/', 'user', players[i].id]">{{players[i].displayName}}</button>
-  </ng-container>
-</div>
+<ng-container *ngFor="let i of players.length | forLoop">
+  <span *ngIf="i > 0"> - </span>
+  <button class="btn btn-link" [routerLink]="['/', 'user', players[i].id]">{{players[i].displayName}}</button>
+</ng-container>

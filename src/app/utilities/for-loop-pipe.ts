@@ -10,3 +10,20 @@ export class ForLoopPipe implements PipeTransform {
     return res;
   }
 }
+
+
+@Pipe({name: 'forTPLoop'})
+export class ForTPLoop implements PipeTransform {
+  transform(value: number): number[] {
+    let res: number[] = [];
+
+    let x = Math.pow(2, Math.ceil(Math.log2(value)));
+
+    for (let i = 0; i < x; i++)
+      res.push(i);
+
+    console.log(res)
+
+    return res;
+  }
+}

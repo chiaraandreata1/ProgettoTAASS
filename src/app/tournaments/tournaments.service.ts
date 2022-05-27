@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {TournamentBuilding} from "../models/tournament-building";
 import {catchError, Observable, of, tap} from "rxjs";
-import {Tournament} from "../models/tournament";
+import {Match, Tournament} from "../models/tournament";
 import {TournamentDefinition} from "../models/tournament-definition";
 
 @Injectable({
@@ -66,5 +66,16 @@ export class TournamentsService {
 
   complete(tournamentID: number): Observable<Tournament> {
     return this.http.get<Tournament>(`${this.baseUrl}/close-registrations`, {params: {id: tournamentID}})
+  }
+
+  matchResults(tournamentID: number, match: Match): Observable<Tournament> {
+    return this.http.get<Tournament>(`${this.baseUrl}/match-results`, {
+      params: {
+        id: tournamentID,
+        match: match.id,
+        points0: match.points0,
+        points1: match.points1
+      }
+    })
   }
 }

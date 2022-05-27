@@ -32,7 +32,7 @@ import { CreateTournamentComponent } from './tournaments/create-tournament/creat
 import { CreateTeamComponent } from './shared/team/create-team/create-team.component';
 import { TeamCardComponent } from './shared/team/team-card/team-card.component';
 import { SportSelectorComponent } from './shared/sports/sport-selector/sport-selector.component';
-import {ForLoopPipe} from "./utilities/for-loop-pipe";
+import {ForLoopPipe, ForTPLoop} from "./utilities/for-loop-pipe";
 import { DatesComponent } from './shared/misc/dates/dates.component';
 import { CreateTeamListComponent } from './shared/team/create-team-list/create-team-list.component';
 import {JsonInterceptor, JsonParser} from "./utilities/json-interceptor";
@@ -57,6 +57,7 @@ import { ShowUserComponent } from './user/show-user/show-user.component';
 import { MeComponent } from './user/me/me.component';
 import { MatchComponent } from './tournaments/match/match.component';
 import { TeamComponent } from './tournaments/team/team.component';
+import { MatchBoxComponent } from './tournaments/match-box/match-box.component';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import { TeamComponent } from './tournaments/team/team.component';
     TeamCardComponent,
     SportSelectorComponent,
     ForLoopPipe,
+    ForTPLoop,
     DatesComponent,
     CreateTeamListComponent,
     TournamentViewComponent,
@@ -91,7 +93,8 @@ import { TeamComponent } from './tournaments/team/team.component';
     ShowUserComponent,
     MeComponent,
     MatchComponent,
-    TeamComponent
+    TeamComponent,
+    MatchBoxComponent
   ],
   imports: [
     BrowserModule,

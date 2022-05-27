@@ -1,0 +1,58 @@
+:host {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/*:host:hover .match-top,*/
+/*:host:hover .match-bottom,*/
+:host:hover.ready .match-spacer,
+:host:hover.done .match-spacer,
+:host:hover.ready .match-info,
+:host:hover.done .match-info
+{
+  background-color: rgba(13, 202, 240, 0.1);
+}
+
+:host .spacer {
+  flex-grow: .5;
+}
+
+:host * {
+  padding-left: 20px;
+}
+
+:host .match-top {
+  border-bottom: 1px solid #aaa;
+}
+
+:host .match-info {
+  border-right: 1px solid #aaa;
+}
+
+:host .match-bottom {
+  border-top: 1px solid #aaa;
+}
+
+:host .match-spacer {
+  flex-grow: 1;
+  border-right: 1px solid #aaa;
+  min-height: 40px;
+}
+
+:host:hover.ready *,
+:host:hover.done *
+{
+  border-color: aqua;
+}
+
+:host.selected.ready *,
+:host.selected.done * {
+  border-color: #298fc2;
+}
+
+:host.selected:hover.ready *,
+:host.selected:hover.done * {
+  border-color: #0a53be;
+}

@@ -1,38 +1,54 @@
-<!--<li (mouseover)="overMatch = match" class="game game-top"-->
-<!--    (click)="selected = match"-->
-<!--    [ngClass]="{-->
-<!--      'winner': winner(true, match),-->
-<!--      'hover-match': overMatch == match,-->
-<!--       'selected-match': selected == match-->
-<!--      }">{{teamLabel(match.side0)}} <span>{{match.points0}}</span></li>-->
-<!--<li (mouseover)="overMatch = match" class="game game-spacer"-->
-<!--    (click)="selected = match"-->
-<!--    [ngClass]="{-->
-<!--      'hover-match': overMatch == match,-->
-<!--       'selected-match': selected == match-->
-<!--      }">&nbsp;-->
-<!--</li>-->
-<!--<li class="game game-info text-center" (mouseover)="overMatch = match" (click)="selected = match" [ngClass]="{-->
-<!--      'hover-match': overMatch == match,-->
-<!--       'selected-match': selected == match-->
-<!--      }">-->
-<!--  <div>{{formatDate(match)}}</div>-->
-<!--  <div>Court {{match.court}}</div>-->
-<!--</li>-->
-<!--<li (mouseover)="overMatch = match" class="game game-spacer"-->
-<!--    (click)="selected = match"-->
-<!--    [ngClass]="{-->
-<!--      'hover-match': overMatch == match,-->
-<!--       'selected-match': selected == match-->
-<!--      }">&nbsp;-->
-<!--</li>-->
-<!--<li (mouseover)="overMatch = match" class="game game-bottom"-->
-<!--    (click)="selected = match"-->
-<!--    [ngClass]="{-->
-<!--      'winner': winner(false, match),-->
-<!--      'hover-match': overMatch == match,-->
-<!--       'selected-match': selected == match-->
-<!--      }">{{teamLabel(match.side1)}}-->
-<!--  <span>{{match.points1}}</span></li>-->
+<div class="card-header">{{match.status}} {{isDone}} {{isReady}} Round {{match.round}} - Match {{match.roundHeight}}</div>
+<!--<div class="card-body" *ngIf="!done">-->
+<!--  <div class="row">-->
+<!--    <label class="col-3">Number of sets</label>-->
+<!--    <div class=" col-3"><input class="form-control" type="number">-->
+<!--  </div>-->
+<!--</div>-->
+<div class="card-body">
 
-<!--<li class="spacer">&nbsp;</li>-->
+  <app-team [class.winner]="top" [team]="match.side0"></app-team>
+
+
+  <form *ngIf="match.side1" (submit)="emitMatch()">
+    <div class="row ps-4" *ngIf="isDone">
+      <div class="col-1" *ngFor="let p of points0">{{p}}</div>
+    </div>
+    <div class="row ps-4" *ngIf="!isDone && (userService.isManager$ | async)">
+      <div class="col-1" *ngFor="let i of setsCount | forLoop">
+        <input class="form-control" type="number" [(ngModel)]="points0[i]" [ngModelOptions]="{standalone: true}">
+      </div>
+    </div>
+
+    <hr>
+    <div class="row">
+      <div [class.col-9]="!isDone" class="d-flex">
+        <div class="ps-3 align-self-center">{{match.date }} - Court {{match.court}}</div>
+      </div>
+      <div class="col-3" *ngIf="!isDone">
+        <label>Number of sets</label>
+        <input class="form-control" type="number" min="1" (input)="updateSets()" [(ngModel)]="setsCount" [ngModelOptions]="{standalone: true}">
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="row ps-4" *ngIf="!isDone && (userService.isManager$ | async)">
+      <div class="col-1" *ngFor="let i of setsCount | forLoop">
+        <input class="form-control" type="number" [(ngModel)]="points1[i]" [ngModelOptions]="{standalone: true}">
+      </div>
+    </div>
+    <div class="row ps-4" *ngIf="isDone">
+      <div class="col-1" *ngFor="let p of points1">{{p}}</div>
+    </div>
+  </form>
+
+  <app-team [class.winner]="bottom" [team]="match.side1" *ngIf="match.side1"></app-team>
+
+  <div class="btn-group ps-4 my-3" *ngIf="!isDone && (userService.isManager$ | async)">
+    <button class="btn btn-success" (click)="emitMatch()" [disabled]="!valid()">{{isWalkover ? "Walkover" : "Done"}}</button>
+  </div>
+  <!--  <ng-container *ngIf="!match.side1">-->
+  <!--    <div class="ps-3">Walkover</div>-->
+  <!--  </ng-container>-->
+</div>

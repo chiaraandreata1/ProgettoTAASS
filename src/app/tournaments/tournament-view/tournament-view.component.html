@@ -1,11 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
-    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+    <path
+      d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
   </symbol>
 </svg>
 
 <div class="mt-3 alert alert-danger alert-dismissible fade show" role="alert" *ngIf="error">
-  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
+    <use xlink:href="#exclamation-triangle-fill"/>
+  </svg>
   <strong>Error</strong> {{error}}
   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
@@ -18,7 +21,9 @@
 
 <div class="card" *ngIf="!waiting">
   <div class="card-header">
-    <h2>"{{tournament.name}}"<span class="fst-italic"> - {{tournament.status.substring(0, 1)}}{{tournament.status.substring(1).toLowerCase()}}</span></h2>
+    <h2>"{{tournament.name}}"<span
+      class="fst-italic"> - {{tournament.status.substring(0, 1)}}{{tournament.status.substring(1).toLowerCase()}}</span>
+    </h2>
     <span><b>{{sport?.name}}</b> tournament</span>
     <span *ngIf="owner"> - created by
       <button style="vertical-align: baseline" class="btn btn-link"
@@ -46,55 +51,63 @@
 
       <main id="tournament">
         <ul class="round" *ngFor="let round of tournament.rounds">
-          <li class="spacer">&nbsp;</li>
+          <app-match-box
+            (selected)="this.selected = $event"
+            *ngFor="let i of round.matches.length | forTPLoop"
+            [class.selected] = "i < round.matches.length && round.matches[i] == this.selected"
+            [match]="i < round.matches.length ? round.matches[i] : undefined"></app-match-box>
+          <!--          <app-match-box *ngFor="let match of round.matches" [match]="match"></app-match-box>-->
+          <!--          <li style="flex-grow: 1" *ngFor="let match of round.matches">-->
+          <!--          </li>-->
+          <!--          <li class="spacer">&nbsp;</li>-->
 
-          <ng-container *ngFor="let match of round.matches">
-            <li (mouseover)="overMatch = match" class="game game-top"
-                (click)="selected = match"
-                [ngClass]="{
-      'winner': winner(true, match),
-      'hover-match': overMatch == match,
-       'selected-match': selected == match
-      }">
-              <app-team [team]="match.side0"></app-team>
-              <span>{{match.points0}}</span></li>
-            <li (mouseover)="overMatch = match" class="game game-spacer"
-                (click)="selected = match"
-                [ngClass]="{
-      'hover-match': overMatch == match,
-       'selected-match': selected == match
-      }">&nbsp;
-            </li>
-            <li class="game game-info text-center" (mouseover)="overMatch = match" (click)="selected = match"
-                [ngClass]="{
-      'hover-match': overMatch == match,
-       'selected-match': selected == match
-      }">
-              <div>{{formatDate(match)}}</div>
-              <div>Court {{match.court}}</div>
-            </li>
-            <li (mouseover)="overMatch = match" class="game game-spacer"
-                (click)="selected = match"
-                [ngClass]="{
-      'hover-match': overMatch == match,
-       'selected-match': selected == match
-      }">&nbsp;
-            </li>
-            <li (mouseover)="overMatch = match" class="game game-bottom"
-                (click)="selected = match"
-                [ngClass]="{
-      'winner': winner(false, match),
-      'hover-match': overMatch == match,
-       'selected-match': selected == match
-      }">
-              <app-team [team]="match.side1"></app-team>
-              <span>{{match.points1}}</span></li>
+          <!--          <ng-container *ngFor="let match of round.matches">-->
+          <!--            <li (mouseover)="overMatch = match" class="game game-top"-->
+          <!--                (click)="selected = match"-->
+          <!--                [ngClass]="{-->
+          <!--      'winner': winner(true, match),-->
+          <!--      'hover-match': overMatch == match,-->
+          <!--       'selected-match': selected == match-->
+          <!--      }">-->
+          <!--              <app-team [team]="match.side0"></app-team>-->
+          <!--              <span>{{match.points0}}</span></li>-->
+          <!--            <li (mouseover)="overMatch = match" class="game game-spacer"-->
+          <!--                (click)="selected = match"-->
+          <!--                [ngClass]="{-->
+          <!--      'hover-match': overMatch == match,-->
+          <!--       'selected-match': selected == match-->
+          <!--      }">&nbsp;-->
+          <!--            </li>-->
+          <!--            <li class="game game-info text-center" (mouseover)="overMatch = match" (click)="selected = match"-->
+          <!--                [ngClass]="{-->
+          <!--      'hover-match': overMatch == match,-->
+          <!--       'selected-match': selected == match-->
+          <!--      }">-->
+          <!--              <div>{{formatDate(match)}}</div>-->
+          <!--              <div>Court {{match.court}}</div>-->
+          <!--            </li>-->
+          <!--            <li (mouseover)="overMatch = match" class="game game-spacer"-->
+          <!--                (click)="selected = match"-->
+          <!--                [ngClass]="{-->
+          <!--      'hover-match': overMatch == match,-->
+          <!--       'selected-match': selected == match-->
+          <!--      }">&nbsp;-->
+          <!--            </li>-->
+          <!--            <li (mouseover)="overMatch = match" class="game game-bottom"-->
+          <!--                (click)="selected = match"-->
+          <!--                [ngClass]="{-->
+          <!--      'winner': winner(false, match),-->
+          <!--      'hover-match': overMatch == match,-->
+          <!--       'selected-match': selected == match-->
+          <!--      }">-->
+          <!--              <app-team [team]="match.side1"></app-team>-->
+          <!--              <span>{{match.points1}}</span></li>-->
 
-            <li class="spacer">&nbsp;</li>
-          </ng-container>
+          <!--            <li class="spacer">&nbsp;</li>-->
+          <!--          </ng-container>-->
         </ul>
         <ul class="round">
-          <li class="winner game game-top"><span *ngIf="champion() as w"><app-team [team]="w"></app-team></span></li>
+          <li class="winner game game-top"><span *ngIf="champion() as w"><app-team class="winner" [team]="w"></app-team></span></li>
         </ul>
       </main>
     </div>
@@ -102,10 +115,17 @@
       <ng-container *ngIf="userService.isManager$ | async">
         <button class="btn btn-success" *ngIf="tournament.status === 'DRAFT'" (click)="confirm()">Confirm</button>
         <button class="btn btn-success" *ngIf="tournament.status === 'CONFIRMED'" (click)="complete()">Complete</button>
-        <button class="btn btn-primary" *ngIf="tournament.status === 'CONFIRMED'" (click)="addTeam()" [disabled]="create_team">Add team</button>
-        <button class="btn btn-danger" *ngIf="tournament.status === 'DRAFT' || tournament.status === 'CONFIRMED' || tournament.status === 'COMPLETE'" (click)="cancel()">Cancel</button>
+        <button class="btn btn-primary" *ngIf="tournament.status === 'CONFIRMED'" (click)="addTeam()"
+                [disabled]="create_team">Add team
+        </button>
+        <button class="btn btn-danger"
+                *ngIf="tournament.status === 'DRAFT' || tournament.status === 'CONFIRMED' || tournament.status === 'COMPLETE'"
+                (click)="cancel()">Cancel
+        </button>
       </ng-container>
-      <button class="btn btn-primary" *ngIf="tournament.status === 'CONFIRMED' && (userService.isPlayer$ | async)">Join</button>
+      <button class="btn btn-primary" *ngIf="tournament.status === 'CONFIRMED' && (userService.isPlayer$ | async)">
+        Join
+      </button>
     </div>
   </div>
 </div>
@@ -119,3 +139,5 @@
 >
 
 </app-create-team>
+
+<app-match *ngIf="selected" [match]="selected" (onUpdate)="onMatchUpdate($event)"></app-match>

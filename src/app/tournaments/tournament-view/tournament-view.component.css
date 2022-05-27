@@ -70,3 +70,7 @@ li.selected-match {
 li.hover-match.selected-match {
   border-color: #0a53be;
 }
+
+.winner .btn {
+  font-weight: bold;
+}

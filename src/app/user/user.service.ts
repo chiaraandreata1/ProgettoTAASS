@@ -16,6 +16,7 @@ export class UserService {
 
   public isManager$: Observable<boolean>;
   public isPlayer$: Observable<boolean>;
+  public isAdmin$: Observable<boolean>;
 
   constructor(
     private http: HttpClient,
@@ -32,6 +33,8 @@ export class UserService {
     this.isManager$ = this.currentObs.pipe(map(u => u != undefined && (u.type == 'ADMIN' || u.type == 'TEACHER')));
 
     this.isPlayer$ = this.currentObs.pipe(map(u => u != undefined && u.type == 'PLAYER'));
+
+    this.isAdmin$ = this.currentObs.pipe(map(u => u != undefined && u.type == 'ADMIN'));
   }
 
   public getUser(userID: number): Observable<UserInfo> {

@@ -16,3 +16,9 @@
 .margin-center {
   margin: auto;
 }
+
+
+
+.winner .btn {
+  font-weight: bold;
+}

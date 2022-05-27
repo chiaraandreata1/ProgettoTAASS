@@ -1,0 +1,20 @@
+<div class="spacer"></div>
+<div class="match-top" [class.invisible]="!match">
+  <app-team [class.winner]="top" [team]="match.side0" *ngIf="match"></app-team>
+  <button class="btn btn-link invisible" style="padding-top: 26px" *ngIf="!match">""</button>
+</div>
+<div class="match-spacer" [class.invisible]="!match"></div>
+<div class="match-info" [class.invisible]="!match">
+  <div>{{match ? match.date : "A"}}</div>
+  <div *ngIf="match">Court {{match.court}}</div>
+  <div *ngIf="match">{{match.status}}</div>
+<!--  <div *ngIf="match">{{match.id}} @ {{match.round}} x {{match.roundHeight}}</div>-->
+  <div *ngIf="!match">A</div>
+
+</div>
+<div class="match-spacer" [class.invisible]="!match"></div>
+<div class="match-bottom" [class.invisible]="!match">
+  <app-team [class.winner]="bottom" [team]="match.side1" *ngIf="match"></app-team>
+  <button class="btn btn-link invisible" style="padding-bottom: 26px" *ngIf="!match">""</button>
+</div>
+<div class="spacer" *ngIf="match"></div>

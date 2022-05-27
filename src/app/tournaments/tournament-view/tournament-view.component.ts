@@ -139,4 +139,20 @@ export class TournamentViewComponent implements OnInit {
         }
       });
   }
+
+  onMatchUpdate(match: Match) {
+    this.waiting = true;
+    this.tournamentService.matchResults(this.tournament.id, match)
+      .subscribe({
+        next: t => {
+          this.tournament = t;
+          this.waiting = false;
+          this.selected = undefined;
+        },
+        error:e => {
+          this.error = e.error.message;
+          this.waiting = false;
+        }
+      });
+  }
 }
