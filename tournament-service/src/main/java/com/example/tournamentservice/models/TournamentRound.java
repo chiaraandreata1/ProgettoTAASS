@@ -12,6 +12,7 @@ public class TournamentRound {
     private Long id;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @OrderBy("id asc")
     private List<Match> matches;
 
     protected TournamentRound() {
@@ -32,6 +33,10 @@ public class TournamentRound {
 
     public List<Match> getMatches() {
         return matches;
+    }
+
+    public Match getMatch(int index) {
+        return matches.get(index);
     }
 
     public void setMatches(List<Match> matches) {

@@ -12,12 +12,12 @@ public class ReservationRequest implements Serializable {
 
     private Integer hoursCount;
 
-    private Integer courtID;
+    private Long courtID;
     private Long ownerID;
 
     // TODO courtID, remove name
 
-    public ReservationRequest(String date, ReservationOwnerType ownerType, Integer hoursCount, Integer courtID, Long ownerID) {
+    public ReservationRequest(String date, ReservationOwnerType ownerType, Integer hoursCount, Long courtID, Long ownerID) {
         this.date = date;
         this.ownerType = ownerType;
         this.hoursCount = hoursCount;
@@ -41,11 +41,11 @@ public class ReservationRequest implements Serializable {
         this.hoursCount = hoursCount;
     }
 
-    public Integer getCourtID() {
+    public Long getCourtID() {
         return courtID;
     }
 
-    public void setCourtID(Integer courtID) {
+    public void setCourtID(Long courtID) {
         this.courtID = courtID;
     }
 

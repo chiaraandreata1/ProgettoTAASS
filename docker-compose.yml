@@ -1,51 +1,51 @@
 version: '3.7'
 
 services:
-#  #GATEWAY
-#  dbsession:
-#      container_name: dbsession
-#      image: "postgres"
-#      ports:
-#        - "5432"
-#      environment:
-#        POSTGRES_DB: session
-#        POSTGRES_USER: taass
-#        POSTGRES_PASSWORD: asd
-#        restart: unless-stopped
-#  gateway:
-#    build:
-#      context: ./gateway
-#      dockerfile: Dockerfile
-#    image: gateway
-#    container_name: gateway
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      - dbsession
-#      - eureka-server
-#    environment:
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbsession:5432/session
-#      - SPRING_DATASOURCE_USERNAME=taass
-#      - SPRING_DATASOURCE_PASSWORD=asd
-#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-#      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
-#    networks:
-#      - rabbitmq_net
-#
-#  #EUREKA-SERVER
-#  eureka-server:
-#    build:
-#      context: ./eureka-server
-#      dockerfile: Dockerfile
-#    image: eurekaserver
-#    container_name: eurekaserver
-#    ports:
-#      - "8761:8761"
-#    environment:
-#      eureka.instance.hostname: eureka-server
-#      eureka.client.serviceUrl.defaultZone: http://eureka-server:8761/eureka/
-#    networks:
-#      - rabbitmq_net
+  #GATEWAY
+  dbsession:
+      container_name: dbsession
+      image: "postgres"
+      ports:
+        - "5432"
+      environment:
+        POSTGRES_DB: session
+        POSTGRES_USER: taass
+        POSTGRES_PASSWORD: asd
+        restart: unless-stopped
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    image: gateway
+    container_name: gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - dbsession
+      - eureka-server
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbsession:5432/session
+      - SPRING_DATASOURCE_USERNAME=taass
+      - SPRING_DATASOURCE_PASSWORD=asd
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+    networks:
+      - rabbitmq_net
+
+  #EUREKA-SERVER
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    image: eurekaserver
+    container_name: eurekaserver
+    ports:
+      - "8761:8761"
+    environment:
+      eureka.instance.hostname: eureka-server
+      eureka.client.serviceUrl.defaultZone: http://eureka-server:8761/eureka/
+    networks:
+      - rabbitmq_net
 
 #  #SERVICE: RESERVATION
 #  dbreservations:
@@ -197,34 +197,34 @@ services:
 #    networks:
 #      - rabbitmq_net
 
-  frontend:
-    container_name: frontend
-    build:
-          context: ./tennispadel-app-v2
-          dockerfile: Dockerfile
-    ports:
-      - "4200:4200"
-    volumes:
-      - ./tennispadel-app-v2/app/node_modules
-      - .:/tennispadel-app-v2/app
-
-
-#  rabbitmq:
-#    image: rabbitmq:3.8-management
-#    hostname: rabbitmq
+#  frontend:
+#    container_name: frontend
+#    build:
+#          context: ./tennispadel-app-v2
+#          dockerfile: Dockerfile
 #    ports:
-#      - 5672:5672
-#      - 15672:15672
+#      - "4200:4200"
 #    volumes:
-#      - rabbitmq_data:/var/lib/rabbitmq/
-#      - rabbitmq_log:/var/log/rabbitmq/
-#    networks:
-#      - rabbitmq_net
-#
-#volumes:
-#  rabbitmq_data:
-#  rabbitmq_log:
-#
-#networks:
-#  rabbitmq_net:
-#    driver: bridge
+#      - ./tennispadel-app-v2/app/node_modules
+#      - .:/tennispadel-app-v2/app
+
+
+  rabbitmq:
+    image: rabbitmq:3.8-management
+    hostname: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/
+      - rabbitmq_log:/var/log/rabbitmq/
+    networks:
+      - rabbitmq_net
+
+volumes:
+  rabbitmq_data:
+  rabbitmq_log:
+
+networks:
+  rabbitmq_net:
+    driver: bridge

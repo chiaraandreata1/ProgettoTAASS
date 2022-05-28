@@ -43,6 +43,7 @@ public class Tournament {
     private List<Team> teams;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @OrderBy("id asc")
     private List<TournamentRound> rounds;
 
     public Tournament() {}
@@ -151,6 +152,10 @@ public class Tournament {
 
     public List<TournamentRound> getRounds() {
         return rounds;
+    }
+
+    public TournamentRound getRound(int index) {
+        return rounds.get(index);
     }
 
     public void setRounds(List<TournamentRound> rounds) {

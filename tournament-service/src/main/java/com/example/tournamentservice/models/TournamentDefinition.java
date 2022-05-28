@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TournamentDefinition {
 
@@ -129,7 +130,12 @@ public class TournamentDefinition {
         return requiredDays;
     }
 
-    public void computeDates(List<TournamentRound> rounds, FacilityHours facilityHours) {
+    public void computeDates(List<TournamentRound> rounds, FacilityHours facilityHours, SportInfo sportInfo) {
+
+        List<Long> courts = sportInfo.getCourtIDs().stream().limit(courtsCount).collect(Collectors.toList());
+
+        if (courts.size() < courtsCount)
+            courtsCount = courts.size();
 
         int openingHour = facilityHours.getOpeningTime(), closingHour = facilityHours.getClosingTime();
 
@@ -156,7 +162,7 @@ public class TournamentDefinition {
 
             while (matchI < round.size()) {
                 Match match = round.get(round.size() - ++matchI);
-                match.setCourt(String.valueOf(court++));
+                match.setCourtID(courts.get(court++));
                 match.setDate(calendar.getTime());
 
                 if (court == courtsCount) {
@@ -177,6 +183,7 @@ public class TournamentDefinition {
     }
 
     private static void updateCalendar(Calendar calendar, Date day, int hour) {
+
         if (day != null) {
             calendar.setTime(day);
             calendar.set(Calendar.MINUTE, 0);

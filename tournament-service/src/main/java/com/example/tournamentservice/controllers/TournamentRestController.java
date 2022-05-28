@@ -26,7 +26,9 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
+import java.util.function.IntSupplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -142,7 +144,6 @@ public class TournamentRestController {
 
         while (tournament.getRounds().size() > 1 && tournament.getRounds().get(1).size() >= toKeep) {
             toFree.addAll(tournament.getRounds().get(0).getMatches().stream().map(Match::getReservationID).collect(Collectors.toList()));
-//            deleted.addAll(tournament.getRounds().get(0).getMatches());
             tournament.getRounds().remove(0);
         }
 
@@ -226,11 +227,13 @@ public class TournamentRestController {
         if (requiredDaysCount > tournamentDefinition.getDates().size())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not enough days");
 
-        tournamentDefinition.computeDates(rounds, hours);
+        tournamentDefinition.computeDates(rounds, hours, sportInfo);
 
         Tournament tournament = new Tournament(tournamentDefinition, rounds, userDetails.getId());
 
         tournament = this.tournamentRepository.save(tournament);
+
+        Long tournamentID = tournament.getId();
 
         List<ReservationRequest> reservationRequests = rounds.stream()
                 .flatMap(round -> round.getMatches()
@@ -238,8 +241,8 @@ public class TournamentRestController {
                         .map(match -> new ReservationRequest(DateSerialization.serializeDate(match.getDate()),
                                 ReservationOwnerType.TOURNAMENT_MATCH,
                                 3,
-                                -1, //TODO
-                                match.getId())))
+                                match.getCourtID(), //TODO
+                                tournamentID)))
                 .collect(Collectors.toList());
 
         ReservationResponse response = reservationRabbitClient.reserve(reservationRequests);
@@ -329,23 +332,102 @@ public class TournamentRestController {
         return addTeam(id, players);
     }
 
+    private Team winner(Match match) {
+
+        long p0 = match.getPoints0();
+        long p1 = match.getPoints1();
+
+        int a, b;
+        a = b = 0;
+
+        while (p0 > 0 || p1 > 0) {
+            if (p0 % 10 > p1 % 10)
+                a++;
+            else if (p1 % 10 > p0 % 10)
+                b++;
+
+            p0 /= 10;
+            p1 /= 10;
+        }
+
+        if (a > b)
+            return match.getSide0();
+        if (b > a)
+            return match.getSide1();
+
+        return null;
+    }
+
+    @GetMapping("match-results")
+//    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+    public Tournament matchResults(@CurrentUser UserDetails userDetails,
+                                   @RequestParam Long id,
+                                   @RequestParam(name = "match") Long matchID,
+                                   @RequestParam Long points0,
+                                   @RequestParam Long points1) {
+
+        Match match = matchesRepository.findById(matchID)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Match not found"));
+
+        Tournament tournament = getTournament(id, Tournament.Status.COMPLETE);
+
+        if (!Objects.equals(tournament.getRounds().get(match.getRound()).getMatches().get(match.getRoundHeight()).getId(), matchID))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Match and tournament not matching");
+
+        tournament.getRounds().get(match.getRound()).getMatches().get(match.getRoundHeight()).setPoints0(points0);
+        tournament.getRounds().get(match.getRound()).getMatches().get(match.getRoundHeight()).setPoints1(points1);
+
+        int nextRound = match.getRound() + 1;
+
+        if (nextRound < tournament.getRounds().size()) {
+            int nextHeight = match.getRoundHeight() / 2;
+
+            Match nextMatch = tournament.getRounds().get(nextRound).getMatches().get(nextHeight);
+            Team winner = winner(match);
+
+            boolean top = nextHeight * 2 == match.getRoundHeight();
+
+            if (top)
+                nextMatch.setSide0(winner);
+            else
+                nextMatch.setSide1(winner);
+
+            if (top && match.getRoundHeight() == tournament.getRound(match.getRound()).size() - 1
+                    || (top ? nextMatch.getSide1() : nextMatch.getSide0()) != null)
+                nextMatch.setStatus(Match.Status.READY);
+        } else {
+            tournament.setStatus(Tournament.Status.DONE);
+        }
+
+        match.setStatus(Match.Status.DONE);
+
+        return tournament;
+    }
+
     private void subTest(Tournament tournament) {
         List<Team> teams = tournament.getTeams();
         List<Long> toFree = new ArrayList<>();
-//        List<Match> deleted = new ArrayList<>();
         int toKeep = (int) Math.ceil(teams.size() * 1. / 2);
-        toKeep = 3;
 
+        for (int i = 0, l = tournament.getRounds().size() - 1; i < l && tournament.getRound(i).size() > toKeep; i++) {
 
-        while (tournament.getRounds().size() > 1 && tournament.getRounds().get(1).size() >= toKeep) {
-            toFree.addAll(tournament.getRounds().get(0).getMatches().stream().map(Match::getReservationID).collect(Collectors.toList()));
-//            deleted.addAll(tournament.getRounds().get(0).getMatches());
-            tournament.getRounds().remove(0);
-        }
+            if (tournament.getRound(i + 1).size() >= toKeep) {
+                toFree.addAll(tournament.getRound(0).getMatches().stream().map(Match::getReservationID).collect(Collectors.toList()));
+                tournament.getRounds().remove(0);
+            } else {
 
-        while (tournament.getRounds().get(0).size() > toKeep) {
-            toFree.add(tournament.getRounds().get(0).getMatches().get(0).getReservationID());
-            tournament.getRounds().get(0).getMatches().remove(0);
+                while (tournament.getRound(i).size() > toKeep) {
+                    toFree.add(tournament.getRound(i).getMatch(0).getReservationID());
+                    tournament.getRound(i).getMatches().remove(0);
+                }
+
+                for (int j = 0; j < toKeep; j++) {
+                    tournament.getRound(i).getMatch(j).setRoundHeight(j);
+                }
+
+                toKeep = (int) Math.ceil(toKeep * 1. / 2);
+            }
         }
 
         Collections.shuffle(teams);
@@ -356,6 +438,8 @@ public class TournamentRestController {
 
             if (i + 1 < teams.size())
                 match.setSide1(teams.get(i + 1));
+
+            match.setStatus(Match.Status.READY);
         }
 
         reservationRabbitClient.delete(toFree, tournament.getId());
@@ -364,8 +448,8 @@ public class TournamentRestController {
     }
 
     @GetMapping("test")
-    public Object test() {
-        Tournament tournament = tournamentRepository.findById(677L).orElse(null);
+    public Object test(@RequestParam Long id) {
+        Tournament tournament = tournamentRepository.findById(id).orElse(null);
 
         subTest(tournament);
 
@@ -373,4 +457,5 @@ public class TournamentRestController {
 
         return tournament;
     }
+
 }
