@@ -89,4 +89,12 @@ public class DateSerialization {
     public static String serializeDate(Date date) {
         return DAY_DATE_FORMAT.format(date);
     }
+
+    public static Date deserializeDate(String dateString) {
+        try {
+            return DAY_DATE_FORMAT.parse(dateString);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
