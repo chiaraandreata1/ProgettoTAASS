@@ -1,8 +1,10 @@
 package com.example.reservationservice.controllers;
 
 import com.example.reservationservice.models.Reservation;
+import com.example.reservationservice.rabbithole.FacilityRabbitClient;
 import com.example.reservationservice.repositories.ReservationRepository;
 import com.example.shared.models.facility.CourtInfo;
+import com.example.shared.models.facility.SportInfo;
 import com.example.shared.rabbithole.ReservationSportType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,13 +25,16 @@ public class ReservationController {
     @Autowired
     private ReservationRepository reservationRepository;
 
+    @Autowired
+    private FacilityRabbitClient facilityRabbitClient;
+
     @GetMapping("/")
     public List<Reservation> list(){
         return reservationRepository.findAll();
     }
 
     @GetMapping("/date/{date}/sport/{sport}")
-    public List<Reservation> findByDateAndSportReservations(@PathVariable String date, @PathVariable Enum sport) {
+    public List<Reservation> findByDateAndSportReservations(@PathVariable String date, @PathVariable Long sport) {
         SimpleDateFormat DAY_TIME_DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         StringBuilder startDateTime = new StringBuilder(); StringBuilder endDateTime = new StringBuilder();
         startDateTime.append(date).append(" 09:00");
@@ -50,19 +55,17 @@ public class ReservationController {
      */
 
     Reservation checkReservation (Reservation reservation){
+
         //CONTROLLO TIME
         if (reservation.getDate().getHours()+reservation.getnHours()>24 || reservation.getDate().getHours()<8)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Time variables are not correct");
         //CONTROLLO COURT ESISTENTE
-        //TODO NON LO HAI MAI SETTATO
-//        if (reservation.getCourtReserved()<1 || reservation.getCourtReserved()>6)
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Court not found");
-        /*
+        SportInfo sportInfo = facilityRabbitClient.getSportInfo(reservation.getSportReservation());
+        List<Long> courtIDs = sportInfo.getCourtIDs();
         //CONTROLLO COURT CORRETTO
-        CourtInfo Court = CourtInfo.getCourts().get(reservation.getCourtReserved().intValue()-1);
-        if (Court.sport!=reservation.getSportReservation())
+        if (!courtIDs.contains(reservation.getCourtReserved()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sport Reservations and Sport Court are not the same");
-        */
+
         //CONTROLLO INTERSEZIONE CON ALTRE RESERVATIONS
         String dateReservation = DateSerialization.serializeDate(reservation.getDate()).replace('/', '-');
         List<Reservation> reservationsForDay = findByDateAndSportReservations(dateReservation, reservation.getSportReservation());
@@ -81,9 +84,8 @@ public class ReservationController {
             set.addAll(hoursReservations_SameDate_Reserved);
             set.retainAll(hoursReservation);
 
-            // TODO VERIFICA STI NULL
-//            if (!set.isEmpty() && res.getCourtReserved().equals(reservation.getCourtReserved()))
-//                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Your reservation intersect with the other reservations of the same day. Someone play in that court");
+            if (!set.isEmpty() && res.getCourtReserved().equals(reservation.getCourtReserved()))
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Your reservation intersect with the other reservations of the same day. Someone play in that court");
         }
         reservation.setId(-1L);
         return reservation;

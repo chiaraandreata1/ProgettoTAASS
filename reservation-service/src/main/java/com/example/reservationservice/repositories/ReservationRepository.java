@@ -11,7 +11,7 @@ import java.util.List;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
 
-    List<Reservation> findAllByDateBetweenAndSportReservation(Date startDateTime, Date endDateTime, Enum sportReservation);
+    List<Reservation> findAllByDateBetweenAndSportReservation(Date startDateTime, Date endDateTime, Long sportReservation);
 
     @Query("select p from Reservation p WHERE p.id IN (:Ids)")
     List<Reservation> findReservationsByIds(List<Long> Ids);

@@ -27,13 +27,13 @@ public class Reservation {
 
     private Integer nHours;
 
-    private ReservationSportType sportReservation;
+    private Long sportReservation; //2 TENNIS SINGOLO E 3 DOUBLE TENNIS, 4 PADEL
 
-    public ReservationSportType getSportReservation() { return sportReservation; }
+    public Long getSportReservation() { return sportReservation; }
 
-    public void setSportReservation(ReservationSportType sportReservation) { this.sportReservation = sportReservation; }
+    public void setSportReservation(Long sportReservation) { this.sportReservation = sportReservation; }
 
-    private ReservationOwnerType typeReservation; //private, lesson e tournament
+    private ReservationOwnerType typeReservation; //user, lesson e tournament
 
     @ElementCollection
     private List<Integer> players;
@@ -58,13 +58,13 @@ public class Reservation {
 
     public void setTypeReservation(ReservationOwnerType typeReservation) { this.typeReservation = typeReservation; }
 
-    private Integer courtReserved;
+    private Long courtReserved; //5,6,7 TENNIS  E 8,9,10 PADEL
 
-    public Integer getCourtReserved() {
+    public Long getCourtReserved() {
         return courtReserved;
     }
 
-    public void setCourtReserved(Integer courtReserved) {
+    public void setCourtReserved(Long courtReserved) {
         this.courtReserved = courtReserved;
     }
 
