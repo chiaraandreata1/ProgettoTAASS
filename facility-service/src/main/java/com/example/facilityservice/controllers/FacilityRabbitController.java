@@ -44,6 +44,7 @@ public class FacilityRabbitController {
         RabbitResponse<SportInfo> res;
 
         Long id;
+        Integer playersPerTeam;
         Sport sport;
 //        Integer courtCount;
         Optional<Sport> optSport;
@@ -55,9 +56,12 @@ public class FacilityRabbitController {
             sport = optSport.get();
 
             if (sport.getPlayersPerTeam() != null) {
+                playersPerTeam = sport.getPlayersPerTeam();
+                while (sport.getParent() != null)
+                    sport = sport.getParent();
 //                courtCount = courtRepository.countCourtsBySport_Id(id);
                 res = new RabbitResponse<>(new SportInfo(
-                        sport.getPlayersPerTeam(),
+                        playersPerTeam,
                         courtRepository.getCourtBySport_Id(sport.getId()).stream()
                                 .map(Court::getId)
                                 .collect(Collectors.toList())));

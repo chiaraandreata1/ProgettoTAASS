@@ -45,7 +45,7 @@ public class ReservationRabbitController {
                 //TYPE RESERVATION
                 reserv.setTypeReservation(request.getRequestBody().get(i).getOwnerType());
                 //DATE
-                Date date = DateSerialization.deserializeDate(request.getRequestBody().get(i).getDate());
+                Date date = DateSerialization.deserializeDateTime(request.getRequestBody().get(i).getDate());
                 //date.setHours(10); //TODO: manca l'orario vero
                 reserv.setDate(date);
                 reserv.setnHours(request.getRequestBody().get(i).getHoursCount());

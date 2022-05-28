@@ -54,8 +54,9 @@ public class ReservationController {
         if (reservation.getDate().getHours()+reservation.getnHours()>24 || reservation.getDate().getHours()<8)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Time variables are not correct");
         //CONTROLLO COURT ESISTENTE
-        if (reservation.getCourtReserved()<1 || reservation.getCourtReserved()>6)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Court not found");
+        //TODO NON LO HAI MAI SETTATO
+//        if (reservation.getCourtReserved()<1 || reservation.getCourtReserved()>6)
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Court not found");
         /*
         //CONTROLLO COURT CORRETTO
         CourtInfo Court = CourtInfo.getCourts().get(reservation.getCourtReserved().intValue()-1);
@@ -80,8 +81,9 @@ public class ReservationController {
             set.addAll(hoursReservations_SameDate_Reserved);
             set.retainAll(hoursReservation);
 
-            if (!set.isEmpty() && res.getCourtReserved().equals(reservation.getCourtReserved()))
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Your reservation intersect with the other reservations of the same day. Someone play in that court");
+            // TODO VERIFICA STI NULL
+//            if (!set.isEmpty() && res.getCourtReserved().equals(reservation.getCourtReserved()))
+//                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Your reservation intersect with the other reservations of the same day. Someone play in that court");
         }
         reservation.setId(-1L);
         return reservation;

@@ -20,6 +20,10 @@ public class DateSerialization {
     public static final SimpleDateFormat DAY_DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
     public static final SimpleDateFormat DAY_TIME_DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
+    public static Date deserializeDateTime(String date) throws ParseException {
+        return DAY_TIME_DATE_FORMAT.parse(date);
+    }
+
     public static class DateSerialize extends JsonSerializer<Date> {
 
         @Override
@@ -88,6 +92,9 @@ public class DateSerialization {
 
     public static String serializeDate(Date date) {
         return DAY_DATE_FORMAT.format(date);
+    }
+    public static String serializeDateTime(Date date) {
+        return DAY_TIME_DATE_FORMAT.format(date);
     }
 
     public static Date deserializeDate(String dateString) {

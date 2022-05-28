@@ -233,16 +233,14 @@ public class TournamentRestController {
 
         tournament = this.tournamentRepository.save(tournament);
 
-        Long tournamentID = tournament.getId();
-
         List<ReservationRequest> reservationRequests = rounds.stream()
                 .flatMap(round -> round.getMatches()
                         .stream()
-                        .map(match -> new ReservationRequest(DateSerialization.serializeDate(match.getDate()),
+                        .map(match -> new ReservationRequest(DateSerialization.serializeDateTime(match.getDate()),
                                 ReservationOwnerType.TOURNAMENT_MATCH,
                                 3,
                                 match.getCourtID(), //TODO
-                                tournamentID)))
+                                match.getId())))
                 .collect(Collectors.toList());
 
         ReservationResponse response = reservationRabbitClient.reserve(reservationRequests);
