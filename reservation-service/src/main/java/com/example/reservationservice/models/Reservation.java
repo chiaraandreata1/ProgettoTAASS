@@ -36,7 +36,7 @@ public class Reservation {
     private ReservationOwnerType typeReservation; //user, lesson e tournament
 
     @ElementCollection
-    private List<Integer> players;
+    private List<Long> players;
 
     public Long getOwnerID() { return ownerID; }
 
@@ -46,9 +46,9 @@ public class Reservation {
 
     public void setnHours(Integer nHours) { this.nHours = nHours; }
 
-    public List<Integer> getPlayers() { return players; }
+    public List<Long> getPlayers() { return players; }
 
-    public void setPlayers(List<Integer> players) { this.players = players; }
+    public void setPlayers(List<Long> players) { this.players = players; }
 
     public Long getId() { return id; }
 

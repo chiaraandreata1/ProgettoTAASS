@@ -40,11 +40,23 @@ session:
       hibernate:
         ddl-auto: update
 
-#rabbit:
-#  lesson:
-#    exchange-name: rcp.lesson
-#    upcoming:
-#      queue-name: rpc.lesson.upcoming
-#      key: lesson.upcoming
-#    today:
-#      queue-name:
+rabbit:
+  courses:
+    exchange-name: rpc.courses
+    upcoming:
+      queue-name: rpc.courses.upcoming
+      key: courses.upcoming
+
+  facility:
+    exchange-name: rpc.facility
+    hours:
+      key: facility.hours
+    sports:
+      key: facility.sports
+
+  reservation:
+    exchange-name: rpc.reservation
+    reserve:
+      key: reservation.reserve
+    delete:
+      key: reservation.delete

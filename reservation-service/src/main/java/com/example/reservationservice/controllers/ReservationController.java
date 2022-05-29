@@ -59,10 +59,9 @@ public class ReservationController {
         //CONTROLLO TIME
         if (reservation.getDate().getHours()+reservation.getnHours()>24 || reservation.getDate().getHours()<8)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Time variables are not correct");
-        //CONTROLLO COURT ESISTENTE
+        //CONTROLLO COURT CORRETTO
         SportInfo sportInfo = facilityRabbitClient.getSportInfo(reservation.getSportReservation());
         List<Long> courtIDs = sportInfo.getCourtIDs();
-        //CONTROLLO COURT CORRETTO
         if (!courtIDs.contains(reservation.getCourtReserved()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sport Reservations and Sport Court are not the same");
 

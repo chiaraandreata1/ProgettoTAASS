@@ -1,11 +1,8 @@
 package com.example.reservationservice.controllers;
 
-import com.example.reservationservice.models.Court;
 import com.example.reservationservice.models.Reservation;
 import com.example.reservationservice.rabbithole.FacilityRabbitClient;
 import com.example.reservationservice.repositories.ReservationRepository;
-import com.example.shared.models.facility.CourtInfo;
-import com.example.shared.models.facility.SportInfo;
 import com.example.shared.rabbithole.*;
 import com.example.shared.tools.DateSerialization;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
