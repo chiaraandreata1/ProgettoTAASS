@@ -12,8 +12,8 @@
             <div [class.card]=true class="mb-3">
               <div class="card-header">SPORT COURSE</div>
               <mat-radio-group class="row card-body" required [(ngModel)]="sporttype" name='valueSport' aria-label="SPORT COURSE">
-                  <mat-radio-button class="col-4" value="tennis">Tennis</mat-radio-button>
-                  <mat-radio-button class="col-4" value="padel">Padel</mat-radio-button>
+                  <mat-radio-button class="col-4" [value]="2">Tennis</mat-radio-button>
+                  <mat-radio-button class="col-4" [value]="4">Padel</mat-radio-button>
               </mat-radio-group>
             </div>
           </div>
@@ -30,16 +30,16 @@
           <div class="col-2">
             <mat-form-field appearance="fill">
               <mat-label>Court</mat-label>
-              <mat-select [(ngModel)]="courtCourse" [disabled]="sporttype==''" name="typeSport">
-                <ng-container *ngIf="sporttype=='tennis'; then optionsTennis else optionsPadel"></ng-container>
+              <mat-select [(ngModel)]="courtCourse" [disabled]="sporttype==0" name="typeSport">
+                <ng-container *ngIf="sporttype==2; then optionsTennis else optionsPadel"></ng-container>
                 <ng-template #optionsTennis>
-                  <mat-option *ngFor="let court of tennisCourts" [value]="court.value">
-                    {{court.viewValue}}
+                  <mat-option *ngFor="let court of tennisCourts" [value]="court">
+                    {{court}}
                   </mat-option>
                 </ng-template>
                 <ng-template #optionsPadel>
-                  <mat-option *ngFor="let court of padelCourts" [value]="court.value">
-                    {{court.viewValue}}
+                  <mat-option *ngFor="let court of padelCourts" [value]="court">
+                    {{court}}
                   </mat-option>
                 </ng-template>
               </mat-select>
@@ -57,7 +57,7 @@
               <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
                 <ng-container *ngIf="instructorCourse.value && instructorCourse.value.length>1">
                   <mat-option *ngFor="let option of filter | async" [value]="option" (onSelectionChange)="disableInstructorInput()">
-                    {{option.username}}
+                    {{option.displayName}}
                   </mat-option>
                 </ng-container>
               </mat-autocomplete>

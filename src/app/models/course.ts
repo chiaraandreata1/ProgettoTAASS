@@ -3,9 +3,10 @@ import {Serialization} from "../utilities/serialization";
 export class Course {
   constructor(
   public id: number,
-  public sporttype: string,
+  public ownerID: number,
+  public sporttype: number,
   public instructor: number,
-  public level: string,
+  public levelCourse: string,
   public players: number[],
 
   public daycourse: string,
@@ -14,8 +15,9 @@ export class Course {
   public priceCourse: number,
   public courtCourse: number,
 
-  public endDateRegistration: Date,
-  public firstDayLesson: Date
+  public endDateRegistration: string, //todo sistemare in date quando rimette il serializzatore
+  public firstDayLesson: string,
+  public reservationsIDs: number[]
   ) {
   }
 
@@ -24,15 +26,16 @@ export class Course {
       'id': course.id,
       'sporttype': course.sporttype,
       'instructor': course.instructor,
-      'level': course.level,
+      'levelCourse': course.levelCourse,
       'players': course.players,
       'daycourse': course.daycourse,
       'hourlesson': course.hourlesson,
       'numberweeks': course.numberweeks,
       'priceCourse': course.priceCourse,
       'courtCourse': course.courtCourse,
-      'endDateRegistration': Serialization.serializeDate(course.endDateRegistration),
-      'firstDayLesson': Serialization.serializeDateTime(course.firstDayLesson),
+      'endDateRegistration': course.endDateRegistration, //TODO sistemare col serializzatore Serialization.serializeDate(course.endDateRegistration)
+      'firstDayLesson': course.firstDayLesson, //TODO sistemare col serializzatore Serialization.serializeDateTime(course.firstDayLesson)
+      'reservationsIDs': course.reservationsIDs
     }
   }
 }

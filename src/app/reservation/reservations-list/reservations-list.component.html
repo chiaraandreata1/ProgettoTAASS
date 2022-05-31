@@ -7,9 +7,9 @@
       <div class="col-4">
         <div [class.card]=true class="mb-3">
           <div class="card-header">SPORT RESERVATION</div>
-          <mat-radio-group class="row card-body" required [(ngModel)]="sportReservation" name='valueSport' (ngModelChange)="reloadData(); this.courts = (sportReservation == 'tennis' ? [1, 2 , 3] : [4, 5, 6])" aria-label="SPORT RESERVATION">
-            <mat-radio-button class="col-4" value="tennis">Tennis</mat-radio-button>
-            <mat-radio-button class="col-4" value="padel">Padel</mat-radio-button>
+          <mat-radio-group class="row card-body" required [(ngModel)]="sportReservation" name='valueSport' (ngModelChange)="reloadData(); this.courts = (sportReservation == 2 ? [1, 2 , 3] : [4, 5, 6])" aria-label="SPORT RESERVATION">
+            <mat-radio-button class="col-4" value=2>Tennis</mat-radio-button>
+            <mat-radio-button class="col-4" value=4>Padel</mat-radio-button>
           </mat-radio-group>
         </div>
       </div>
@@ -41,18 +41,20 @@
 </ng-container>
 -->
 <mat-tab-group *ngIf="dateReservation.value && sportReservation && isAdmin">
-  <mat-tab *ngFor="let hour of HoursAvailable" label="{{hour}}:00">
+  <mat-tab *ngFor="let hour of HoursAvailable; let i = index" label="{{hour}}:00">
     <div class="contentmattab">
-      <ng-container *ngFor="let court of courts">
-        <ng-container *ngFor="let reservation of reservations | async">
-          <div *ngIf="reservation.date.getHours()-1==hour && reservation.courtReservation.id==court">
-            <reservation-details [reservation]='reservation' [isAdmin]="isAdmin"></reservation-details>
-          </div>
-        </ng-container>
+      <ng-container *ngFor="let reservation of reservationsForHour[i] | async">
+          <reservation-details [reservation]='reservation' [isAdmin]="isAdmin"></reservation-details>
       </ng-container>
     </div>
   </mat-tab>
 </mat-tab-group>
+
+<div class="contentmattab" *ngIf="!isAdmin">
+  <ng-container *ngFor="let reservation of reservationsUser | async">
+    <reservation-details [reservation]='reservation' [isAdmin]="isAdmin"></reservation-details>
+  </ng-container>
+</div>
 
 <!-- prima nell'if c'era anche il NOT isAdmin -->
 <!--

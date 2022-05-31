@@ -55,21 +55,21 @@
 <mat-card class="reservationcard">
   <mat-card-title-group>
     <mat-card-title>  {{reservation.typeReservation.toUpperCase()}} </mat-card-title>
-    <mat-card-subtitle>Court {{ reservation.courtReservation.id}}, {{reservation.date.getHours()-1}}:00</mat-card-subtitle>
-    <img alt="TENNIS" mat-card-sm-image *ngIf="reservation.sportReservation=='tennis'" style="border-radius: 10%"
+    <mat-card-subtitle>Court {{ reservation.courtReserved}}, {{reservation.date}}</mat-card-subtitle> <!-- {{reservation.date.getHours()-1}}:00 -->
+    <img alt="TENNIS" mat-card-sm-image *ngIf="reservation.sportReservation==2" style="border-radius: 10%"
          src="https://th.bing.com/th/id/R.520ee10dab51ea3d37d897144fa20a3a?rik=jcUy4wABurZaJA&riu=http%3a%2f%2fgetwallpapers.com%2fwallpaper%2ffull%2f7%2f9%2f6%2f383037.jpg&ehk=Xlg6MY%2fLOQl%2b6plsR8H9EVJcKXgM%2bugM0ueDEVgKGY8%3d&risl=&pid=ImgRaw&r=0"
     />
-    <img alt="PADEL" mat-card-sm-image *ngIf="reservation.sportReservation=='padel'" style="border-radius: 10%"
+    <img alt="PADEL" mat-card-sm-image *ngIf="reservation.sportReservation==4" style="border-radius: 10%"
          src="https://img.wallpapersafari.com/desktop/1536/864/89/23/Cur3nw.jpg"
     />
   </mat-card-title-group>
   <mat-card-content>
-    {{reservation.players}} are going to play
+    {{playersString}} are going to play
   </mat-card-content>
 
   <mat-divider inset></mat-divider>
   <mat-card-actions>
-    <button *ngIf="reservation.typeReservation=='private' || isAdmin" mat-raised-button  color="warn" style="align-self: end" (click)='deleteReservation()'>DELETE</button>
+    <button *ngIf="isLoggedReservation || isAdmin" mat-raised-button  color="warn" style="align-self: end" (click)='deleteReservation()'>DELETE</button>
   </mat-card-actions>
 </mat-card>
 

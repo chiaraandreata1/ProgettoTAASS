@@ -3,9 +3,9 @@ import {Course} from "../../models/course";
 import {CourseService} from "../../services/course.service";
 import {CoursesPendingComponent} from "../courses-pending/courses-pending.component";
 import {AbstractControl, FormControl} from "@angular/forms";
-import {User} from "../../models/user";
-import {map, Observable} from "rxjs";
-import {OldUserService} from "../../services/user.service";
+import {debounceTime, distinctUntilChanged, map, Observable, Subject, switchMap} from "rxjs";
+import {UserService} from "../../user/user.service";
+import {UserInfo} from "../../models/user-info";
 
 @Component({
   selector: 'course-details',
@@ -19,52 +19,44 @@ export class CourseDetailsComponent implements OnInit {
   @Input() isAdmin!: boolean;
   @Input() isPending!: boolean;
 
-  user1!: User;
+  private partial = new Subject<string>();
+
+  sport = '';
 
   formInputPendingCourse = new FormControl('',this.validatePlayer);
-  users = new Array()
-  filterOptions = new Observable<User[]>();
+  candidates = new Array()
 
-  constructor(private courseService: CourseService, private listPending: CoursesPendingComponent, private userService: OldUserService) {}
+  constructor(private courseService: CourseService, private listPending: CoursesPendingComponent, private userService: UserService) {
+  }
 
   ngOnInit(): void {
-    let obsUsers = this.userService.getUsersList();
-    obsUsers.toPromise()
-      .then(
-        data => {
-          this.users = <Array<User>>data;
-          let userSelectable = this.users.filter(value => !this.course.players.includes(value.id) && value.id!=this.course.instructor);
-          this.filterOptions = this.formInputPendingCourse.valueChanges.pipe(
-            map(user => (typeof user === 'string' ? user : user.username)),
-            map(user => (user ? this._filter(user, userSelectable) : userSelectable.slice())),
-          );
-        }
-      );
+    this.sport=(this.course.sporttype == 2 ? 'TENNIS' : 'PADEL');
+
+    const findPlayers = this.userService.findPlayers.bind(this.userService);
+
+    this.partial.pipe(
+
+      debounceTime(500),
+
+      distinctUntilChanged(),
+
+      switchMap(p => findPlayers(p, 5, this.course.players.concat(this.course.instructor)))
+
+    ).subscribe(
+      candidates => {
+        this.candidates =   candidates
+      }
+    );
+
   }
 
-  displayFn(user: User): string {
-    return user && user.username ? user.username : '';
+  displayFn(user: UserInfo): string {
+    return user && user.displayName ? user.displayName : '';
   }
 
-  private _filter(username: string, usersSelectable: User[]): User[] {
-    const filterValue = username.toLowerCase();
-    return usersSelectable.filter(users => users.username.toLowerCase().includes(filterValue));
-  }
-
-  //in realtà questa funzione e la validate ci sono già in reservation. Bisogna renderla globale
-  prepareUserOptions(): void {
-    let obsUsers = this.userService.getUsersList();
-    obsUsers.toPromise()
-      .then(
-        data => {
-          this.users = <Array<User>>data;
-          let userSelectable = this.users.filter(value => !this.course.players.includes(value.username) && value.username!=this.course.instructor);
-          this.filterOptions = this.formInputPendingCourse.valueChanges.pipe(
-            map(user => (typeof user === 'string' ? user : user.username)),
-            map(user => (user ? this._filter(user, userSelectable) : userSelectable.slice())),
-          );
-        }
-      );
+  onInput(event: Event) {
+    if (event.target instanceof HTMLInputElement)
+      this.partial.next((event.target as HTMLInputElement).value);
   }
 
   validatePlayer(control: AbstractControl): {[key: string]: any} | null  {
@@ -99,7 +91,7 @@ export class CourseDetailsComponent implements OnInit {
   }
 
   debugButton(){
-    console.log(this.users)
+    console.log(this.formInputPendingCourse.value)
   }
 
 }

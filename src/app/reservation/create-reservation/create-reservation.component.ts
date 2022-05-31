@@ -2,16 +2,19 @@ import { Component, OnInit } from '@angular/core';
 
 import {Reservation} from "../../models/reservation";
 import {ReservationService} from "../../services/reservation.service";
-import {OldUserService} from "../../services/user.service";
-import {map, Observable} from "rxjs";
+import {Observable, Subscription} from "rxjs";
 
 
-import {AbstractControl, FormControl, FormGroup} from "@angular/forms";
+import {FormControl} from "@angular/forms";
 import {DummyCourt} from "../../models/dummyCourt";
-import {User} from "../../models/user";
+import {FacilityService} from "../../services/facility.service";
+import {UserService} from "../../user/user.service";
+import {Serialization} from "../../utilities/serialization";
+import {Team} from "../../models/tournament";
+import {Court} from "../../models/court";
 
 interface TypeMatchTennis {
-  numberplayers: number;
+  idsport: number,
   type: string;
 }
 
@@ -23,36 +26,31 @@ interface TypeMatchTennis {
 export class CreateReservationComponent implements OnInit {
   reservation!: Reservation;
 
-  courts!: Observable<DummyCourt[]> //i campi disponibili del centro sportivo
+  courtsTennis = new Array(); courtsPadel = new Array();
+  courtsReservation = new Array();
 
   OptionsTennis: TypeMatchTennis[] = [
-    {numberplayers: 2, type: 'Single'},
-    {numberplayers: 4, type: 'Double'},
+    {idsport: 2, type: 'Single'},
+    {idsport: 3, type: 'Double'},
   ]
 
   //info generali
-  //userLogged = '';
-  //isAdmin = false;
-  sportReservation = '';
+  userID: number;
+  isAdmin = false;
+  subscription = new Subscription();
+
+  allSports = new Array()
+  sportReservation = 0;
   numberplayers = 0;
+  isTennis = new FormControl();
 
-  rows=4;
-  cols=4;
-
-  //FormControls per ottenere gli users player
-  playersForm = new FormGroup({});
-  arrplayers = new Array();
+  allPlayers!: Team;
 
   //per creare i buttons con le prenotazioni possibili
   dateReservation = new FormControl();
   reservationsNOTAvailable!: Observable<Reservation[]>;
   hoursAvailable = [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
   arrNOTAvailableForHours = new Array();
-
-  //gestione del filtro delle opzioni
-  filtersOptions = new Array();
-  users = new Array();
-  usersNotSelected = new Array();
 
   listplayersready = false; //TRUE quando abbiamo 4 players che sono 4 users diversi. Fa vedere il date picker
   searchready = false; //TRUE dopo aver selezionato una data. Fa vedere i bottoni delle prenotazioni
@@ -63,7 +61,9 @@ export class CreateReservationComponent implements OnInit {
   minDate: Date;
   maxDate: Date;
 
-  constructor(private reservationService: ReservationService, private  userService: OldUserService) {
+  constructor(private reservationService: ReservationService, private facilityService: FacilityService, private userService: UserService) {
+    let id:number = this.userService.getCurrentUser()?.id || 0;
+    this.userID=id;
     let date = new Date()
     if (date.getHours()<23)
       this.minDate = date;
@@ -75,111 +75,46 @@ export class CreateReservationComponent implements OnInit {
     this.maxDate.setDate(new Date().getDate()+13);
 }
 
+  public ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
   ngOnInit(): void {
-    //this.isAdmin = this.userService.getRoleUserLogged() == "admin";
-    //this.userLogged = this.userService.getUserLogged();
-    //this.arrplayers = this.isAdmin ? ['player1', 'player2', 'player3', 'player4'] : ['player2', 'player3', 'player4'];
-    this.arrplayers = ['player1', 'player2', 'player3', 'player4'];
-    for (let i = 0; i<this.arrplayers.length; i++)
-      this.playersForm.addControl(this.arrplayers[i], new FormControl('', [this.validatePlayer]));
-    //INIZIALIZZO IL FILTRO SUGGERIMENTI, dove inizialmente la usersNotSelected comprende tutti gli utenti
-    this.prepareUserOptions();
-    for (let i = 0; i<this.arrplayers.length; i++)
-    {
-      let filteredOptions = this.playersForm.controls[this.arrplayers[i]].valueChanges.pipe(
-        map(user => (typeof user === 'string' ? user : user.username)),
-        map(user => (user ? this._filter(user) : this.usersNotSelected.slice())),
-      );
-      this.playersForm.controls[this.arrplayers[i]].disable();
-      this.filtersOptions.push(filteredOptions)
-    }
-  }
-  //TODO: il changefilters va fatto senza utilizzare la get all users (collegamento alla prepareuseroption di riga 99). Serve una get specifica
-  //modifica le filtered options con i nuovi usersNotSelected, che sono tutte uguali qualunque sia il player scelto
-  changeFilters(){
-    let usersSelected = new Array();
-    for (let i = 0; i<this.arrplayers.length; i++)
-    {
-      if (typeof this.playersForm.controls[this.arrplayers[i]].value != "string")
-        usersSelected.push(this.playersForm.controls[this.arrplayers[i]].value);
-    }
-    //if (!this.isAdmin)
-      //usersSelected.push(this.userLogged);
-    this.usersNotSelected = this.users.filter(value => !usersSelected.includes(value));
-    this.filtersOptions = new Array();
-    for (let i = 0; i<this.arrplayers.length; i++) {
-      let filteredOptions = this.playersForm.controls[this.arrplayers[i]].valueChanges.pipe(
-        map(user => (typeof user === 'string' ? user : user.username)),
-        map(user => (user ? this._filter(user) : this.usersNotSelected.slice())),
-      );
-      this.filtersOptions.push(filteredOptions)
-    }
+    this.subscription = this.userService.isAdmin().subscribe(data => {this.isAdmin = data;});
+    this.facilityService.getCourts().toPromise().then(data => {
+      let allCourts = <Array<Court>>data;
+      for (let i = 0; i<allCourts.length; i++)
+        if (allCourts[i].sport.name=="Tennis") this.courtsTennis.push(allCourts[i].id);
+        else this.courtsPadel.push(allCourts[i].id)
+    })
   }
 
-  //CREAZIONE DELL'ARRAY USER E USERNAMES-------------------------------------------------
-  //utilizzata dalla onInit, inizializza l'array observable di users e usersNotSelected, che inizialmente sono uguali
-  //TODO: costruirlo in modo tale che vengano presi solo gli users richiesti prendendoli dal server (e non tutti) (collegamento alla changefilters di riga 75)
-  prepareUserOptions(): void {
-    let obsUsers = this.userService.getUsersList();
-    obsUsers.toPromise()
-      .then(
-        data => {
-          this.users = new Array();
-          this.users = this.usersNotSelected = <Array<User>>data;
-        }
-      );
-  }
-
-  //queste ultime 3 funzioni servono a costruire correttamente le mat options per la barra dei suggerimenti
-  displayFn(user: User): string {
-    return user && user.username ? user.username : '';
-  }
-
-  private _filter(username: string): User[] {
-    const filterValue = username.toLowerCase();
-    return this.usersNotSelected.filter(users => users.username.toLowerCase().includes(filterValue));
-  }
-
-  validatePlayer(control: AbstractControl): {[key: string]: any} | null  {
-    if (typeof control.value == 'string') {
-      return { 'userInvalid': true };
-    }
-    return null;
-  }
   //----------------------------------------------------------------------------------------
   //FUNZIONI PER MANIPOLARE LA CLASSE RESERVATION-------------------------------------------
   newReservation(): void{
     this.submitted = false;
     this.dateReservation.reset();
     this.numberplayers = 0;
-    this.sportReservation = '';
-    this.resetInputPlayers();
-    //this.reservation = new Reservation();
   }
 
   save() {
     let body = Reservation.toJSON(this.reservation);
     this.reservationService.createReservation(body)
       .subscribe(data => console.log(data), error => console.log(error));
-    //this.reservation = new Reservation();
     this.searchready = false;
   }
 
-  createReservation(sportReservation: string, dateReservation: string, hour: number, courtId: number, courtType: string)
+  createReservation(sportReservation: number, dateReservation: string, hour: number, courtId: number)
   {
-    let players = new Array();
-    //let nPlayersToConsider = this.isAdmin ? this.numberplayers : this.numberplayers-1;
-    let nPlayersToConsider = this.numberplayers;
-    //if (!this.isAdmin)
-      //players.push(this.userService.getIdUserLogged());
-    for (let i = 0; i<nPlayersToConsider; i++)
-      players.push(typeof this.playersForm.controls[this.arrplayers[i]].value == "string" ? this.playersForm.controls[this.arrplayers[i]].value : this.playersForm.controls[this.arrplayers[i]].value.id);
+    let players = this.allPlayers.players;
+    if (!this.isAdmin)
+      players.push(this.userID);
     let date = new Date(this.dateReservation.value)
     date.setHours(hour)
+    let finalStringDate = Serialization.serializeDateTime(date); //TODO TOGLIERE QUANDO RI FUNZIONA IL SERIALIZZATORE
     let court = new DummyCourt();
     court.id = courtId;
-    court.type = courtType;
-    this.reservation = new Reservation(-1, sportReservation, date, 'private', court, players);
+    this.reservation = new Reservation(-1, this.userID, sportReservation, finalStringDate, 1, 'USER', court.id, players);
     this.submitted = true;
     console.log(this.reservation);
     this.save();
@@ -197,73 +132,36 @@ export class CreateReservationComponent implements OnInit {
 
   //----------------------------------------------------------------------------------------
   //GESTIONE DINAMICA DEL SERVIZIO----------------------------------------------------------
-  //si attiva quando vuoi svutare la label dall'user selezionato. Riabilita la label
-  enableInputPlayer(absControl: AbstractControl)
-  {
-    absControl.setValue('');
-    absControl.enable();
-    this.listplayersready = false;
-    this.changeFilters();
-    this.reloadData();
-  }
-
-  //si attiva quando hai scelto l'user player. Disabilita la label
-  disableInputPlayer(absControl: AbstractControl, playerdisabled: string)
-  {
-    absControl.disable();
-    this.changeFilters();
-    this.playerlistready(playerdisabled);
-    this.reloadData();
-  }
-
-  //resetta e pulisce gli input dei 4 player. Si attiva quando cambi i campi sport, numero giocatori o quando fai una nuova prenotazione, vedere il submit button
-  resetInputPlayers(){
-    //let nPlayersToConsider = this.isAdmin ? this.numberplayers : this.numberplayers-1;
-    let nPlayersToConsider = this.numberplayers;
-    for (let i = 0; i<this.arrplayers.length; i++)
-    {
-      this.playersForm.controls[this.arrplayers[i]].reset();
-      if (i<nPlayersToConsider && (typeof this.playersForm.controls[this.arrplayers[i]].value != 'string' || !this.playersForm.controls[this.arrplayers[i]].value))
-        this.playersForm.controls[this.arrplayers[i]].enable();
-      else
-        this.playersForm.controls[this.arrplayers[i]].disable();
-    }
-    this.listplayersready = false;
-    this.changeFilters();
-    this.reloadData();
-  }
-
   //funzione che evita di selezionare il numero di giocatori se scegli padel come sport (se scegli padel è implicito che siano 4 i giocatori)
   checkRadioInput() {
-    if (this.sportReservation == 'padel')
-      this.numberplayers = 4;
-    else if (this.sportReservation == 'tennis')
-      this.numberplayers = 0;
-    this.resetInputPlayers();
+    if (!this.isTennis.value) {
+      this.numberplayers = this.sportReservation = 4;
+      if (!this.isAdmin) this.sportReservation = this.sportReservation-1;
+      this.courtsReservation = this.courtsPadel;
+    }
+    else {
+      this.numberplayers = this.sportReservation = 0;
+      this.courtsReservation = this.courtsTennis;
+    }
   }
 
-  //setta il flag true quando tutti i campi input (da player 1 a 4) conterranno le classi user corrette, e permette di scegliere la data
-  playerlistready(playerdisabled: string) {
-    //let nPlayersToConsider = this.isAdmin ? this.numberplayers : this.numberplayers-1;
-    let nPlayersToConsider = this.numberplayers;
-    for (let i = 0; i<nPlayersToConsider; i++)
-    {
-      if ((typeof this.playersForm.controls[this.arrplayers[i]].value == "string" || !this.playersForm.controls[this.arrplayers[i]].value) && playerdisabled!=this.arrplayers[i]) {
-        this.listplayersready = false;
-        return;
-      }
-    }
-    this.listplayersready = true;
+  setNumPlayers(){
+    let playerconsidered = this.isAdmin ? 0 : 1;
+    if (this.isTennis)
+      if (this.sportReservation==2)
+        this.numberplayers=2-playerconsidered;
+      else if (this.sportReservation==3)
+        this.numberplayers=4-playerconsidered;
+    this.reloadData();
   }
 
   //funzione che entra in gioco quando i campi precedenti sono tutti corretti, e permette di scegliere una data. La reservationsNOTAvailable è il complementare che crea poi dall'html le reservation disponibili
   reloadData() {
-    if (this.dateReservation.value!=undefined && this.sportReservation!='' && this.listplayersready)
+    this.searchready = false;
+    if (this.dateReservation.value!=undefined && this.sportReservation>1 && this.listplayersready && this.isTennis.value)
     {
-      this.searchready = true;
       this.arrNOTAvailableForHours = new Array();
       this.arrALLReservationsOrdByHourAndCourt = new Array();
-      this.courts = this.reservationService.getCourtsListByType(this.sportReservation);
       //Preso dalla serialization--------------------- TODO:sostituire poi con la versione che prende anche gli slash
       let date = new Date(this.dateReservation.value);
       let d = date.getDate();
@@ -271,10 +169,12 @@ export class CreateReservationComponent implements OnInit {
       let y = date.getFullYear();
       let stringDate = `${d < 10 ? '0' : ''}${d}-${m < 10 ? '0' : ''}${m}-${y}`;
       //----------------------------------------------
-      this.reservationsNOTAvailable = this.reservationService.getReservationByDateAndSport(stringDate, this.sportReservation)
+      console.log('doing the GET operation')
+      this.reservationsNOTAvailable = this.reservationService.getReservationByDateAndSportIsTennis(stringDate, this.isTennis.value)
       this.reservationsNOTAvailable.toPromise()
       .then(
         data => {
+          console.log(data);
           let reservationsNOTAvailableNOTobs = <Array<Reservation>>data;
           this.arrNOTAvailableForHours = new Array();
           for (let i=0; i<this.hoursAvailable.length; i++)
@@ -283,26 +183,26 @@ export class CreateReservationComponent implements OnInit {
 
             for (let j = 0; j<reservationsNOTAvailableNOTobs.length; j++)
             {
-              if (reservationsNOTAvailableNOTobs[j].date.getHours() - 1 == this.hoursAvailable[i])
+              if (Serialization.deserializeDate(reservationsNOTAvailableNOTobs[j].date).getHours() - 1 == this.hoursAvailable[i]) //TODO: risistemare quando verrà serializzato reservationsNOTAvailableNOTobs[j].date.getHours() - 1 == this.hoursAvailable[i]
                 arr.push(reservationsNOTAvailableNOTobs[j]);
             }
             this.arrNOTAvailableForHours.push(arr);
           }
           for (let hour = 0; hour<this.hoursAvailable.length; hour++)
           {
-            let first_court = this.sportReservation == 'tennis' ? 1 : 4;
+            let tennisSportsId = [1,2,3]
+            let first_court = tennisSportsId.includes(this.sportReservation) ? 5 : 8;
             let arr = new Array()
             for (let court_id = first_court; court_id<first_court+3; court_id++) {
-              let reservation = this.arrNOTAvailableForHours[hour].find((reservation: Reservation) => reservation.courtReservation.id === court_id)
+              let reservation = this.arrNOTAvailableForHours[hour].find((reservation: Reservation) => reservation.courtReserved === court_id)
               arr.push(reservation);
             }
             this.arrALLReservationsOrdByHourAndCourt.push(arr);
           }
+          this.searchready = true;
         }
       );
     }
-    else
-      this.searchready = false;
   }
 
   //funzione utile soprattutto se si vuole prenotare il giorno stesso. Le ore del giorno stesso già passate devono avere i bottoni disabilitati.
@@ -322,11 +222,7 @@ export class CreateReservationComponent implements OnInit {
 
 //bottone debugging
   show() {
-    console.log(this.numberplayers)
-  }
-
-  counter(i: number) {
-    return new Array(i);
+    console.log(this.arrALLReservationsOrdByHourAndCourt)
   }
 }
 

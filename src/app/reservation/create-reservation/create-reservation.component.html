@@ -1,4 +1,3 @@
-<form (ngSubmit)="onSubmit()">
   <div [hidden]="submitted" class="card mb-3">
     <div class="card-header bg-primary text-white">
       <h1>Create Reservation</h1>
@@ -9,17 +8,17 @@
         <div class="col-4">
           <div [class.card]=true class="mb-3">
             <div class="card-header">SPORT RESERVATION</div>
-            <mat-radio-group class="row card-body" required [(ngModel)]="sportReservation" (ngModelChange)="checkRadioInput()" name='valueSport' aria-label="SPORT RESERVATION">
-              <mat-radio-button class="col-4" value="tennis">Tennis</mat-radio-button>
-              <mat-radio-button class="col-4" value="padel">Padel</mat-radio-button>
+            <mat-radio-group class="row card-body" required [formControl]="isTennis" (ngModelChange)="checkRadioInput()" name='valueSport' aria-label="SPORT RESERVATION">
+              <mat-radio-button class="col-4" [value]="true">Tennis</mat-radio-button>
+              <mat-radio-button class="col-4" [value]="false">Padel</mat-radio-button>
             </mat-radio-group>
           </div>
         </div>
-        <div class="col-4" *ngIf="sportReservation == 'tennis'">
+        <div class="col-4" *ngIf="isTennis.value">
           <mat-form-field appearance="fill">
             <mat-label>Type match</mat-label>
-            <mat-select [(ngModel)]="numberplayers" (ngModelChange)="resetInputPlayers()" name="numberPlayers">
-              <mat-option *ngFor="let option of OptionsTennis" [value]="option.numberplayers">
+            <mat-select [(ngModel)]="sportReservation" (ngModelChange)="setNumPlayers()" name="numberPlayers">
+              <mat-option *ngFor="let option of OptionsTennis" [value]="option.idsport">
                 {{option.type}}
               </mat-option>
             </mat-select>
@@ -27,23 +26,9 @@
         </div>
       </div>
       <!-- RIGA 2 -->
-      <div class="row">
-        <div class="col-3" [formGroup]="playersForm" *ngFor="let player of arrplayers; let i = index">
-          <mat-form-field appearance="fill" >
-            <mat-label>{{player}}</mat-label>
-            <input type="text" matInput [formControlName]=player [matAutocomplete]="auto" required>
-            <mat-icon *ngIf="playersForm.controls[player].value" matSuffix (click)="enableInputPlayer(playersForm.controls[player])">close</mat-icon>
-            <mat-error *ngIf="playersForm.controls[player].hasError('userInvalid')">Select one suggestion</mat-error>
-            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-              <ng-container *ngIf="playersForm.controls[player].value && playersForm.controls[player].value.length>1">
-                <mat-option (onSelectionChange)="disableInputPlayer(playersForm.controls[player], player)" *ngFor="let option of filtersOptions[i] | async" [value]="option" >
-                  {{option.username}}
-                </mat-option>
-              </ng-container>
-            </mat-autocomplete>
-          </mat-form-field>
-        </div>
-      </div>
+      <app-create-team
+        [playersCount]="numberplayers" (created)="allPlayers=$event; listplayersready=true; reloadData()" [selectedPlayers]="[userID]"
+      ></app-create-team>
       <!-- RIGA 3 -->
       <div>
         <mat-form-field>
@@ -57,23 +42,24 @@
       </div>
     </div>
   </div>
+
   <div *ngIf="searchready">
     <mat-tab-group>
       <mat-tab *ngFor="let hour of hoursAvailable; let i = index" label="{{hour}}:00">
         <div class="contentmattab">
-          <ng-container *ngFor="let court of courts | async; let j = index">
+          <ng-container *ngFor="let court of courtsReservation; let j = index">
             <ng-container *ngIf="!arrALLReservationsOrdByHourAndCourt[i][j] && checkAvailableDate(hour); then ButtonAvailable else ButtonNotAvailable"></ng-container>
             <ng-template #ButtonAvailable>
-              <button mat-raised-button class="reservationbutton" color="primary" type="submit" (click)="createReservation(sportReservation, dateReservation.value, hour, court.id, court.type)">Court{{court.id}}</button>
+              <button mat-raised-button class="reservationbutton" color="primary" type="submit" (click)="createReservation(sportReservation, dateReservation.value, hour, court)">Court{{court}}</button>
             </ng-template>
             <ng-template #ButtonNotAvailable>
               <ng-container *ngIf="arrALLReservationsOrdByHourAndCourt[i][j]">
                 <button mat-raised-button class="reservationbutton" color="primary" [disabled]="true">
-                  Court{{court.id}}<br>{{arrALLReservationsOrdByHourAndCourt[i][j].players}} ({{arrALLReservationsOrdByHourAndCourt[i][j].typeReservation}})
+                  Court{{court}}<br>{{arrALLReservationsOrdByHourAndCourt[i][j].players}} ({{arrALLReservationsOrdByHourAndCourt[i][j].typeReservation}})
                 </button>
               </ng-container>
               <ng-container *ngIf="!arrALLReservationsOrdByHourAndCourt[i][j]">
-                <button mat-raised-button class="reservationbutton" color="primary" [disabled]="true">Court{{court.id}}</button>
+                <button mat-raised-button class="reservationbutton" color="primary" [disabled]="true">Court{{court}}</button>
               </ng-container>
             </ng-template>
           </ng-container>
@@ -81,54 +67,9 @@
       </mat-tab>
     </mat-tab-group>
   </div>
-</form>
-    <!--
-    <div>
-      <div class="mb-2 row" *ngFor="let i of rows | forLoop">
-        <div class="col-2" *ngFor="let j of cols | forLoop">
-          <h1>Ore {{8 + i*cols+j}}:00</h1>
-          <div *ngFor="let court of courts | async; let k = index">
-            <ng-container *ngIf="!arrALLReservationsOrdByHourAndCourt[i*cols+j][k] && checkAvailableDate(8 + i*cols+j); then ButtonAvailable else ButtonNotAvailable"></ng-container>
-            <ng-template #ButtonAvailable>
-              <button mat-raised-button color="primary" class="reservationbutton" type="submit" (click)="createReservation(sportReservation, dateReservation.value, 8 + i*cols+j, court.id, court.type)">Court{{court.id}}</button>
-            </ng-template>
-            <ng-template #ButtonNotAvailable>
-              <ng-container *ngIf="arrALLReservationsOrdByHourAndCourt[i*cols+j][k]">
-                <button mat-raised-button color="primary" class="reservationbutton" [disabled]="true">Court{{court.id}} - {{arrALLReservationsOrdByHourAndCourt[i*cols+j][k].players}} ({{arrALLReservationsOrdByHourAndCourt[i*cols+j][k].typeReservation}})</button>
-              </ng-container>
-              <ng-container *ngIf="!arrALLReservationsOrdByHourAndCourt[i*cols+j][k]">
-                <button mat-raised-button color="primary" class="reservationbutton" [disabled]="true">Court{{court.id}}</button>
-              </ng-container>
-            </ng-template>
-          </div>
-        </div>
-      </div>
-    </div>
-    -->
 
-      <!--
-      <div *ngFor="let hour of hoursAvailable; let i = index" style="width: 300px;">
-        <h1>Ore {{hour}}:00</h1>
-        <ng-container *ngFor="let court of courts | async; let j = index" style="width: 300px;">
-          <ng-container *ngIf="!arrALLReservationsOrdByHourAndCourt[i][j] && checkAvailableDate(hour); then ButtonAvailable else ButtonNotAvailable"></ng-container>
-            <ng-template #ButtonAvailable>
-              <button mat-raised-button color="primary" type="submit" (click)="createReservation(sportReservation, dateReservation.value, hour, court.id, court.type)">Court{{court.id}}</button>
-            </ng-template>
-            <ng-template #ButtonNotAvailable>
-              <ng-container *ngIf="arrALLReservationsOrdByHourAndCourt[i][j]">
-                <button mat-raised-button color="primary" [disabled]="true">Court{{court.id}} - {{arrALLReservationsOrdByHourAndCourt[i][j].typeReservation}} - players: {{arrALLReservationsOrdByHourAndCourt[i][j].players}}</button>
-              </ng-container>
-              <ng-container *ngIf="!arrALLReservationsOrdByHourAndCourt[i][j]">
-                <button mat-raised-button color="primary" [disabled]="true">Court{{court.id}}</button>
-              </ng-container>
-            </ng-template>
-        </ng-container>
-      </div>
-      -->
-  <!-- BOTTONE DEBUGGING
-  <button mat-raised-button color="secondary" (click)='show()' >See</button>
--->
-
+   <!--BOTTONE DEBUGGING
+  <button mat-raised-button color="secondary" (click)='show()' >See</button>-->
 
 
  <div [hidden]="!submitted">

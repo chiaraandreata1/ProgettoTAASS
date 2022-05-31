@@ -13,12 +13,21 @@ export class ReservationService {
   constructor(private http: HttpClient) { }
 
 
-  getUserLoggedReservationsBySport(userLoggedId: number, sport: String): Observable<any> {
-    return this.http.get(`${this.baseUrlReservations}/sportuser/${sport}/user/${userLoggedId}`);
+  getUserLoggedReservationsBySport(userLoggedId: number, sport: number): Observable<any> {
+    let isTennis = sport==2 ? true : false;
+    return this.http.get(`${this.baseUrlReservations}/isTennis/${isTennis}/user/${userLoggedId}`);
   }
 
-  getReservationByDateAndSport(date: string, sport: string): Observable<any> {
+  getReservationByDateAndSportAndHour(date: string, sport: number, hour: number): Observable<any> {
+    return this.http.get(`${this.baseUrlReservations}/date/${date}/sport/${sport}/hour/${hour}`);
+  }
+
+  getReservationByDateAndSport(date: string, sport: number): Observable<any> {
     return this.http.get(`${this.baseUrlReservations}/date/${date}/sport/${sport}`);
+  }
+
+  getReservationByDateAndSportIsTennis(date: string, isTennis: boolean): Observable<any> {
+    return this.http.get(`${this.baseUrlReservations}/date/${date}/isTennis/${isTennis}`);
   }
 
   createReservation(reservation: Object): Observable<Object> {

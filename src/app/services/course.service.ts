@@ -7,7 +7,7 @@ import {Observable} from "rxjs";
 })
 export class CourseService {
 
-  private baseUrl = 'http://localhost:8080/api/v1/lessons/courses';
+  private baseUrl = 'http://localhost:8080/api/v1/courses';
 
   constructor(private http: HttpClient) { }
 
@@ -35,7 +35,7 @@ export class CourseService {
     return this.http.get(`${this.baseUrl}`);
   }
 
-  getCoursesBySportAndYear(sport: string, year: number, ispending: boolean): Observable<any> {
+  getCoursesBySportAndYear(sport: number, year: number, ispending: boolean): Observable<any> {
     return this.http.get(`${this.baseUrl}/sport/${sport}/year/${year}/ispending/${ispending}`);
   }
 }

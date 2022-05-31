@@ -1,13 +1,14 @@
-import {DummyCourt} from "./dummyCourt";
 import {Serialization} from "../utilities/serialization";
 
 export class Reservation {
   constructor(
     public id: number,
-    public sportReservation: string,
-    public date: Date,
+    public ownerID: number,
+    public sportReservation: number,
+    public date: string,
+    public nHours: number,
     public typeReservation: string,
-    public courtReservation: DummyCourt,
+    public courtReserved: number,
     public players: number[]
   ) {
   }
@@ -15,9 +16,11 @@ export class Reservation {
   static toJSON(reservation: Reservation): object {
     return {
       'id': reservation.id,
+      'ownerID': reservation.ownerID,
       'sportReservation': reservation.sportReservation,
-      'date': Serialization.serializeDateTime(reservation.date),
-      'courtReservation': reservation.courtReservation,
+      'date': reservation.date, //Serialization.serializeDateTime(reservation.date),
+      'nHours': reservation.nHours,
+      'courtReserved': reservation.courtReserved,
       'typeReservation': reservation.typeReservation,
       'players': reservation.players,
     }

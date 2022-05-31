@@ -22,7 +22,7 @@ export class CoursesCompletedComponent implements OnInit {
   completeCourses!: Observable<Course[]>;
   rangeYears!: any;
   yearCourse!: number;
-  sportCourse!: string;
+  sportCourse = 0;
 
   levels = ["Beginner", "Intermediate", "Pro"];
 
@@ -40,7 +40,7 @@ export class CoursesCompletedComponent implements OnInit {
   }
 
   findCompleteCoursesBySportAndYear() {
-    if (this.sportCourse!='' && this.yearCourse)
+    if (this.sportCourse!=0 && this.yearCourse)
       this.completeCourses = this.courseService.getCoursesBySportAndYear(this.sportCourse,this.yearCourse, false);
   }
 

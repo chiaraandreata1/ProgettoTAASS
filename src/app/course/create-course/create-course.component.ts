@@ -3,13 +3,11 @@ import {Course} from "../../models/course";
 import {CourseService} from "../../services/course.service";
 import {AbstractControl, FormControl, Validators} from "@angular/forms";
 import {map, Observable} from "rxjs";
-import {User} from "../../models/user";
-import {OldUserService} from "../../services/user.service";
-
-interface Courts {
-  value: number;
-  viewValue: string;
-}
+import {Serialization} from "../../utilities/serialization";
+import {UserService} from "../../user/user.service";
+import {UserInfo} from "../../models/user-info";
+import {Court} from "../../models/court";
+import {FacilityService} from "../../services/facility.service";
 
 @Component({
   selector: 'app-create-course',
@@ -18,23 +16,11 @@ interface Courts {
 })
 export class CreateCourseComponent implements OnInit {
 
-  tennisCourts: Courts[] = [
-    {viewValue: 'Court 1', value: 1},
-    {viewValue: 'Court 2', value: 2},
-    {viewValue: 'Court 3', value: 3},
-  ]
-
-  padelCourts: Courts[] = [
-    {viewValue: 'Court 4', value: 4},
-    {viewValue: 'Court 5', value: 5},
-    {viewValue: 'Court 6', value: 6},
-  ]
-
   instructors = new Array();
   levels = ['Beginner', 'Intermediate', 'Pro'];
 
   //info del corso-----------
-  sporttype='';
+  sporttype=0;
   instructorCourse = new FormControl('', [this.validateInstructor]);
   daycourse= '';
   levelcourse = '';
@@ -45,7 +31,7 @@ export class CreateCourseComponent implements OnInit {
   dateEndRegistration = new FormControl();
   //-------------------------
 
-  filter: Observable<User[]>;
+  filter: Observable<UserInfo[]>;
 
   weekday = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   submitted = false;
@@ -54,34 +40,46 @@ export class CreateCourseComponent implements OnInit {
 
   today = new Date(); //utilizzato solo nel check che le date scelte non siano quelle di oggi
 
-  constructor(private courseService: CourseService, private userService: OldUserService) {
+  userID = 0;
+  tennisCourts = new Array(); padelCourts = new Array();
+
+  constructor(private courseService: CourseService, private userService: UserService, private facilityService: FacilityService) {
     this.minDateEndRegistration = new Date();
     this.minDateEndRegistration.setDate(this.minDateEndRegistration.getDate() + 14);
     //costruisco l'array degli istruttori
-    this.userService.getUsersByType('instructor').toPromise()
+    this.userService.findInstructors().toPromise()
       .then(
         data => {
-          this.instructors = <Array<User>>data;
+          this.instructors = <Array<UserInfo>>data;
         }
       );
     this.filter = this.instructorCourse.valueChanges.pipe(
-      map(value => (typeof value === 'string' ? value : value.username)),
+      map(value => (typeof value === 'string' ? value : value.displayName)),
       map(name => (name ? this._filter(name) : this.instructors.slice())),
     );
   }
 
   ngOnInit(): void {
+    let id:number = this.userService.getCurrentUser()?.id || 0;
+    this.userID=id;
+
+    this.facilityService.getCourts().toPromise().then(data => {
+      let allCourts = <Array<Court>>data;
+      for (let i = 0; i<allCourts.length; i++)
+        if (allCourts[i].sport.name=="Tennis") this.tennisCourts.push(allCourts[i].id);
+        else this.padelCourts.push(allCourts[i].id)
+    })
   }
 
   //blocco funzioni per la barra suggerimenti-----------------------------------------------------------------------------------
   //queste ultime 3 funzioni forse si potrebbero generalizzare. Sono simili a quelle della create reservation
-  displayFn(user: User): string {
-    return user && user.username ? user.username : '';
+  displayFn(user: UserInfo): string {
+    return user && user.displayName ? user.displayName : '';
   }
 
-  private _filter(username: string): User[] {
-    const filterValue = username.toLowerCase();
-    return this.instructors.filter(users => users.username.toLowerCase().includes(filterValue));
+  private _filter(displayName: string): UserInfo[] {
+    const filterValue = displayName.toLowerCase();
+    return this.instructors.filter(users => users.displayName.toLowerCase().includes(filterValue));
   }
 
   validateInstructor(control: AbstractControl): {[key: string]: any} | null  {
@@ -104,11 +102,13 @@ export class CreateCourseComponent implements OnInit {
   //-----------------------------------------------------------------------------------------------------
 
   save(){
+    let stringDateEndRegistration = Serialization.serializeDateTime(this.dateEndRegistration.value);
     let dateFirstLesson = new Date(this.dateEndRegistration.value);
     dateFirstLesson.setDate(dateFirstLesson.getDate() + 7 - dateFirstLesson.getDay() + (this.weekday.indexOf(this.daycourse) + 1))
     dateFirstLesson.setHours(this.hourLesson.value)
-    console.log(dateFirstLesson)
-    let course = new Course(-1, this.sporttype, this.instructorCourse.value.id, this.levelcourse, [], this.daycourse.toLowerCase(), this.hourLesson.value, this.weeksLesson.value, this.priceCourse, this.courtCourse, this.dateEndRegistration.value, dateFirstLesson);
+    let stringDateFirstLesson = Serialization.serializeDateTime(dateFirstLesson) //todo commentare quando torna il serializzatore
+    let course = new Course(-1, this.userID, this.sporttype, this.instructorCourse.value.id, this.levelcourse, [], this.daycourse.toLowerCase(), this.hourLesson.value, this.weeksLesson.value, this.priceCourse, this.courtCourse, stringDateEndRegistration, stringDateFirstLesson, []);
+    console.log(course);
     let body = Course.toJSON(course);
     this.courseService.createCourse(body)
       .subscribe(data => console.log(data), error => console.log(error));
@@ -121,7 +121,7 @@ export class CreateCourseComponent implements OnInit {
   }
 
   newCourse(){
-    this.sporttype='';
+    this.sporttype=0;
     this.instructorCourse.enable()
     this.instructorCourse.reset()
     this.daycourse= '';

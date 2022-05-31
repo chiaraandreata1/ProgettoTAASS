@@ -14,11 +14,12 @@ import {UserService} from "../../user/user.service";
 })
 export class ReservationsListComponent implements OnInit {
 
-  reservations!: Observable<Reservation[]>;
+  reservationsUser!: Observable<Reservation[]>;
+  reservationsForHour = new Array()
   reservationsAdmin = new Array();
 
   dateReservation = new FormControl();
-  sportReservation = '';
+  sportReservation = 0; //2 TENNIS 4 PADEL
 
   isAdmin = false;
 
@@ -31,7 +32,9 @@ export class ReservationsListComponent implements OnInit {
 
   minDate: Date;
 
-  constructor(private reservationService: ReservationService, private userService: OldUserService, private NewUserService: UserService) {
+  userID=0;
+
+  constructor(private reservationService: ReservationService, private userService: UserService) {
     this.minDate = new Date();
   }
 
@@ -40,11 +43,14 @@ export class ReservationsListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    let id:number = this.userService.getCurrentUser()?.id || 0;
+    this.userID=id;
+
     this.reloadData();
     const firstMonthIndex = new Date().getMonth()
     for (let i=firstMonthIndex; i<firstMonthIndex+6; i++)
       this.MonthsAvailable.push(this.monthNames[i]);
-    this.subscription = this.NewUserService.isAdmin().subscribe(data => { this.isAdmin = data; });
+    this.subscription = this.userService.isAdmin().subscribe(data => { this.isAdmin = data; });
   }
 
   deleteReservations() {
@@ -64,12 +70,15 @@ export class ReservationsListComponent implements OnInit {
     let m = date.getMonth() + 1;
     let y = date.getFullYear();
     let stringDate = `${d < 10 ? '0' : ''}${d}-${m < 10 ? '0' : ''}${m}-${y}`;
-    if (this.sportReservation != "") //1970-01-01 è la data default se non scegli una data
+    if (this.sportReservation != 0) //1970-01-01 è la data default se non scegli una data
     {
       if (!this.isAdmin)
-        this.reservations = this.reservationService.getUserLoggedReservationsBySport(0, this.sportReservation); //TODO: userLoggedId deve essere l'id dell'utente loggato
+        this.reservationsUser = this.reservationService.getUserLoggedReservationsBySport(this.userID, this.sportReservation);
       else if (stringDate!='01-01-1970')
-        this.reservations = this.reservationService.getReservationByDateAndSport(stringDate, this.sportReservation);
+      {
+        for (let i = 0; i<this.HoursAvailable.length; i++)
+            this.reservationsForHour.push(this.reservationService.getReservationByDateAndSportAndHour(stringDate, this.sportReservation, this.HoursAvailable[i]));
+      }
 
         /*
         this.reservationService.getReservationByDateAndSport(stringDate, this.sportReservation).toPromise()
@@ -101,7 +110,7 @@ export class ReservationsListComponent implements OnInit {
   }
 
   debugBut() {
-      console.log(this.sportReservation)
+      console.log(this.reservationsForHour)
   }
 
 }

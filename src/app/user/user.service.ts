@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {map, Observable, of, ReplaySubject, tap} from 'rxjs';
-import {UserInfo, UserInfoType} from "../models/user-info";
+import {UserInfo} from "../models/user-info";
 import {TokenStorageService} from "../services/token-storage.service";
 
 @Injectable({
@@ -101,5 +101,9 @@ export class UserService {
       }}).pipe(
       tap(console.log)
     );
+  }
+
+  public findInstructors(){
+    return this.http.get<UserInfo[]>(`${this.baseUrl}/get-instructors`);
   }
 }
