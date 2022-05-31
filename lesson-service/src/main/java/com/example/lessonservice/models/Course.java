@@ -31,6 +31,7 @@ public class Course {
     private Integer numberweeks;
     private Integer priceCourse;
     private Long courtCourse; //5,6,7 TENNIS  E 8,9,10 PADEL
+    private String levelCourse;
 
     @JsonDeserialize(using = DateSerialization.DateTimeDeserialize.class)
     private Date endDateRegistration;
@@ -117,4 +118,8 @@ public class Course {
     public List<Long> getReservationsIDs() { return reservationsIDs; }
 
     public void setReservationsIDs(List<Long> reservationsIDs) { this.reservationsIDs = reservationsIDs; }
+
+    public String getLevelCourse() { return levelCourse; }
+
+    public void setLevelCourse(String levelCourse) { this.levelCourse = levelCourse; }
 }

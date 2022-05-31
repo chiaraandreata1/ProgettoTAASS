@@ -67,9 +67,7 @@ zuul:
   routes:
     tournament-service: /api/v1/tournaments/**
     reservation-service: /api/v1/reservations/**
-    board-service: /api/v1/boards/**
     lesson-service: /api/v1/courses/**
-#    user-service: /api/v1/users/**
     facility-service: /api/v1/facility/**
 
 #    oauth2-start:

@@ -22,7 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 public class CourseController {
     @Autowired
     private CourseRepository courseRepository;
@@ -76,8 +76,8 @@ public class CourseController {
         return new ResponseEntity<>("Course deleted!", HttpStatus.OK);
     }
 
-    @GetMapping("/year/{year}/ispending/{ispending}")
-    public List<Course> findCompleteCoursesByYear(@PathVariable Integer year, @PathVariable Boolean ispending){
+    @GetMapping("sport/{sport}/year/{year}/ispending/{ispending}")
+    public List<Course> findCompleteCoursesByYear(@PathVariable long sport, @PathVariable Integer year, @PathVariable Boolean ispending){
         SimpleDateFormat DAY_TIME_DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
         StringBuilder startDateTime = new StringBuilder(); StringBuilder endDateTime = new StringBuilder();
         startDateTime.append("01-01-").append(year.toString()); endDateTime.append("31-12-").append(year);
@@ -89,7 +89,7 @@ public class CourseController {
         }
          */
         try {
-            List<Course> allCoursesByYear = courseRepository.findAllByEndDateRegistrationBetween(DAY_TIME_DATE_FORMAT.parse(startDateTime.toString()), DAY_TIME_DATE_FORMAT.parse(endDateTime.toString()));
+            List<Course> allCoursesByYear = courseRepository.findAllByEndDateRegistrationBetweenAndSporttype(DAY_TIME_DATE_FORMAT.parse(startDateTime.toString()), DAY_TIME_DATE_FORMAT.parse(endDateTime.toString()), sport);
             List<Course> allCourses = new ArrayList<>();
             for (Course course : allCoursesByYear) {
                 if (course.getPlayers().size() == 3 && !ispending)

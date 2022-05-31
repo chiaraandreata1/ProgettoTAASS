@@ -69,6 +69,19 @@ public class UserRestController {
                 .collect(Collectors.toList());
     }
 
+    //L'HO INSERITA IO PERCHÈ È NECESSARIA AL CORSO CHE CHIEDE I SUGGERIMENTI DI SOLI ISTRUTTORI.
+    //SE VUOI PUOI MIGLIORARLA, MA È NECESSARIA. HO AGGIUNTO ANCHE IL FINDBYTYPE NEL REPOSITORY
+    @GetMapping("get-instructors")
+    //@PreAuthorize("hasRole('ADMIN')")
+    public List<UserInfo> findInstructors() {
+        List<UserEntity> userEntities = userEntityRepository.findAllByType(UserType.TEACHER);
+        List<UserInfo> userInfos = new ArrayList<>();
+        for (UserEntity userEntity : userEntities) {
+            userInfos.add(userEntity.toUserInfo());
+        }
+        return userInfos;
+    }
+
     @GetMapping("find-users")
     public List<UserInfo> findUser(@CurrentUser UserInfo user,
                                    @RequestParam(name = "query") String partEmail,

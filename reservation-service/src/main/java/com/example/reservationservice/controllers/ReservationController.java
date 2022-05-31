@@ -3,9 +3,7 @@ package com.example.reservationservice.controllers;
 import com.example.reservationservice.models.Reservation;
 import com.example.reservationservice.rabbithole.FacilityRabbitClient;
 import com.example.reservationservice.repositories.ReservationRepository;
-import com.example.shared.models.facility.CourtInfo;
 import com.example.shared.models.facility.SportInfo;
-import com.example.shared.rabbithole.ReservationSportType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +16,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 public class ReservationController {
     @Autowired
     private ReservationRepository reservationRepository;
@@ -33,11 +33,11 @@ public class ReservationController {
         return reservationRepository.findAll();
     }
 
-    @GetMapping("/date/{date}/sport/{sport}")
+    @GetMapping("/date/{date}/sport/{sport}") //TODO: fixare
     public List<Reservation> findByDateAndSportReservations(@PathVariable String date, @PathVariable Long sport) {
         SimpleDateFormat DAY_TIME_DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         StringBuilder startDateTime = new StringBuilder(); StringBuilder endDateTime = new StringBuilder();
-        startDateTime.append(date).append(" 09:00");
+        startDateTime.append(date).append(" 08:00");
         endDateTime.append(date).append(" 21:00");
         try {
             return reservationRepository.findAllByDateBetweenAndSportReservation(DAY_TIME_DATE_FORMAT.parse(startDateTime.toString()), DAY_TIME_DATE_FORMAT.parse(endDateTime.toString()), sport);
@@ -46,13 +46,54 @@ public class ReservationController {
         }
     }
 
-
-    /*
-    @GetMapping("/player/{player}/date/{date}/sport/{sport}")
-    public List<Reservation> findByPlayerAndDateAndSport(@PathVariable String player, @PathVariable String date, @PathVariable String sport) {
-        return reservationRepository.getAllByPlayer(player, date, sport);
+    @GetMapping("/date/{date}/sport/{sport}/hour/{hour}") //TODO: fixare
+    public List<Reservation> findByDateAndSportReservations(@PathVariable String date, @PathVariable Long sport, @PathVariable Integer hour) {
+        SimpleDateFormat DAY_TIME_DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        StringBuilder dateString = new StringBuilder();
+        dateString.append(date).append(" ").append(hour).append(":00");
+        try {
+            return reservationRepository.findAllByDateAndSportReservation(DAY_TIME_DATE_FORMAT.parse(dateString.toString()), sport);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
-     */
+
+    @GetMapping("/date/{date}/isTennis/{isTennis}")
+    public List<Reservation> findByDateAndSportIsTennis(@PathVariable String date, @PathVariable Boolean isTennis) {
+        SimpleDateFormat DAY_TIME_DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        StringBuilder startDateTime = new StringBuilder(); StringBuilder endDateTime = new StringBuilder();
+        startDateTime.append(date).append(" 08:00");
+        endDateTime.append(date).append(" 21:00");
+        try {
+            List<Reservation> finalList = new ArrayList<>(); Long idSport;
+            if (isTennis){
+                List<Reservation> reservationsByDateSingle = reservationRepository.findAllByDateBetweenAndSportReservation(DAY_TIME_DATE_FORMAT.parse(startDateTime.toString()), DAY_TIME_DATE_FORMAT.parse(endDateTime.toString()), new Long(2));
+                List<Reservation> reservationsByDateDouble = reservationRepository.findAllByDateBetweenAndSportReservation(DAY_TIME_DATE_FORMAT.parse(startDateTime.toString()), DAY_TIME_DATE_FORMAT.parse(endDateTime.toString()), new Long(3));
+                finalList = Stream.concat(reservationsByDateSingle.stream(), reservationsByDateDouble.stream()).collect(Collectors.toList()); idSport = new Long(2);
+            }
+            else {
+                idSport = new Long(4);
+                finalList = reservationRepository.findAllByDateBetweenAndSportReservation(DAY_TIME_DATE_FORMAT.parse(startDateTime.toString()), DAY_TIME_DATE_FORMAT.parse(endDateTime.toString()), idSport);
+
+            }
+            SportInfo sportInfo = facilityRabbitClient.getSportInfo(idSport);
+            List<Long> courtIDs = sportInfo.getCourtIDs();
+            List<Reservation> reservationsByDateAndCourts = new ArrayList<>();
+            for (Reservation res : finalList){
+                if (courtIDs.contains(res.getCourtReserved()))
+                    reservationsByDateAndCourts.add(res);
+            }
+            return reservationsByDateAndCourts;
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    @GetMapping("/sportuser/{sport}/user/{userLoggedId}")
+    public List<Reservation> findByPlayerAndDateAndSport(@PathVariable Long sport, @PathVariable Long userLoggedId) {
+        return reservationRepository.getAllByPlayer(userLoggedId, sport);
+    }
 
     Reservation checkReservation (Reservation reservation){
 
