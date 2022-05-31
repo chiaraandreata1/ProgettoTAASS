@@ -13,9 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -90,9 +88,19 @@ public class ReservationController {
     }
 
 
-    @GetMapping("/sportuser/{sport}/user/{userLoggedId}")
-    public List<Reservation> findByPlayerAndDateAndSport(@PathVariable Long sport, @PathVariable Long userLoggedId) {
-        return reservationRepository.getAllByPlayer(userLoggedId, sport);
+    @GetMapping("/isTennis/{isTennis}/user/{userLoggedId}")
+    public List<Reservation> findByPlayerAndDateAndSport(@PathVariable boolean isTennis, @PathVariable Long userLoggedId) {
+        Date today = new Date(); Calendar c = Calendar.getInstance(); c.setTime(today); c.add(Calendar.WEEK_OF_MONTH,1);
+        Date endDate = c.getTime();
+        List<Reservation> reservationsByDate = reservationRepository.findAllByDateBetweenAndOwnerID(today, endDate, userLoggedId);
+        List<Reservation> finalList = new ArrayList<>();
+        for (Reservation res : reservationsByDate){
+            if (isTennis && (res.getSportReservation()==2 || res.getSportReservation()==3))
+                finalList.add(res);
+            else if (!isTennis)
+                finalList.add(res);
+        }
+        return finalList;
     }
 
     Reservation checkReservation (Reservation reservation){
