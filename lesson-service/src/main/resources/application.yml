@@ -1,6 +1,8 @@
 spring:
 
   datasource:
+    #NO DOCKER : jdbc:postgresql://localhost:5432/lessons
+    #CON DOCKER: jdbc:postgresql://dblessons:5432/lessons
     driver-class-name: org.postgresql.Driver
     username: taass
     url: jdbc:postgresql://localhost:5432/lessons
@@ -23,6 +25,8 @@ server:
 
 session:
   datasource:
+    #NO DOCKER : jdbc:postgresql://localhost:5432/session
+    #CON DOCKER: jdbc:postgresql://dbsession:5432/session
     url: jdbc:postgresql://localhost:5432/session
     driver-class-name: org.postgresql.Driver
     username: taass
