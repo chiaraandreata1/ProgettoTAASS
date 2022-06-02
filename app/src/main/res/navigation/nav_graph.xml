@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/FirstFragment"
+    >
+
+    <fragment
+        android:id="@+id/FirstFragment"
+        android:name="com.example.ballnet.FirstFragment"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_first">
+
+        <action
+            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            app:destination="@id/SecondFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_loginFragment2"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@+id/loginFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_FirstFragment_to_waitingFragment"
+            app:destination="@id/waitingFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_userFragment"
+            app:destination="@id/userFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_tournamentFragment"
+            app:destination="@id/tournamentFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/SecondFragment"
+        android:name="com.example.ballnet.SecondFragment"
+        android:label="@string/second_fragment_label"
+        tools:layout="@layout/fragment_second">
+
+        <action
+            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.ballnet.LoginFragment"
+        android:label="@string/login_fragment_label"
+        app:defaultNavHost="false"
+        tools:layout="@layout/fragment_login"
+        >
+        <action
+            android:id="@+id/action_loginFragment_to_FirstFragment2"
+            app:destination="@id/FirstFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/waitingFragment"
+        android:name="com.example.ballnet.WaitingFragment"
+        android:label="Loading"
+        tools:layout="@layout/fragment_waiting">
+        <action
+            android:id="@+id/action_waitingFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+        <action
+            android:id="@+id/action_waitingFragment_to_tournamentFragment"
+            app:destination="@id/tournamentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userFragment"
+        android:name="com.example.ballnet.UserFragment"
+        tools:layout="@layout/fragment_user" />
+    <fragment
+        android:id="@+id/tournamentFragment"
+        android:name="com.example.ballnet.TournamentFragment"
+        android:label="fragment_tournament"
+        tools:layout="@layout/fragment_tournament" />
+</navigation>
