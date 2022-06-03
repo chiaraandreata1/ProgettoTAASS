@@ -63,7 +63,7 @@
          src="https://img.wallpapersafari.com/desktop/1536/864/89/23/Cur3nw.jpg"
     />
   </mat-card-title-group>
-  <mat-card-content>
+  <mat-card-content *ngIf="reservation.players.length!=0">
     {{playersString}} are going to play
   </mat-card-content>
 

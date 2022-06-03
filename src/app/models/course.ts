@@ -1,5 +1,3 @@
-import {Serialization} from "../utilities/serialization";
-
 export class Course {
   constructor(
   public id: number,
@@ -15,7 +13,7 @@ export class Course {
   public priceCourse: number,
   public courtCourse: number,
 
-  public endDateRegistration: string, //todo sistemare in date quando rimette il serializzatore
+  public dateCourseCreated: string,
   public firstDayLesson: string,
   public reservationsIDs: number[]
   ) {
@@ -24,6 +22,7 @@ export class Course {
   static toJSON(course: Course): object {
     return {
       'id': course.id,
+      'ownerID': course.ownerID,
       'sporttype': course.sporttype,
       'instructor': course.instructor,
       'levelCourse': course.levelCourse,
@@ -33,8 +32,7 @@ export class Course {
       'numberweeks': course.numberweeks,
       'priceCourse': course.priceCourse,
       'courtCourse': course.courtCourse,
-      'endDateRegistration': course.endDateRegistration, //TODO sistemare col serializzatore Serialization.serializeDate(course.endDateRegistration)
-      'firstDayLesson': course.firstDayLesson, //TODO sistemare col serializzatore Serialization.serializeDateTime(course.firstDayLesson)
+      'dateCourseCreated': course.dateCourseCreated,
       'reservationsIDs': course.reservationsIDs
     }
   }

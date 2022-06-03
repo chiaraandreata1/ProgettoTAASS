@@ -28,7 +28,6 @@ export class CreateCourseComponent implements OnInit {
   weeksLesson = new FormControl('', [Validators.min(0), Validators.max(52)])
   priceCourse=NaN;
   courtCourse=NaN;
-  dateEndRegistration = new FormControl();
   //-------------------------
 
   filter: Observable<UserInfo[]>;
@@ -36,16 +35,12 @@ export class CreateCourseComponent implements OnInit {
   weekday = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   submitted = false;
 
-  minDateEndRegistration: Date;
-
   today = new Date(); //utilizzato solo nel check che le date scelte non siano quelle di oggi
 
   userID = 0;
   tennisCourts = new Array(); padelCourts = new Array();
 
   constructor(private courseService: CourseService, private userService: UserService, private facilityService: FacilityService) {
-    this.minDateEndRegistration = new Date();
-    this.minDateEndRegistration.setDate(this.minDateEndRegistration.getDate() + 14);
     //costruisco l'array degli istruttori
     this.userService.findInstructors().toPromise()
       .then(
@@ -102,12 +97,8 @@ export class CreateCourseComponent implements OnInit {
   //-----------------------------------------------------------------------------------------------------
 
   save(){
-    let stringDateEndRegistration = Serialization.serializeDateTime(this.dateEndRegistration.value);
-    let dateFirstLesson = new Date(this.dateEndRegistration.value);
-    dateFirstLesson.setDate(dateFirstLesson.getDate() + 7 - dateFirstLesson.getDay() + (this.weekday.indexOf(this.daycourse) + 1))
-    dateFirstLesson.setHours(this.hourLesson.value)
-    let stringDateFirstLesson = Serialization.serializeDateTime(dateFirstLesson) //todo commentare quando torna il serializzatore
-    let course = new Course(-1, this.userID, this.sporttype, this.instructorCourse.value.id, this.levelcourse, [], this.daycourse.toLowerCase(), this.hourLesson.value, this.weeksLesson.value, this.priceCourse, this.courtCourse, stringDateEndRegistration, stringDateFirstLesson, []);
+    let stringDateCreatedCourse = Serialization.serializeDateTime(new Date());
+    let course = new Course(-1, this.userID, this.sporttype, this.instructorCourse.value.id, this.levelcourse, [], this.daycourse.toLowerCase(), this.hourLesson.value, this.weeksLesson.value, this.priceCourse, this.courtCourse, stringDateCreatedCourse, '', []);
     console.log(course);
     let body = Course.toJSON(course);
     this.courseService.createCourse(body)
@@ -129,7 +120,6 @@ export class CreateCourseComponent implements OnInit {
     this.weeksLesson.reset()
     this.priceCourse=NaN;
     this.courtCourse=NaN;
-    this.dateEndRegistration.reset()
 
     this.submitted = false;
   }

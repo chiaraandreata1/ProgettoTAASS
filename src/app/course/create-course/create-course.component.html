@@ -102,18 +102,7 @@
           </div>
         </div>
 
-        <div class="mb-3 row">
-          <mat-form-field class="col-2">
-            <mat-label>Date end registration</mat-label>
-            <input readonly='true' matInput [matDatepicker] = "picker" name="dateEndRegistration" id="dateEndRegistration"
-                   [formControl]="dateEndRegistration" [min]="minDateEndRegistration" required>
-            <mat-hint>MM/DD/YYYY</mat-hint>
-            <mat-datepicker-toggle matSuffix [for] = "picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-          </mat-form-field>
-        </div>
-
-        <ng-container *ngIf="priceCourse && weeksLesson.value && daycourse && instructorCourse.value && levelcourse && dateEndRegistration.value && (hourLesson.value>=9 && hourLesson.value<=21) && sporttype && courtCourse && dateEndRegistration.value.toISOString().split('T')[0]!=today.toISOString().split('T')[0] && (weeksLesson.value>0 && weeksLesson.value<53); then ButtonAvailable else ButtonNotAvailable"></ng-container>
+        <ng-container *ngIf="priceCourse && weeksLesson.value && daycourse && instructorCourse.value && levelcourse && (hourLesson.value>=9 && hourLesson.value<=21) && sporttype && courtCourse && (weeksLesson.value>0 && weeksLesson.value<53); then ButtonAvailable else ButtonNotAvailable"></ng-container>
         <ng-template #ButtonAvailable>
           <button mat-raised-button color="primary" type="submit">CREATE COURSE</button>
         </ng-template>
@@ -127,8 +116,17 @@
   </div>
 
   <div *ngIf="submitted">
-    <h4>You submitted successfully!</h4>
-    <button mat-raised-button color="primary" type="submit" (click)="newCourse()">Add new</button>
+    <mat-card>
+      <mat-card-title-group>
+        <mat-card-title>COURSE CREATED!</mat-card-title>
+        <mat-card-subtitle>WILL BE ON {{daycourse}} at {{hourLesson.value}}:00</mat-card-subtitle> <!-- {{reservation.date.getHours()-1}}:00 -->
+      </mat-card-title-group>
+      <mat-card-content> Court {{courtCourse}}</mat-card-content>
+      <mat-divider inset></mat-divider>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" type="submit" (click)="newCourse()">ADD NEW COURSE</button>
+      </mat-card-actions>
+    </mat-card>
   </div>
 </ng-container>
 

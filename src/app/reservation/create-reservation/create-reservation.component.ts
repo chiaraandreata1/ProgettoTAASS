@@ -6,12 +6,12 @@ import {Observable, Subscription} from "rxjs";
 
 
 import {FormControl} from "@angular/forms";
-import {DummyCourt} from "../../models/dummyCourt";
 import {FacilityService} from "../../services/facility.service";
 import {UserService} from "../../user/user.service";
 import {Serialization} from "../../utilities/serialization";
 import {Team} from "../../models/tournament";
 import {Court} from "../../models/court";
+import {UserInfo} from "../../models/user-info";
 
 interface TypeMatchTennis {
   idsport: number,
@@ -24,7 +24,7 @@ interface TypeMatchTennis {
   styleUrls: ['./create-reservation.component.css'],
 })
 export class CreateReservationComponent implements OnInit {
-  reservation!: Reservation;
+  reservationFromMatrix!: Reservation;
 
   courtsTennis = new Array(); courtsPadel = new Array();
   courtsReservation = new Array();
@@ -61,6 +61,12 @@ export class CreateReservationComponent implements OnInit {
   minDate: Date;
   maxDate: Date;
 
+  //INFO PRENOTAZIONE CREATA
+  DateReserved = '';
+  PlayersReserved!: Observable<UserInfo[]>;
+  CourtReserved = 0;
+
+
   constructor(private reservationService: ReservationService, private facilityService: FacilityService, private userService: UserService) {
     let id:number = this.userService.getCurrentUser()?.id || 0;
     this.userID=id;
@@ -94,30 +100,6 @@ export class CreateReservationComponent implements OnInit {
   newReservation(): void{
     this.submitted = false;
     this.dateReservation.reset();
-    this.numberplayers = 0;
-  }
-
-  save() {
-    let body = Reservation.toJSON(this.reservation);
-    this.reservationService.createReservation(body)
-      .subscribe(data => console.log(data), error => console.log(error));
-    this.searchready = false;
-  }
-
-  createReservation(sportReservation: number, dateReservation: string, hour: number, courtId: number)
-  {
-    let players = this.allPlayers.players;
-    if (!this.isAdmin)
-      players.push(this.userID);
-    let date = new Date(this.dateReservation.value)
-    date.setHours(hour)
-    let finalStringDate = Serialization.serializeDateTime(date); //TODO TOGLIERE QUANDO RI FUNZIONA IL SERIALIZZATORE
-    let court = new DummyCourt();
-    court.id = courtId;
-    this.reservation = new Reservation(-1, this.userID, sportReservation, finalStringDate, 1, 'USER', court.id, players);
-    this.submitted = true;
-    console.log(this.reservation);
-    this.save();
   }
 
   deleteReservation(id: number) {
@@ -134,6 +116,7 @@ export class CreateReservationComponent implements OnInit {
   //GESTIONE DINAMICA DEL SERVIZIO----------------------------------------------------------
   //funzione che evita di selezionare il numero di giocatori se scegli padel come sport (se scegli padel è implicito che siano 4 i giocatori)
   checkRadioInput() {
+    this.allPlayers = new Team([]);
     if (!this.isTennis.value) {
       this.numberplayers = this.sportReservation = 4;
       if (!this.isAdmin) this.sportReservation = this.sportReservation-1;
@@ -143,6 +126,7 @@ export class CreateReservationComponent implements OnInit {
       this.numberplayers = this.sportReservation = 0;
       this.courtsReservation = this.courtsTennis;
     }
+    this.reloadData()
   }
 
   setNumPlayers(){
@@ -155,14 +139,23 @@ export class CreateReservationComponent implements OnInit {
     this.reloadData();
   }
 
+  checkAllPlayers(): boolean {
+    if (this.allPlayers.players.length!=this.numberplayers)
+      return false;
+    for (let i = 0; i<this.allPlayers.players.length; i++)
+      if (!this.allPlayers.players[i])
+        return false;
+    return true;
+  }
+
   //funzione che entra in gioco quando i campi precedenti sono tutti corretti, e permette di scegliere una data. La reservationsNOTAvailable è il complementare che crea poi dall'html le reservation disponibili
   reloadData() {
     this.searchready = false;
-    if (this.dateReservation.value!=undefined && this.sportReservation>1 && this.listplayersready && this.isTennis.value)
+    if (this.dateReservation.value!=undefined && this.sportReservation>1 && this.checkAllPlayers() && this.listplayersready && this.isTennis.value)
     {
       this.arrNOTAvailableForHours = new Array();
       this.arrALLReservationsOrdByHourAndCourt = new Array();
-      //Preso dalla serialization--------------------- TODO:sostituire poi con la versione che prende anche gli slash
+      //Preso dalla serialization---------------------
       let date = new Date(this.dateReservation.value);
       let d = date.getDate();
       let m = date.getMonth() + 1;
@@ -205,24 +198,9 @@ export class CreateReservationComponent implements OnInit {
     }
   }
 
-  //funzione utile soprattutto se si vuole prenotare il giorno stesso. Le ore del giorno stesso già passate devono avere i bottoni disabilitati.
-  checkAvailableDate(hour: number): boolean {
-    if (this.minDate.getDay()==new Date().getDay()) //controllo da effettuare soltanto se prenoti lo stesso giorno. Le ore dei giorni dopo vanno sempre bene
-    {
-      let completeDate = new Date(this.dateReservation.value); completeDate.setHours(hour);
-      return completeDate > this.minDate;
-    }
-    else return true;
-  }
-
-  //la save la fa la createReservation che prende tutti i valori necessari
-  onSubmit() {
-    this.submitted = true;
-  }
-
 //bottone debugging
   show() {
-    console.log(this.arrALLReservationsOrdByHourAndCourt)
+    console.log(this.allPlayers)
   }
 }
 

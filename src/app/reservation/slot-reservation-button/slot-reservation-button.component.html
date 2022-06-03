@@ -1,0 +1,12 @@
+<ng-container *ngIf="!reservationInput && checkAvailableDate(hour); then ButtonAvailable else ButtonNotAvailable"></ng-container>
+<ng-template #ButtonAvailable>
+  <button mat-raised-button class="reservationbutton" color="primary" type="submit" (click)="createReservation()">Court {{court}}</button>
+</ng-template>
+<ng-template #ButtonNotAvailable>
+  <button *ngIf="reservationInput && reservationInput.typeReservation=='USER'" mat-raised-button class="reservationbutton" color="primary" [disabled]="true">
+    Court{{court}}<br>{{reservationPlayersString}} (PRIVATE)
+  </button>
+  <button *ngIf="reservationInput && reservationInput.typeReservation=='TOURNAMENT_MATCH'" mat-raised-button class="reservationbutton" color="primary" [disabled]="true">Court {{court}} (TORUNAMENT)</button>
+  <button *ngIf="reservationInput && reservationInput.typeReservation=='COURSE'" mat-raised-button class="reservationbutton" color="primary" [disabled]="true">Court {{court}} (COURSE)</button>
+  <button *ngIf="!reservationInput" mat-raised-button class="reservationbutton" color="primary" [disabled]="true">Court{{court}}</button>
+</ng-template>

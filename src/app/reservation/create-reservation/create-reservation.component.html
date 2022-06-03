@@ -26,9 +26,9 @@
         </div>
       </div>
       <!-- RIGA 2 -->
-      <app-create-team
+      <app-players-reservation
         [playersCount]="numberplayers" (created)="allPlayers=$event; listplayersready=true; reloadData()" [selectedPlayers]="[userID]"
-      ></app-create-team>
+      ></app-players-reservation>
       <!-- RIGA 3 -->
       <div>
         <mat-form-field>
@@ -48,20 +48,19 @@
       <mat-tab *ngFor="let hour of hoursAvailable; let i = index" label="{{hour}}:00">
         <div class="contentmattab">
           <ng-container *ngFor="let court of courtsReservation; let j = index">
-            <ng-container *ngIf="!arrALLReservationsOrdByHourAndCourt[i][j] && checkAvailableDate(hour); then ButtonAvailable else ButtonNotAvailable"></ng-container>
-            <ng-template #ButtonAvailable>
-              <button mat-raised-button class="reservationbutton" color="primary" type="submit" (click)="createReservation(sportReservation, dateReservation.value, hour, court)">Court{{court}}</button>
-            </ng-template>
-            <ng-template #ButtonNotAvailable>
-              <ng-container *ngIf="arrALLReservationsOrdByHourAndCourt[i][j]">
-                <button mat-raised-button class="reservationbutton" color="primary" [disabled]="true">
-                  Court{{court}}<br>{{arrALLReservationsOrdByHourAndCourt[i][j].players}} ({{arrALLReservationsOrdByHourAndCourt[i][j].typeReservation}})
-                </button>
-              </ng-container>
-              <ng-container *ngIf="!arrALLReservationsOrdByHourAndCourt[i][j]">
-                <button mat-raised-button class="reservationbutton" color="primary" [disabled]="true">Court{{court}}</button>
-              </ng-container>
-            </ng-template>
+            <app-slot-reservation-button [reservationInput]="arrALLReservationsOrdByHourAndCourt[i][j]"
+                                         [hour]="hour"
+                                         [court]="court"
+                                         [allPlayers]="allPlayers"
+                                         [isAdmin]="isAdmin"
+                                         [userID]="userID"
+                                         [minDate]="minDate"
+                                         [dateToReserve]="this.dateReservation.value"
+                                         [sportToReserve]="sportReservation"
+                                         (done)="submitted=true; searchready=false;"
+                                         (EventUserInfos)="PlayersReserved=$event"
+                                         (EventReservetionOutput)="CourtReserved=$event.courtReserved; DateReserved=$event.date; "
+            ></app-slot-reservation-button>
           </ng-container>
         </div>
       </mat-tab>
@@ -73,6 +72,15 @@
 
 
  <div [hidden]="!submitted">
-   <h4>You submitted successfully!</h4>
-   <button mat-raised-button color="primary" type="submit" (click)="newReservation()">Add new</button>
+   <mat-card>
+     <mat-card-title-group>
+       <mat-card-title>RESERVATION DONE!</mat-card-title>
+       <mat-card-subtitle>PLAYERS: <ng-container *ngFor="let player of PlayersReserved | async">{{player.displayName}} </ng-container></mat-card-subtitle> <!-- {{reservation.date.getHours()-1}}:00 -->
+     </mat-card-title-group>
+     <mat-card-content>They will play on {{DateReserved}}. Court {{CourtReserved}}.</mat-card-content>
+     <mat-divider inset></mat-divider>
+     <mat-card-actions>
+       <button mat-raised-button color="primary" type="submit" (click)="newReservation()">Add new</button>
+     </mat-card-actions>
+   </mat-card>
  </div>

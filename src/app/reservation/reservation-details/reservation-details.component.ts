@@ -26,15 +26,15 @@ export class ReservationDetailsComponent implements OnInit {
     let id:number = this.userService.getCurrentUser()?.id || 0;
     if (this.reservation.players.includes(id))
       this.isLoggedReservation = true;
-
-    this.userService.getUsers(this.reservation.players).toPromise().then(data => {
-      let listPlayers = <Array<UserInfo>>data;
-      for (let i = 0; i<listPlayers.length; i++)
-        if (i+1<listPlayers.length)
-          this.playersString += listPlayers[i].displayName + ', '
-        else
-          this.playersString += listPlayers[i].displayName;
-    });
+    if (this.reservation.players.length>0)
+      this.userService.getUsers(this.reservation.players).toPromise().then(data => {
+        let listPlayers = <Array<UserInfo>>data;
+        for (let i = 0; i<listPlayers.length; i++)
+          if (i+1<listPlayers.length)
+            this.playersString += listPlayers[i].displayName + ', '
+          else
+            this.playersString += listPlayers[i].displayName;
+      });
 
   }
 

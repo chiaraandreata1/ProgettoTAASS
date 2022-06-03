@@ -49,4 +49,12 @@ export class ReservationService {
   deleteAllReservations(): Observable<any> {
     return this.http.delete(`${this.baseUrlReservations}` + `/delete`, { responseType: 'text' });
   }
+
+  getReservationsByIds(ids: number[]){
+    let stringListIds = '';
+    for (let i = 0; i<ids.length;i++)
+      if (i+1<ids.length)  stringListIds+=ids[i]+','
+      else stringListIds+=ids[i]
+    return this.http.get(`${this.baseUrlReservations}/getByIds?Ids=`+stringListIds)
+  }
 }

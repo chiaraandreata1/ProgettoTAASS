@@ -58,6 +58,8 @@ import { MeComponent } from './user/me/me.component';
 import { MatchComponent } from './tournaments/match/match.component';
 import { TeamComponent } from './tournaments/team/team.component';
 import { MatchBoxComponent } from './tournaments/match-box/match-box.component';
+import { PlayersReservationComponent } from './reservation/players-reservation/players-reservation.component';
+import { SlotReservationButtonComponent } from './reservation/slot-reservation-button/slot-reservation-button.component';
 
 @NgModule({
   declarations: [
@@ -94,7 +96,9 @@ import { MatchBoxComponent } from './tournaments/match-box/match-box.component';
     MeComponent,
     MatchComponent,
     TeamComponent,
-    MatchBoxComponent
+    MatchBoxComponent,
+    PlayersReservationComponent,
+    SlotReservationButtonComponent,
   ],
   imports: [
     BrowserModule,

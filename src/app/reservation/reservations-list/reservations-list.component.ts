@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Injectable, OnInit} from '@angular/core';
 import {Observable, Subscription} from 'rxjs';
 
 import { ReservationService } from '../../services/reservation.service';
 import { Reservation } from '../../models/reservation';
-import {OldUserService} from "../../services/user.service";
 import {FormControl} from "@angular/forms";
 import {UserService} from "../../user/user.service";
 
@@ -12,6 +11,11 @@ import {UserService} from "../../user/user.service";
   templateUrl: './reservations-list.component.html',
   styleUrls: ['./reservations-list.component.css']
 })
+
+@Injectable({
+  providedIn: 'root'
+})
+
 export class ReservationsListComponent implements OnInit {
 
   reservationsUser!: Observable<Reservation[]>;
@@ -23,7 +27,6 @@ export class ReservationsListComponent implements OnInit {
 
   isAdmin = false;
 
-  courts = new Array();
   HoursAvailable = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
   monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   MonthsAvailable = new Array();
@@ -65,6 +68,7 @@ export class ReservationsListComponent implements OnInit {
   }
 
   reloadData() {
+    this.reservationsForHour = new Array();
     let date = new Date(this.dateReservation.value);
     let d = date.getDate();
     let m = date.getMonth() + 1;

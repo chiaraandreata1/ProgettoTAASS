@@ -1,0 +1,35 @@
+<div class="border-1 rounded-1 border g-3 p-3 my-3">
+  <span class="fw-bold">Add players</span>
+
+    <div class="col-3 mb-3" *ngFor="let i of playersCount | forLoop">
+      <label class="form-label" for="member-{{i}}">Player {{i + 1}}</label>
+      <div class="input-group">
+        <input
+          *ngIf="!users[i]"
+          id="member-{{i}}"
+          class="form-control"
+          [disabled]="users[i]"
+          [class.is-invalid]="!valid(i)"
+          (focusout)="onFocusOut(i)"
+          (focusin)="onFocusIn(i, $event.target)"
+          (input)="onInput(i, $event)"
+          [matAutocomplete]="auto"
+        >
+        <input
+          *ngIf="users[i]"
+          id="member-{{i}}"
+          class="form-control"
+          disabled
+          value="{{users[i]?.displayName}}"
+        >
+        <button *ngIf="users[i]" class="btn btn-outline-secondary input-append" (click)="deselect(i)">X</button>
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option style="line-height: 13px" *ngFor="let candidate of candidates" [value]="candidate" (onSelectionChange)="selected(i, candidate, $event)">
+            <span>{{candidate.displayName}}</span> <br>
+            <small style="font-size: 10px">{{candidate.email}}</small>
+          </mat-option>
+        </mat-autocomplete>
+      </div>
+      <div style="font-size: 16px" *ngIf="users[i]">{{users[i]?.email}}</div>
+    </div>
+</div>
