@@ -23,10 +23,8 @@ export class SlotReservationButtonComponent implements OnInit {
   @Input() minDate!: Date;
   @Input() dateToReserve!: Date;
   @Input() sportToReserve!: number;
-  users = new Array()
+  users!: Observable<any>
   finalReservation!: Reservation;
-
-  reservationPlayersString = '('
 
   @Output() done: EventEmitter<void> = new EventEmitter<void>();
   @Output() EventUserInfos = new EventEmitter<Observable<UserInfo[]>>()
@@ -36,17 +34,11 @@ export class SlotReservationButtonComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.reservationInput && this.reservationInput.players.length>0)
-      this.userService.getUsers(this.reservationInput.players).toPromise().then( data => {
-        let usersInput =  <Array<UserInfo>>data;
-        for (let i = 0; i<usersInput.length; i++){
-          if (i+1<usersInput.length)
-            this.reservationPlayersString+=usersInput[i].displayName + '-';
-          else this.reservationPlayersString+=usersInput[i].displayName+')';
-        }
-      })
+      this.users = this.userService.getUsers(this.reservationInput.players)
   }
 
   save() {
+    console.log(this.finalReservation)
     let body = Reservation.toJSON(this.finalReservation);
     this.reservationService.createReservation(body)
       .subscribe(data => console.log(data), error => console.log(error));

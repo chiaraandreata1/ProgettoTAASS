@@ -116,10 +116,9 @@ export class CreateReservationComponent implements OnInit {
   //GESTIONE DINAMICA DEL SERVIZIO----------------------------------------------------------
   //funzione che evita di selezionare il numero di giocatori se scegli padel come sport (se scegli padel è implicito che siano 4 i giocatori)
   checkRadioInput() {
-    this.allPlayers = new Team([]);
     if (!this.isTennis.value) {
-      this.numberplayers = this.sportReservation = 4;
-      if (!this.isAdmin) this.sportReservation = this.sportReservation-1;
+      this.numberplayers = this.isAdmin ? 4 : 3;
+      this.sportReservation = 4;
       this.courtsReservation = this.courtsPadel;
     }
     else {
@@ -140,8 +139,11 @@ export class CreateReservationComponent implements OnInit {
   }
 
   checkAllPlayers(): boolean {
-    if (this.allPlayers.players.length!=this.numberplayers)
+    console.log(this.allPlayers); console.log(this.numberplayers);
+    if (this.allPlayers.players.length<this.numberplayers) {
+      console.log('false when:'); console.log(this.allPlayers); console.log(this.numberplayers);
       return false;
+    }
     for (let i = 0; i<this.allPlayers.players.length; i++)
       if (!this.allPlayers.players[i])
         return false;
@@ -151,7 +153,7 @@ export class CreateReservationComponent implements OnInit {
   //funzione che entra in gioco quando i campi precedenti sono tutti corretti, e permette di scegliere una data. La reservationsNOTAvailable è il complementare che crea poi dall'html le reservation disponibili
   reloadData() {
     this.searchready = false;
-    if (this.dateReservation.value!=undefined && this.sportReservation>1 && this.checkAllPlayers() && this.listplayersready && this.isTennis.value)
+    if (this.dateReservation.value!=undefined && this.sportReservation>1 && this.checkAllPlayers() && this.listplayersready && this.isTennis.value!=undefined)
     {
       this.arrNOTAvailableForHours = new Array();
       this.arrALLReservationsOrdByHourAndCourt = new Array();
@@ -201,6 +203,10 @@ export class CreateReservationComponent implements OnInit {
 //bottone debugging
   show() {
     console.log(this.allPlayers)
+    console.log(this.dateReservation.value)
+    console.log(this.checkAllPlayers())
+    console.log(this.listplayersready)
+    console.log(this.isTennis)
   }
 }
 
