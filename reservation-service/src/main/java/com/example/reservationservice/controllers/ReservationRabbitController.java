@@ -52,8 +52,12 @@ public class ReservationRabbitController {
                 //COURT
                 reserv.setCourtReserved(request.getRequestBody().get(i).getCourtID());
 
-                reservationController.checkReservation(reserv); //qui se c'è qualche bad request viene presa prima di creare tutte le reservations
-                arrayReservations.add(reserv);
+                if (reserv.getTypeReservation()==ReservationOwnerType.TOURNAMENT_MATCH) {
+                    reservationController.checkReservation(reserv); //qui se c'è qualche bad request viene presa prima di creare tutte le reservations
+                    arrayReservations.add(reserv);
+                }
+                else if (!reservationController.checkIntersection(reserv))
+                    arrayReservations.add(reserv);
             }
 
             for (int i = 0; i<arrayReservations.size(); i++) {

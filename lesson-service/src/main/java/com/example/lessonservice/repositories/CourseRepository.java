@@ -7,5 +7,5 @@ import java.util.Date;
 import java.util.List;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
-    List<Course> findAllByEndDateRegistrationBetweenAndSporttype(Date startDateTime, Date endDateTime, Long sporttype);
+    List<Course> findAllByDateCourseCreatedBetweenAndSporttype(Date startDateTime, Date endDateTime, Long sporttype);
 }

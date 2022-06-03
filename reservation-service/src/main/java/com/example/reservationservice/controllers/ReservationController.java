@@ -103,18 +103,7 @@ public class ReservationController {
         return finalList;
     }
 
-    Reservation checkReservation (Reservation reservation){
-
-        //CONTROLLO TIME
-        if (reservation.getDate().getHours()+reservation.getnHours()>24 || reservation.getDate().getHours()<8)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Time variables are not correct");
-        //CONTROLLO COURT CORRETTO
-        SportInfo sportInfo = facilityRabbitClient.getSportInfo(reservation.getSportReservation());
-        List<Long> courtIDs = sportInfo.getCourtIDs();
-        if (!courtIDs.contains(reservation.getCourtReserved()))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sport Reservations and Sport Court are not the same");
-
-        //CONTROLLO INTERSEZIONE CON ALTRE RESERVATIONS
+    boolean checkIntersection(Reservation reservation){
         String dateReservation = DateSerialization.serializeDate(reservation.getDate()).replace('/', '-');
         List<Reservation> reservationsForDay = findByDateAndSportReservations(dateReservation, reservation.getSportReservation());
         List<Integer> hoursReservation = new ArrayList<>();
@@ -133,8 +122,25 @@ public class ReservationController {
             set.retainAll(hoursReservation);
 
             if (!set.isEmpty() && res.getCourtReserved().equals(reservation.getCourtReserved()))
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Your reservation intersect with the other reservations of the same day. Someone play in that court");
+                return true;
         }
+        return false;
+    }
+
+    Reservation checkReservation (Reservation reservation){
+
+        //CONTROLLO TIME
+        if (reservation.getDate().getHours()+reservation.getnHours()>24 || reservation.getDate().getHours()<8)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Time variables are not correct");
+        //CONTROLLO COURT CORRETTO
+        SportInfo sportInfo = facilityRabbitClient.getSportInfo(reservation.getSportReservation());
+        List<Long> courtIDs = sportInfo.getCourtIDs();
+        if (!courtIDs.contains(reservation.getCourtReserved()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sport Reservations and Sport Court are not the same");
+        //CONTROLLO INTERSEZIONE CON ALTRE RESERVATIONS
+        if (checkIntersection(reservation))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Your reservation intersect with the other reservations of the same day. Someone play in that court");
+
         reservation.setId(-1L);
         return reservation;
     }
@@ -167,10 +173,9 @@ public class ReservationController {
 
         return new ResponseEntity<>("All reservations have been deleted!", HttpStatus.OK);
     }
-    /*
-    @RequestMapping(value = "/listByIds", method = RequestMethod.GET)
-    public List<Reservation> findByIds(@RequestParam Long[] Ids){
+
+    @RequestMapping(value = "/getByIds", method = RequestMethod.GET)
+    public List<Reservation> findByIds(@RequestParam List<Long> Ids) {
         return reservationRepository.findReservationsByIds(Ids);
     }
-     */
 }

@@ -34,7 +34,7 @@ public class Course {
     private String levelCourse;
 
     @JsonDeserialize(using = DateSerialization.DateTimeDeserialize.class)
-    private Date endDateRegistration;
+    private Date dateCourseCreated;
 
     @JsonDeserialize(using = DateSerialization.DateTimeDeserialize.class)
     private Date firstDayLesson;
@@ -52,13 +52,13 @@ public class Course {
     public void setDaycourse(String daycourse) { this.daycourse = daycourse; }
 
     @JsonSerialize(using = DateSerialization.DateTimeSerialize.class)
-    public Date getEndDateRegistration() {
-        return endDateRegistration;
+    public Date getDateCourseCreated() {
+        return dateCourseCreated;
     }
 
     @JsonDeserialize(using = DateSerialization.DateTimeDeserialize.class)
-    public void setEndDateRegistration(Date endDateRegistration) {
-        this.endDateRegistration = endDateRegistration;
+    public void setDateCourseCreated(Date dateCourseCreated) {
+        this.dateCourseCreated = dateCourseCreated;
     }
 
     @JsonSerialize(using = DateSerialization.DateTimeSerialize.class)
@@ -66,7 +66,6 @@ public class Course {
         return firstDayLesson;
     }
 
-    @JsonDeserialize(using = DateSerialization.DateTimeDeserialize.class)
     public void setFirstDayLesson(Date firstDayLesson) {
         this.firstDayLesson = firstDayLesson;
     }

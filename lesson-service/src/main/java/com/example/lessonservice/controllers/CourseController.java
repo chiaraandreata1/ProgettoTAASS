@@ -39,14 +39,14 @@ public class CourseController {
     }
 
     Course checkCourse(Course course){
+        /*
         String[] weekday = {"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
         Calendar cal = Calendar.getInstance(); cal.setTime(course.getFirstDayLesson()); int day = cal.get(Calendar.DAY_OF_WEEK);
         //CONTROLLO TIME
         if (!(course.getFirstDayLesson().getHours()<24 && course.getFirstDayLesson().getHours()>8)
-                || course.getFirstDayLesson().toInstant().isBefore(course.getEndDateRegistration().toInstant())
                     || ArrayUtils.indexOf(weekday, course.getDaycourse().toLowerCase())+1!=day)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Time variables are not correct");
-
+        */
         //CONTROLLO COURT CORRETTO
         SportInfo sportInfo = facilityRabbitClient.getSportInfo(course.getSporttype());
         List<Long> courtIDs = sportInfo.getCourtIDs();
@@ -89,7 +89,7 @@ public class CourseController {
         }
          */
         try {
-            List<Course> allCoursesByYear = courseRepository.findAllByEndDateRegistrationBetweenAndSporttype(DAY_TIME_DATE_FORMAT.parse(startDateTime.toString()), DAY_TIME_DATE_FORMAT.parse(endDateTime.toString()), sport);
+            List<Course> allCoursesByYear = courseRepository.findAllByDateCourseCreatedBetweenAndSporttype(DAY_TIME_DATE_FORMAT.parse(startDateTime.toString()), DAY_TIME_DATE_FORMAT.parse(endDateTime.toString()), sport);
             List<Course> allCourses = new ArrayList<>();
             for (Course course : allCoursesByYear) {
                 if (course.getPlayers().size() == 3 && !ispending)
@@ -121,10 +121,18 @@ public class CourseController {
 
                         Course finalCourse =  courseRepository.save(oldCourse);
                         if (finalCourse.getPlayers().size()==3){
+                            //settiamo il primo giorno di lezioni
+                            Date date1 = new Date(); date1.setHours(oldCourse.getHourlesson()); date1.setMinutes(0);
+                            String[] weekday = {"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
+                            Calendar cal1 = Calendar.getInstance(); cal1.setTime(date1);
+                            int day = cal1.get(Calendar.DAY_OF_WEEK);
+                            cal1.add(Calendar.DAY_OF_MONTH, weekday.length-day + 1 + ArrayUtils.indexOf(weekday, oldCourse.getDaycourse().toLowerCase()));
+                            oldCourse.setFirstDayLesson(cal1.getTime());
+
                             List<ReservationRequest> reservationRequests = new ArrayList<>();
                             for (int i = 0; i<finalCourse.getNumberweeks(); i++)
-                            {
-                                Calendar cal = Calendar.getInstance(); cal.setTime(finalCourse.getFirstDayLesson()); cal.add(Calendar.WEEK_OF_MONTH, i);
+                            {   //la prima reservation course parte 2 settimane dopo, per evitare  di scontrarsi con le reservations private, che hanno una max date di 2 settimane
+                                Calendar cal = Calendar.getInstance(); cal.setTime(finalCourse.getFirstDayLesson()); cal.add(Calendar.WEEK_OF_MONTH, i+2);
                                 Date date = cal.getTime(); date.setHours(finalCourse.getHourlesson());
                                 ReservationRequest reservationRequest = new ReservationRequest(DateSerialization.serializeDateTime(date), ReservationOwnerType.COURSE, 1, finalCourse.getCourtCourse(), finalCourse.getOwnerID());
                                 reservationRequests.add(reservationRequest);
