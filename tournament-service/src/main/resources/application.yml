@@ -3,6 +3,8 @@ spring:
     name: tournament-service
 
   datasource:
+    #NO DOCKER : jdbc:postgresql://localhost:5432/tournaments
+    #CON DOCKER: jdbc:postgresql://dbtournaments:5432/tournaments
     url: jdbc:postgresql://localhost:5432/tournaments
     driver-class-name: org.postgresql.Driver
     username: taass
@@ -29,6 +31,8 @@ server:
 
 session:
   datasource:
+    #NO DOCKER : jdbc:postgresql://localhost:5432/session
+    #CON DOCKER: jdbc:postgresql://dbsession:5432/session
     url: jdbc:postgresql://localhost:5432/session
     driver-class-name: org.postgresql.Driver
     username: taass

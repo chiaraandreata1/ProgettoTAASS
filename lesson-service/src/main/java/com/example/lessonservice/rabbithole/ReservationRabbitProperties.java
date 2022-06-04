@@ -1,23 +1,22 @@
-package com.example.boardservice.rabbithole;
+package com.example.lessonservice.rabbithole;
 
 import com.example.shared.rabbithole.QueueData;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "rabbit.facility")
-public class FacilityRabbitProperties {
+@ConfigurationProperties(prefix = "rabbit.reservation")
+public class ReservationRabbitProperties {
 
     private String exchangeName;
-
-    private final QueueData hours = new QueueData();
+    private final QueueData reserve = new QueueData();
 
     public String getExchangeName() {
         return exchangeName;
     }
 
-    public QueueData getHours() {
-        return hours;
+    public QueueData getReserve() {
+        return reserve;
     }
 
     public void setExchangeName(String exchangeName) {

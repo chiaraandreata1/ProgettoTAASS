@@ -24,11 +24,9 @@
 
 	<modules>
 		<module>auth-service</module>
-		<module>board-service</module>
 		<module>lesson-service</module>
 		<module>reservation-service</module>
 		<module>tournament-service</module>
-		<module>user-service</module>
 		<module>gateway</module>
 		<module>eureka-server</module>
 		<module>facility-service</module>

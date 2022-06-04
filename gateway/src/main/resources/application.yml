@@ -3,6 +3,8 @@ spring:
     name: zuul-server
 
   datasource:
+    #NO DOCKER : jdbc:postgresql://localhost:5432/session
+    #CON DOCKER: jdbc:postgresql://dbsession:5432/session
     url: jdbc:postgresql://localhost:5432/session
     driver-class-name: org.postgresql.Driver
     username: taass
@@ -67,9 +69,7 @@ zuul:
   routes:
     tournament-service: /api/v1/tournaments/**
     reservation-service: /api/v1/reservations/**
-    board-service: /api/v1/boards/**
-    lesson-service: /api/v1/lessons/**
-#    user-service: /api/v1/users/**
+    lesson-service: /api/v1/courses/**
     facility-service: /api/v1/facility/**
 
 #    oauth2-start:

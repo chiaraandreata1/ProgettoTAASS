@@ -4,8 +4,8 @@ spring:
 
 # si connette a DB in docker, istruzioni in:
 # https://info.crunchydata.com/blog/easy-postgresql-10-and-pgadmin-4-setup-with-docker
-#NO DOCKER : jdbc:postgresql://localhost:5432/reservations
-#CON DOCKER: jdbc:postgresql://dbreservations:5432/reservations
+  #NO DOCKER : jdbc:postgresql://localhost:5432/reservations
+  #CON DOCKER: jdbc:postgresql://dbreservations:5432/reservations
   datasource:
     url: jdbc:postgresql://localhost:5432/reservations
     driver-class-name: org.postgresql.Driver
@@ -50,6 +50,8 @@ rabbit:
 
 session:
   datasource:
+    #NO DOCKER : jdbc:postgresql://localhost:5432/session
+    #CON DOCKER: jdbc:postgresql://dbsession:5432/session
     url: jdbc:postgresql://localhost:5432/session
     driver-class-name: org.postgresql.Driver
     username: taass

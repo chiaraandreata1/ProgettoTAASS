@@ -3,6 +3,8 @@ spring:
     name: authentication-service
 
   datasource:
+    #NO DOCKER : jdbc:postgresql://localhost:5432/users
+    #CON DOCKER: jdbc:postgresql://dbusers:5432/users
     url: jdbc:postgresql://localhost:5432/users
     driver-class-name: org.postgresql.Driver
     username: taass
@@ -59,6 +61,8 @@ spring:
 
 session:
   datasource:
+    #NO DOCKER : jdbc:postgresql://localhost:5432/session
+    #CON DOCKER: jdbc:postgresql://dbsession:5432/session
     url: jdbc:postgresql://localhost:5432/session
     driver-class-name: org.postgresql.Driver
     username: taass

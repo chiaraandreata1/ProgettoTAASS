@@ -23,4 +23,6 @@ public interface UserEntityRepository extends JpaRepository<UserEntity, Long> {
     List<UserEntity> findUserEntitiesByEmailContainingIgnoreCaseAndIdNotIn(String partEmail, List<Long> excluded);
 
     List<UserEntity> findUserEntitiesByEmailContainingIgnoreCaseAndTypeIsAndIdNotIn(String query, UserType type, List<Long> excluded);
+
+    List<UserEntity> findAllByType(UserType userType);
 }

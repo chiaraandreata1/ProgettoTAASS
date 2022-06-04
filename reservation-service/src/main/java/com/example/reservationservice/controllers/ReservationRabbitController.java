@@ -1,10 +1,8 @@
 package com.example.reservationservice.controllers;
 
-import com.example.reservationservice.models.Court;
 import com.example.reservationservice.models.Reservation;
 import com.example.reservationservice.rabbithole.FacilityRabbitClient;
 import com.example.reservationservice.repositories.ReservationRepository;
-import com.example.shared.models.facility.CourtInfo;
 import com.example.shared.rabbithole.*;
 import com.example.shared.tools.DateSerialization;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -46,20 +44,20 @@ public class ReservationRabbitController {
                 reserv.setTypeReservation(request.getRequestBody().get(i).getOwnerType());
                 //DATE
                 Date date = DateSerialization.deserializeDateTime(request.getRequestBody().get(i).getDate());
-                //date.setHours(10); //TODO: manca l'orario vero
                 reserv.setDate(date);
                 reserv.setnHours(request.getRequestBody().get(i).getHoursCount());
                 reserv.setDate(date);
-                //SPORT RESERVATION //TODO: manca anche lo sport del torneo
-                reserv.setSportReservation(ReservationSportType.TENNIS);
-                reservationController.checkReservation(reserv); //qui se c'è qualche bad request viene presa prima di creare tutte le reservations
+                //SPORT RESERVATION
+                reserv.setSportReservation(new Long(2)); //TODO: manca lo sport info. Per ora è 2 cioè single tennis
                 //COURT
-                /*
-                CourtInfo Court = CourtInfo.getCourts().get(request.getRequestBody().get(i).getCourtID().intValue()-1);
-                reserv.setCourtReserved(Court.id);
-                reserv.setSportReservation(Court.sport);
-                 */
-                arrayReservations.add(reserv);
+                reserv.setCourtReserved(request.getRequestBody().get(i).getCourtID());
+
+                if (reserv.getTypeReservation()==ReservationOwnerType.TOURNAMENT_MATCH) {
+                    reservationController.checkReservation(reserv); //qui se c'è qualche bad request viene presa prima di creare tutte le reservations
+                    arrayReservations.add(reserv);
+                }
+                else if (!reservationController.checkIntersection(reserv))
+                    arrayReservations.add(reserv);
             }
 
             for (int i = 0; i<arrayReservations.size(); i++) {
@@ -88,24 +86,18 @@ public class ReservationRabbitController {
         Long ownerID = requestBody.getOwnerID();
         List<Long> reservationIDs = requestBody.getReservationIDs();
 
-        //Controlli errori TODO: manca lo sport (per ora è tennis)
+        //Controlli errori TODO: manca lo sportReservation (per ora è una long 2 cioè single tennis)
         for (Long id : reservationIDs) {
             Optional<Reservation> res = reservationRepository.findById(id);
             if (!res.isPresent())
                 return new RabbitResponse<>(HttpStatus.NOT_FOUND, "Not Found a reservation");
-            else if (!res.get().getOwnerID().equals(ownerID))
+            else if (!res.get().getOwnerID().equals(ownerID)) //devono essere tutte prenotazioni appartenenti a quell'owner che fa la richiesta
                 return new RabbitResponse<>(HttpStatus.FORBIDDEN, "Delete not permitted by the logged user");
-            else if (!res.get().getSportReservation().equals(ReservationSportType.TENNIS) || !res.get().getOwnerID().equals(requestBody.getOwnerID()) || !res.get().getTypeReservation().equals(requestBody.getOwnerType()))
-                return new RabbitResponse<>(HttpStatus.BAD_REQUEST, "Some fields are not correct");
+            else if (!res.get().getSportReservation().equals(new Long(2)) || !res.get().getTypeReservation().equals(requestBody.getOwnerType()))
+                return new RabbitResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, "Some fields are not correct"); //controllo tipo sport e tipo prenotazione corretta
         }
 
         List<Reservation> allReservations = reservationRepository.findReservationsByIds(reservationIDs);
-        /*
-        for (Reservation res : allReservations){
-            if (res.getSportReservation()!="tennis" || res.getOwnerID()!=requestBody.getOwnerID() || res.getTypeReservation()!=requestBody.getOwnerType())
-                return new RabbitResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, "Some fields are not correct");
-        }
-         */
         for (Reservation res : allReservations){
             reservationRepository.deleteById(res.getId());
         }

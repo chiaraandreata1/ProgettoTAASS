@@ -1,13 +1,9 @@
 package com.example.reservationservice.models;
 
-import com.example.shared.models.facility.CourtInfo;
 import com.example.shared.rabbithole.ReservationOwnerType;
-import com.example.shared.rabbithole.ReservationSportType;
 import com.example.shared.tools.DateSerialization;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -20,63 +16,47 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Long ownerID;
-
     @JsonDeserialize(using = DateSerialization.DateTimeDeserialize.class)
     private Date date;
 
-    private Integer nHours;
-
-    private ReservationSportType sportReservation;
-
-    public ReservationSportType getSportReservation() { return sportReservation; }
-
-    public void setSportReservation(ReservationSportType sportReservation) { this.sportReservation = sportReservation; }
-
-    private ReservationOwnerType typeReservation; //private, lesson e tournament
-
     @ElementCollection
-    private List<Integer> players;
+    private List<Long> players;
 
+    private Long ownerID;
+    private Integer nHours;
+    private Long sportReservation; //2 TENNIS SINGOLO E 3 DOUBLE TENNIS, 4 PADEL
+    private ReservationOwnerType typeReservation; //user, lesson e tournament
+    private Long courtReserved; //5,6,7 TENNIS  E 8,9,10 PADEL
+
+    //GETTERS
     public Long getOwnerID() { return ownerID; }
-
-    public void setOwnerID(Long ownerID) { this.ownerID = ownerID; }
-
+    public Long getSportReservation() { return sportReservation; }
     public Integer getnHours() { return nHours; }
-
-    public void setnHours(Integer nHours) { this.nHours = nHours; }
-
-    public List<Integer> getPlayers() { return players; }
-
-    public void setPlayers(List<Integer> players) { this.players = players; }
-
+    public List<Long> getPlayers() { return players; }
     public Long getId() { return id; }
-
-    public void setId(Long id) { this.id = id; }
-
     public ReservationOwnerType getTypeReservation() { return typeReservation; }
-
-    public void setTypeReservation(ReservationOwnerType typeReservation) { this.typeReservation = typeReservation; }
-
-    private Integer courtReserved;
-
-    public Integer getCourtReserved() {
-        return courtReserved;
-    }
-
-    public void setCourtReserved(Integer courtReserved) {
-        this.courtReserved = courtReserved;
-    }
+    public Long getCourtReserved() { return courtReserved; }
 
     @JsonSerialize(using = DateSerialization.DateTimeSerialize.class)
-    public Date getDate() {
-        return date;
-    }
+    public Date getDate() { return date; }
+
+    //SETTERS
+    public void setId(Long id) { this.id = id; }
+    public void setSportReservation(Long sportReservation) { this.sportReservation = sportReservation; }
+    public void setOwnerID(Long ownerID) { this.ownerID = ownerID; }
+    public void setnHours(Integer nHours) { this.nHours = nHours; }
+    public void setPlayers(List<Long> players) { this.players = players; }
+    public void setTypeReservation(ReservationOwnerType typeReservation) { this.typeReservation = typeReservation; }
+    public void setCourtReserved(Long courtReserved) { this.courtReserved = courtReserved; }
 
     @JsonDeserialize(using = DateSerialization.DateTimeDeserialize.class)
-    public void setDate(Date date) {
-        this.date = date;
-    }
+    public void setDate(Date date) { this.date = date; }
+
+
+
+
+
+
 
 
 }
