@@ -29,7 +29,7 @@ public enum SocialProvider {
 
     public static SocialProvider search(String string) {
         for (SocialProvider provider : values())
-            if (provider.providerType.equalsIgnoreCase(string))
+            if (provider.providerType.equalsIgnoreCase(string) || String.format("%s-m", provider.providerType).equalsIgnoreCase(string))
                 return provider;
         return null;
     }

@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Override
         public void customize(OAuth2LoginConfigurer.RedirectionEndpointConfig redirectionEndpointConfig) {
-            redirectionEndpointConfig.baseUri("http://localhost:8080");
+            redirectionEndpointConfig.baseUri("http://ball.net:8080");
         }
     }
 

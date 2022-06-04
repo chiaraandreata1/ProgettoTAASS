@@ -88,6 +88,16 @@ zuul:
       path: /**
       url: http://localhost:4200/
   sensitive-headers:
+  host:
+    connect-timeout-millis: 60000
+    max-per-route-connections: 10000
+    max-total-connections: 5000
+    socket-timeout-millis: 60000
+  semaphore:
+    max-semaphores: 500
+  ribbon:
+    eager-load:
+      enabled: true
 
 logging:
   level:

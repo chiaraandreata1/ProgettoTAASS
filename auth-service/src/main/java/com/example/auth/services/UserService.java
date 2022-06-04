@@ -65,6 +65,9 @@ public class UserService {
 
     @Transactional
     public LocalUser processUserRegistration(String registrationId, Map<String, Object> attributes, OidcIdToken idToken, OidcUserInfo userInfo) {
+        if (registrationId.endsWith("-m"))
+            registrationId = registrationId.substring(0, registrationId.length() - 2);
+
         SocialProvider provider = SocialProvider.search(registrationId);
 
         if (provider == null)

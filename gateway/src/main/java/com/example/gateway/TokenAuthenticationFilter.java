@@ -1,6 +1,7 @@
 package com.example.gateway;
 
 import com.example.gateway.rabbithole.UserRabbitClient;
+import com.netflix.zuul.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -43,25 +44,27 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse httpServletResponse,
             FilterChain filterChain) throws ServletException, IOException {
 
+        Session session = sessionRepository.findById(RequestContextHolder.getRequestAttributes().getSessionId());
+
+        if (session == null) {
+            session = sessionRepository.createSession();
+            RequestContext.getCurrentContext().addZuulRequestHeader("ZuulSession", session.getId());
+            httpServletResponse.addHeader("ZuulSession", session.getId());
+        }
+
         if (!Objects.equals("http://localhost:8080/ws", httpServletRequest.getRequestURL().toString())) {
             String jwt = getJwtFromRequest(httpServletRequest);
             if (jwt != null) {
                 System.out.println(jwt);
 
                 try {
-                    Session session = sessionRepository.findById(RequestContextHolder.getRequestAttributes().getSessionId());
-
-                    logger.error(session.getId());
-
-                    if (session == null)
-                        session = sessionRepository.createSession();
 
 //                    SecurityContext securityContext = new HttpSessionSecurityContextRepository().loadContext(new HttpRequestResponseHolder(httpServletRequest, httpServletResponse));
                     UsernamePasswordAuthenticationToken token = userRabbitClient.validateToken(jwt);
                     SecurityContext preContext = SecurityContextHolder.getContext();
                     preContext.setAuthentication(token);
                     session.setAttribute("TOKEN", token);
-                    sessionRepository.save(session);
+
 
 
                 } catch (ResponseStatusException ex) {
@@ -73,6 +76,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 //                SecurityContextHolder.clearContext();
             }
         }
+
+        sessionRepository.save(session);
 
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }

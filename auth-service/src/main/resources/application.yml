@@ -28,13 +28,30 @@ spring:
       client:
         registration:
           google:
-            clientID: 396344374894-7htvgeum5fk4ibrfhbh0r0v5t9lt5539.apps.googleusercontent.com
+            client-id: 396344374894-7htvgeum5fk4ibrfhbh0r0v5t9lt5539.apps.googleusercontent.com
             clientSecret: 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
-            redirect-uri: http://localhost:8080/api/v1/user/login/oauth2/code/google
+            redirect-uri: "http://ball.net:8080/api/v1/user/login/oauth2/code/google"
+#          google-m:
+#            clientID: 396344374894-7htvgeum5fk4ibrfhbh0r0v5t9lt5539.apps.googleusercontent.com
+#            authorization-grant-type: authorization_code
+#            clientSecret: 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
+#            redirect-uri: "http://10.0.2.2.nip.io:8080/api/v1/user/login/oauth2/code/google"
+#            scope:
+#              - openid
+#              - profile
+#              - email
+#              - address
           github:
             client-id: 07a39614d79f8079e89c
             client-secret: d2e8d149246c8e3f90bbafbd325c5140c9e47b4d
             redirect-uri: http://localhost:8080/api/v1/user/login/oauth2/code/github
+        provider:
+          google-m:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://www.googleapis.com/oauth2/v4/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
+            jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
   session:
     jdbc:
       initialize-schema: always
@@ -65,7 +82,7 @@ taass:
     tokenExpirationMsec: 1800000 # 30 minutes
 #    tokenExpirationMsec: 864000000
   oauth2:
-    authorizedRedirectUris: http://localhost:8080/oauth2/redirect,myandroidapp://oauth2/redirect,myiosapp://oauth2/redirect
+    authorizedRedirectUris: http://localhost:8080/oauth2/redirect,http://ball.net:8080/login,ballnet://oauth2/redirect,myiosapp://oauth2/redirect,
 
 
 

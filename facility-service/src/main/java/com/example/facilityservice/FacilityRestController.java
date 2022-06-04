@@ -5,6 +5,8 @@ import com.example.facilityservice.models.Facility;
 import com.example.facilityservice.models.Sport;
 import com.example.facilityservice.repositories.CourtRepository;
 import com.example.facilityservice.repositories.SportRepository;
+import com.example.shared.models.facility.SportInfo;
+import com.example.shared.rabbithole.RabbitResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -92,6 +95,33 @@ public class FacilityRestController {
         if (!optionalSport.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return optionalSport.get();
+    }
+
+    @GetMapping("sport-info")
+    public SportInfo getSportInfo(@RequestParam Long id) {
+
+        Sport sport;
+        String sportName;
+        Integer playersPerTeam;
+        List<Long> courtIDs;
+
+        sport = sportRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sport not found"));
+
+        if (sport.getPlayersPerTeam() == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This sport is not a leaf");
+
+        sportName = sport.getName();
+        playersPerTeam = sport.getPlayersPerTeam();
+
+        while (sport.getParent() != null) {
+            sport = sport.getParent();
+        }
+
+        courtIDs = courtRepository.getCourtBySport_Id(sport.getId()).stream()
+                .map(Court::getId)
+                .collect(Collectors.toList());
+
+        return new SportInfo(sportName, playersPerTeam, courtIDs);
     }
 
     @GetMapping(value = "courts", params = {})

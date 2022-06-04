@@ -456,4 +456,36 @@ public class TournamentRestController {
         return tournament;
     }
 
+    @GetMapping("my-tournaments")
+    @PreAuthorize("hasRole('USER')")
+    public List<Tournament> myTournaments(@CurrentUser UserDetails userDetails,
+                                          @RequestParam(required = false) Integer limit,
+                                          @RequestParam(required = false) Integer offset) {
+
+        if (limit == null || limit > 5)
+            limit = 5;
+
+        if (offset == null)
+            offset = 0;
+
+        List<Tournament> tournaments;
+        UserType type = userDetails.toUserInfo().getType();
+
+        if (type == UserType.PLAYER) {
+            tournaments = Collections.emptyList();
+        } else if (type == UserType.ADMIN || type == UserType.TEACHER) {
+            tournaments = tournamentRepository.findAllByOwnerIs(userDetails.getId());
+        } else
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Who are you?");
+
+        tournaments = tournaments.stream().sorted((o1, o2) -> (int) (o2.getId() - o1.getId()))
+                .skip(offset)
+                .limit(limit)
+                .collect(Collectors.toList());
+
+//        Collections.reverse(tournaments);
+
+        return tournaments;
+    }
+
 }
