@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eurekaserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eurekaserver
+  template:
+    metadata:
+      labels:
+        app: eurekaserver
+    spec:
+      containers:
+        - name: eurekaserver
+          image: docker.io/giuseppepimpinella/eurekaserver
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 8761
+      restartPolicy: Always

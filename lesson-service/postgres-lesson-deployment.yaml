@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dblessons
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dblessons
+  template:
+    metadata:
+      labels:
+        app: dblessons
+    spec:
+      containers:
+        - name: dblessons
+          image: postgres:13.1
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: postgres-lesson-config
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/12/data1/lesson
+              name: lesson-service
+      volumes:
+        - name: lesson-service
+          persistentVolumeClaim:
+            claimName: postgres-lesson-pv-claim

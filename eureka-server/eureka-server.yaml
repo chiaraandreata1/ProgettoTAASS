@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: eurekaserver
+  labels:
+    app: eurekaserver
+spec:
+  ports:
+    - port: 8761
+      name: eurekaserver
+  clusterIP: None
+  selector:
+    app: eurekaserver
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: eurekaserver
+spec:
+  serviceName: "eureka-server"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eurekaserver
+  template:
+    metadata:
+      labels:
+        app: eurekaserver
+    spec:
+      containers:
+        - name: eurekaserver
+          image: docker.io/giuseppepimpinella/eurekaserver
+          ports:
+            - containerPort: 8761
+          env:
+            - name: eurekaserver
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+              # Due to camelcase issues with "defaultZone" and "preferIpAddress", _JAVA_OPTIONS is used here
+            - name: _JAVA_OPTIONS
+              value: -Deureka.instance.preferIpAddress=false -Deureka.client.serviceUrl.defaultZone=http://eurekaserver:8761/eureka/
+            - name: EUREKA_CLIENT_REGISTERWITHEUREKA
+              value: "true"
+            - name: EUREKA_CLIENT_FETCHREGISTRY
+              value: "true"
+            # The hostnames must match with the the eureka serviceUrls, otherwise the replicas are reported as unavailable in the eureka dashboard
+            - name: EUREKA_INSTANCE_HOSTNAME
+              value: ${MY_POD_NAME}.eureka-server

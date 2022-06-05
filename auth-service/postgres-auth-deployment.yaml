@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dbusers
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dbusers
+  template:
+    metadata:
+      labels:
+        app: dbusers
+    spec:
+      containers:
+        - name: dbusers
+          image: postgres:13.1
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: postgres-auth-config
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/12/data1/auth
+              name: auth-service
+      volumes:
+        - name: auth-service
+          persistentVolumeClaim:
+            claimName: postgres-auth-pv-claim

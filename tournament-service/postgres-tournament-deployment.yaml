@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dbtournaments
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dbtournaments
+  template:
+    metadata:
+      labels:
+        app: dbtournaments
+    spec:
+      containers:
+        - name: dbtournaments
+          image: postgres:13.1
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: postgres-tournament-config
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/12/data1/tournament
+              name: tournament-service
+      volumes:
+        - name: tournament-service
+          persistentVolumeClaim:
+            claimName: postgres-tournament-pv-claim

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-auth-config
+  labels:
+    app: dbusers
+data:
+  POSTGRES_DB: users
+  POSTGRES_USER: taass
+  POSTGRES_PASSWORD: asd
