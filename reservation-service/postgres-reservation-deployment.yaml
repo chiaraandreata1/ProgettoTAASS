@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dbreservations
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dbreservations
+  template:
+    metadata:
+      labels:
+        app: dbreservations
+    spec:
+      containers:
+        - name: dbreservations
+          image: postgres:13.1
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: postgres-reservation-config
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/12/data1/reservation
+              name: reservation-service
+      volumes:
+        - name: reservation-service
+          persistentVolumeClaim:
+            claimName: postgres-reservation-pv-claim

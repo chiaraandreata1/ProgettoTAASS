@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: reservation-service
+spec:
+  type: ClusterIP
+  selector:
+    app: reservation-service
+  ports:
+    - port: 8083
+      targetPort: 8083
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reservation-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reservation-service
+  template:
+    metadata:
+      labels:
+        app: reservation-service
+    spec:
+      containers:
+        - name: reservation-service
+          image: giuseppepimpinella/reservation-service #bisogna usare la propria immagine nel proprio repository
+          imagePullPolicy: "IfNotPresent"
+      restartPolicy: Always

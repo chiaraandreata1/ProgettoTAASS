@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-reservation-config
+  labels:
+    app: dbreservations
+data:
+  POSTGRES_DB: reservations
+  POSTGRES_USER: taass
+  POSTGRES_PASSWORD: asd

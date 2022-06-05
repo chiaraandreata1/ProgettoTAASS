@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dbfacility
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dbfacility
+  template:
+    metadata:
+      labels:
+        app: dbfacility
+    spec:
+      containers:
+        - name: dbfacility
+          image: postgres:13.1
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: postgres-facility-config
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/12/data1/facility
+              name: facility-service
+      volumes:
+        - name: facility-service
+          persistentVolumeClaim:
+            claimName: postgres-facility-pv-claim

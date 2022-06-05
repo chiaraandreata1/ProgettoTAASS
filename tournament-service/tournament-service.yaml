@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tournament-service
+spec:
+  type: ClusterIP
+  selector:
+    app: tournament-service
+  ports:
+    - port: 8084
+      targetPort: 8084
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tournament-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tournament-service
+  template:
+    metadata:
+      labels:
+        app: tournament-service
+    spec:
+      containers:
+        - name: tournament-service
+          image: giuseppepimpinella/tournament-service #bisogna usare la propria immagine nel proprio repository
+          imagePullPolicy: "IfNotPresent"
+      restartPolicy: Always
