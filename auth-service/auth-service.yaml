@@ -27,6 +27,6 @@ spec:
     spec:
       containers:
         - name: auth-service
-          image: giuseppepimpinella/auth-service #bisogna usare la propria immagine nel proprio repository
+          image: auth-service #bisogna usare la propria immagine nel proprio repository
           imagePullPolicy: "IfNotPresent"
       restartPolicy: Always

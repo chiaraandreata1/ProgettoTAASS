@@ -4,7 +4,7 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     username: taass
-    url: jdbc:postgresql://localhost:5432/facility
+    url: jdbc:postgresql://dbfacility:5432/facility
     password: asd
   application:
     name: facility-service
@@ -41,7 +41,7 @@ session:
   datasource:
     #NO DOCKER : jdbc:postgresql://localhost:5432/session
     #CON DOCKER: jdbc:postgresql://dbsession:5432/session
-    url: jdbc:postgresql://localhost:5432/session
+    url: jdbc:postgresql://dbsession:5432/session
     driver-class-name: org.postgresql.Driver
     username: taass
     password: asd
@@ -57,3 +57,24 @@ session:
       # Hibernate ddl auto (create, create-drop, validate, update)
       hibernate:
         ddl-auto: update
+
+eureka:
+  instance:
+    # Leave prefer ip address to allow the gateway inside the kubernetes cluster to find this service by it's pod ip
+    preferIpAddress: true
+    # The hostname of the service, to register the pod and turn it easier for the gateway to find it
+    hostname: facility-service
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://eureka-0.eureka.default.svc.cluster.local:8761/eureka,http://eureka-1.eureka.default.svc.cluster.local:8761/eureka,http://eureka-2.eureka.default.svc.cluster.local:8761/eureka
+
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://eureka-0.eureka.default.svc.cluster.local:eureka:8761/eureka,http://eureka-1.eureka.default.svc.cluster.local:eureka:8761/eureka,http://eureka-2.eureka.default.svc.cluster.local:eureka:8761/eureka
+#    serviceUrl:
+#      defaultZone: http://eureka-0.eureka.default.svc.cluster.local:eureka:8761/eureka,http://eureka-1.eureka.default.svc.cluster.local:eureka:8761/eureka,http://eureka-2.eureka.default.svc.cluster.local:eureka:8761/eureka

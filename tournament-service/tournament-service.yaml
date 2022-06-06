@@ -27,6 +27,6 @@ spec:
     spec:
       containers:
         - name: tournament-service
-          image: giuseppepimpinella/tournament-service #bisogna usare la propria immagine nel proprio repository
+          image: tournament-service #bisogna usare la propria immagine nel proprio repository
           imagePullPolicy: "IfNotPresent"
       restartPolicy: Always

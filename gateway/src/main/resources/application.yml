@@ -5,7 +5,8 @@ spring:
   datasource:
     #NO DOCKER : jdbc:postgresql://localhost:5432/session
     #CON DOCKER: jdbc:postgresql://dbsession:5432/session
-    url: jdbc:postgresql://localhost:5432/session
+#    url: jdbc:postgresql://localhost:5432/session
+    url: jdbc:postgresql://dbsession:5432/session
     driver-class-name: org.postgresql.Driver
     username: taass
     password: asd
@@ -34,13 +35,26 @@ server:
   port: 8080
 
 eureka:
+  instance:
+    # Leave prefer ip address to allow the gateway inside the kubernetes cluster to find this service by it's pod ip
+    preferIpAddress: true
+    # The hostname of the service, to register the pod and turn it easier for the gateway to find it
+    hostname: gateway
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://eureka-0.eureka.default.svc.cluster.local:8761/eureka,http://eureka-1.eureka.default.svc.cluster.local:8761/eureka,http://eureka-2.eureka.default.svc.cluster.local:8761/eureka
+
+
+#eureka:
 #  instance:
 #    prefer-ip-address: true
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
 
 #management:
 #  endpoints:
@@ -86,7 +100,7 @@ zuul:
 #      strip-prefix: false
     frontend:
       path: /**
-      url: http://localhost:4200/
+      url: http://frontend:4200/
   sensitive-headers:
   host:
     connect-timeout-millis: 60000
@@ -128,4 +142,4 @@ hystrix:
       execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 60000
+            timeoutInMilliseconds: 600000

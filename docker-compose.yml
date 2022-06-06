@@ -4,8 +4,11 @@ version: '3.7'
 services:
 #  #GATEWAY
   dbsession:
+      build:
+        context: ./postgresql
+        dockerfile: Dockerfile
       container_name: dbsession
-      image: "postgres"
+      image: "postgres-session"
       volumes:
         - gateway-data:/var/lib/postgresql/sessiondata
       ports:
@@ -246,18 +249,18 @@ services:
     networks:
       - rabbitmq_net
 
-#  frontend:
-#    container_name: frontend
-#    build:
-#          context: ./tennispadel-app-v2
-#          dockerfile: Dockerfile
-#    ports:
-#      - "4200:4200"
-#    volumes:
-#      - ./tennispadel-app-v2/app/node_modules
-#      - .:/tennispadel-app-v2/app
-#    networks:
-#      - rabbitmq_net
+  frontend:
+    container_name: frontend
+    build:
+          context: ./frontend/dist
+          dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+##    volumes:
+##      - ./tennispadel-app-v2/app/node_modules
+##      - .:/tennispadel-app-v2/app
+    networks:
+      - rabbitmq_net
 
 
   rabbitmq:
@@ -281,6 +284,7 @@ volumes:
   lessons-data:
   tournaments-data:
   facility-data:
+  users-data:
 
 networks:
   rabbitmq_net:

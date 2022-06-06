@@ -21,8 +21,10 @@ public class ReservationRabbitClient {
                 .send(properties.getExchangeName(), properties.getReserve(), requests);
     }
 
-    public boolean delete(List<Long> ids, Long userID) {
+    public boolean delete(List<ReservationDeleteRequest.DeleteCouple> toDelete) {
+
+
         return new RabbitTemplateWrapper(rabbitTemplate)
-                .send(properties.getExchangeName(), properties.getDelete(), new ReservationDeleteRequest(ReservationOwnerType.TOURNAMENT_MATCH, userID, ids));
+                .send(properties.getExchangeName(), properties.getDelete(), new ReservationDeleteRequest(ReservationOwnerType.TOURNAMENT_MATCH, toDelete));
     }
 }

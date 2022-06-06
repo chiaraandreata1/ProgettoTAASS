@@ -27,6 +27,6 @@ spec:
     spec:
       containers:
         - name: lesson-service
-          image: giuseppepimpinella/lesson-service #bisogna usare la propria immagine nel proprio repository
+          image: lesson-service #bisogna usare la propria immagine nel proprio repository
           imagePullPolicy: "IfNotPresent"
       restartPolicy: Always

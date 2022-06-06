@@ -10,3 +10,38 @@ spec:
     - port: 8080
   selector:
     app: gateway
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-np
+  labels:
+    app: gateway
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+  selector:
+    app: gateway
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - name: gateway
+          image: gateway:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+      restartPolicy: Always

@@ -16,6 +16,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findAllByDateBetweenAndOwnerID(Date startDateTime, Date endDateTime, Long ownerID);
 
+    void deleteAllByIdIn(List<Long> ids);
+
     @Query("select p from Reservation p WHERE p.id IN (:Ids)")
     List<Reservation> findReservationsByIds(List<Long> Ids);
 

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +49,7 @@ public class ReservationRabbitController {
                 reserv.setnHours(request.getRequestBody().get(i).getHoursCount());
                 reserv.setDate(date);
                 //SPORT RESERVATION
-                reserv.setSportReservation(new Long(2)); //TODO: manca lo sport info. Per ora è 2 cioè single tennis
+                reserv.setSportReservation(request.getRequestBody().get(i).getSportID()); //TODO: manca lo sport info. Per ora è 2 cioè single tennis
                 //COURT
                 reserv.setCourtReserved(request.getRequestBody().get(i).getCourtID());
 
@@ -78,29 +79,26 @@ public class ReservationRabbitController {
         }
     }
 
+    @Transactional
     @RabbitListener(queues = "${rabbit.reservation.delete.queue-name}")
     public RabbitResponse<Boolean> deletionRequest(RabbitRequest<ReservationDeleteRequest> request) {
 
         ReservationDeleteRequest requestBody = request.getRequestBody();
 
-        Long ownerID = requestBody.getOwnerID();
-        List<Long> reservationIDs = requestBody.getReservationIDs();
+        List<ReservationDeleteRequest.DeleteCouple> toDelete = requestBody.getToDelete();
 
-        //Controlli errori TODO: manca lo sportReservation (per ora è una long 2 cioè single tennis)
-        for (Long id : reservationIDs) {
-            Optional<Reservation> res = reservationRepository.findById(id);
+        for (ReservationDeleteRequest.DeleteCouple dc : toDelete) {
+            Optional<Reservation> res = reservationRepository.findById(dc.getReservationID());
             if (!res.isPresent())
                 return new RabbitResponse<>(HttpStatus.NOT_FOUND, "Not Found a reservation");
-            else if (!res.get().getOwnerID().equals(ownerID)) //devono essere tutte prenotazioni appartenenti a quell'owner che fa la richiesta
+            else if (!res.get().getOwnerID().equals(dc.getOwnerID())) //devono essere tutte prenotazioni appartenenti a quell'owner che fa la richiesta
                 return new RabbitResponse<>(HttpStatus.FORBIDDEN, "Delete not permitted by the logged user");
-            else if (!res.get().getSportReservation().equals(new Long(2)) || !res.get().getTypeReservation().equals(requestBody.getOwnerType()))
-                return new RabbitResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, "Some fields are not correct"); //controllo tipo sport e tipo prenotazione corretta
+//            else if (!res.get().getSportReservation().equals(new Long(2)) || !res.get().getTypeReservation().equals(requestBody.getOwnerType()))
+//                return new RabbitResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, "Some fields are not correct"); //controllo tipo sport e tipo prenotazione corretta
         }
 
-        List<Reservation> allReservations = reservationRepository.findReservationsByIds(reservationIDs);
-        for (Reservation res : allReservations){
-            reservationRepository.deleteById(res.getId());
-        }
+        reservationRepository
+                .deleteAllByIdIn(toDelete.stream().map(ReservationDeleteRequest.DeleteCouple::getReservationID).collect(Collectors.toList()));
 
         return new RabbitResponse<>(true);
         /*

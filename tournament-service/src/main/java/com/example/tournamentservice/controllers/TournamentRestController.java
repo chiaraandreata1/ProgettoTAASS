@@ -5,6 +5,7 @@ import com.example.shared.models.facility.SportInfo;
 import com.example.shared.models.users.UserDetails;
 import com.example.shared.models.users.UserInfo;
 import com.example.shared.models.users.UserType;
+import com.example.shared.rabbithole.ReservationDeleteRequest;
 import com.example.shared.rabbithole.ReservationOwnerType;
 import com.example.shared.rabbithole.ReservationRequest;
 import com.example.shared.rabbithole.ReservationResponse;
@@ -135,20 +136,24 @@ public class TournamentRestController {
         return tournamentRepository.save(tournament);
     }
 
+    private static final ReservationDeleteRequest.DeleteCouple converter(Match match) {
+        return new ReservationDeleteRequest.DeleteCouple(match.getReservationID(), match.getId());
+    }
+
     private void complete(Tournament tournament) {
 
         List<Team> teams = tournament.getTeams();
-        List<Long> toFree = new ArrayList<>();
+        List<ReservationDeleteRequest.DeleteCouple> toFree = new ArrayList<>();
 //        List<Match> deleted = new ArrayList<>();
         int toKeep = (int) Math.ceil(teams.size() * 1. / 2);
 
         while (tournament.getRounds().size() > 1 && tournament.getRounds().get(1).size() >= toKeep) {
-            toFree.addAll(tournament.getRounds().get(0).getMatches().stream().map(Match::getReservationID).collect(Collectors.toList()));
+            toFree.addAll(tournament.getRounds().get(0).getMatches().stream().map(TournamentRestController::converter).collect(Collectors.toList()));
             tournament.getRounds().remove(0);
         }
 
         while (tournament.getRounds().get(0).size() > toKeep) {
-            toFree.add(tournament.getRounds().get(0).getMatches().get(toKeep).getReservationID());
+            toFree.add(converter(tournament.getRounds().get(0).getMatches().get(toKeep)));
             tournament.getRounds().get(0).getMatches().remove(toKeep);
         }
 
@@ -167,7 +172,7 @@ public class TournamentRestController {
 
         tournament.setStatus(Tournament.Status.COMPLETE);
 
-        reservationRabbitClient.delete(toFree, tournament.getId());
+        reservationRabbitClient.delete(toFree);
     }
 
     /*
@@ -240,7 +245,8 @@ public class TournamentRestController {
                                 ReservationOwnerType.TOURNAMENT_MATCH,
                                 3,
                                 match.getCourtID(), //TODO
-                                match.getId())))
+                                match.getId(),
+                                tournamentDefinition.getSport())))
                 .collect(Collectors.toList());
 
         ReservationResponse response = reservationRabbitClient.reserve(reservationRequests);
@@ -440,7 +446,7 @@ public class TournamentRestController {
             match.setStatus(Match.Status.READY);
         }
 
-        reservationRabbitClient.delete(toFree, tournament.getId());
+//        reservationRabbitClient.delete(toFree, tournament.getId());
         tournament.setStatus(Tournament.Status.COMPLETE);
 
     }

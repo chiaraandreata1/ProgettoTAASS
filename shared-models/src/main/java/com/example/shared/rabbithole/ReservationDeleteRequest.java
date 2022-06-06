@@ -7,14 +7,13 @@ public class ReservationDeleteRequest implements Serializable {
 
     private static final long serialVersionUID = 42L;
 
-    private ReservationOwnerType ownerType;
-    private Long ownerID;
-    private List<Long> reservationIDs;
 
-    public ReservationDeleteRequest(ReservationOwnerType ownerType, Long ownerID, List<Long> reservationIDs) {
+    private ReservationOwnerType ownerType;
+    private List<DeleteCouple> toDelete;
+
+    public ReservationDeleteRequest(ReservationOwnerType ownerType, List<DeleteCouple> toDelete) {
         this.ownerType = ownerType;
-        this.ownerID = ownerID;
-        this.reservationIDs = reservationIDs;
+        this.toDelete = toDelete;
     }
 
     public ReservationOwnerType getOwnerType() {
@@ -25,19 +24,39 @@ public class ReservationDeleteRequest implements Serializable {
         this.ownerType = ownerType;
     }
 
-    public Long getOwnerID() {
-        return ownerID;
+    public List<DeleteCouple> getToDelete() {
+        return toDelete;
     }
 
-    public void setOwnerID(Long ownerID) {
-        this.ownerID = ownerID;
+    public void setToDelete(List<DeleteCouple> toDelete) {
+        this.toDelete = toDelete;
     }
 
-    public List<Long> getReservationIDs() {
-        return reservationIDs;
-    }
+    public static class DeleteCouple implements Serializable {
+        private static final long serialVersionUID = 42L;
 
-    public void setReservationIDs(List<Long> reservationIDs) {
-        this.reservationIDs = reservationIDs;
+        private Long reservationID;
+        private Long ownerID;
+
+        public DeleteCouple(Long reservationID, Long ownerID) {
+            this.reservationID = reservationID;
+            this.ownerID = ownerID;
+        }
+
+        public Long getReservationID() {
+            return reservationID;
+        }
+
+        public void setReservationID(Long reservationID) {
+            this.reservationID = reservationID;
+        }
+
+        public Long getOwnerID() {
+            return ownerID;
+        }
+
+        public void setOwnerID(Long ownerID) {
+            this.ownerID = ownerID;
+        }
     }
 }

@@ -5,7 +5,7 @@ spring:
     #CON DOCKER: jdbc:postgresql://dblessons:5432/lessons
     driver-class-name: org.postgresql.Driver
     username: taass
-    url: jdbc:postgresql://localhost:5432/lessons
+    url: jdbc:postgresql://dblessons:5432/lessons
     password: asd
 
   application:
@@ -27,7 +27,7 @@ session:
   datasource:
     #NO DOCKER : jdbc:postgresql://localhost:5432/session
     #CON DOCKER: jdbc:postgresql://dbsession:5432/session
-    url: jdbc:postgresql://localhost:5432/session
+    url: jdbc:postgresql://dbsession:5432/session
     driver-class-name: org.postgresql.Driver
     username: taass
     password: asd
@@ -64,3 +64,15 @@ rabbit:
       key: reservation.reserve
     delete:
       key: reservation.delete
+
+eureka:
+  instance:
+    # Leave prefer ip address to allow the gateway inside the kubernetes cluster to find this service by it's pod ip
+    preferIpAddress: true
+    # The hostname of the service, to register the pod and turn it easier for the gateway to find it
+    hostname: lesson-service
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://eureka-0.eureka.default.svc.cluster.local:8761/eureka,http://eureka-1.eureka.default.svc.cluster.local:8761/eureka,http://eureka-2.eureka.default.svc.cluster.local:8761/eureka

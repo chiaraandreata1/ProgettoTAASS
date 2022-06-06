@@ -12,6 +12,8 @@ public class ReservationRequest implements Serializable {
 
     private Integer hoursCount;
 
+    private Long sportID;
+
     private Long courtID;
     private Long ownerID;
 
@@ -23,6 +25,15 @@ public class ReservationRequest implements Serializable {
         this.hoursCount = hoursCount;
         this.courtID = courtID;
         this.ownerID = ownerID;
+    }
+
+    public ReservationRequest(String date, ReservationOwnerType ownerType, Integer hoursCount, Long courtID, Long ownerID, Long sportID) {
+        this.date = date;
+        this.ownerType = ownerType;
+        this.hoursCount = hoursCount;
+        this.courtID = courtID;
+        this.ownerID = ownerID;
+        this.sportID = sportID;
     }
 
     public String getDate() {
@@ -63,5 +74,13 @@ public class ReservationRequest implements Serializable {
 
     public void setOwnerID(Long ownerID) {
         this.ownerID = ownerID;
+    }
+
+    public Long getSportID() {
+        return sportID;
+    }
+
+    public void setSportID(Long sportID) {
+        this.sportID = sportID;
     }
 }
