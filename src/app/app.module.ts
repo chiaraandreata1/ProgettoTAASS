@@ -58,6 +58,8 @@ import { MeComponent } from './user/me/me.component';
 import { MatchComponent } from './tournaments/match/match.component';
 import { TeamComponent } from './tournaments/team/team.component';
 import { MatchBoxComponent } from './tournaments/match-box/match-box.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { TournamentsListComponent } from './tournaments-list/tournaments-list.component';
 import { PlayersReservationComponent } from './reservation/players-reservation/players-reservation.component';
 import { SlotReservationButtonComponent } from './reservation/slot-reservation-button/slot-reservation-button.component';
 
@@ -96,6 +98,9 @@ import { SlotReservationButtonComponent } from './reservation/slot-reservation-b
     MeComponent,
     MatchComponent,
     TeamComponent,
+    MatchBoxComponent,
+    DashboardComponent,
+    TournamentsListComponent
     MatchBoxComponent,
     PlayersReservationComponent,
     SlotReservationButtonComponent,

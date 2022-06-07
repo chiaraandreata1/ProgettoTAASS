@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {TournamentBuilding} from "../models/tournament-building";
 import {catchError, Observable, of, tap} from "rxjs";
@@ -10,11 +10,12 @@ import {TournamentDefinition} from "../models/tournament-definition";
 })
 export class TournamentsService {
 
-  private baseUrl = "http://localhost:8080/api/v1/tournaments";
+  private baseUrl = "http://ball.net:8080/api/v1/tournaments";
 
   constructor(
     private http: HttpClient
-  ) { }
+  ) {
+  }
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
@@ -68,6 +69,10 @@ export class TournamentsService {
     return this.http.get<Tournament>(`${this.baseUrl}/close-registrations`, {params: {id: tournamentID}})
   }
 
+  myTournaments(): Observable<Tournament[]> {
+    return this.http.get<Tournament[]>(`${this.baseUrl}/my-tournaments`);
+  }
+
   matchResults(tournamentID: number, match: Match): Observable<Tournament> {
     return this.http.get<Tournament>(`${this.baseUrl}/match-results`, {
       params: {
@@ -77,5 +82,9 @@ export class TournamentsService {
         points1: match.points1
       }
     })
+  }
+
+  upcomingTournaments(): Observable<Tournament[]> {
+    return this.http.get<Tournament[]>(`${this.baseUrl}/upcoming`);
   }
 }

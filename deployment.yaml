@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: frontend
+spec:
+  serviceName: "frontend"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: frontend
+        imagePullPolicy: "IfNotPresent"
+        ports:
+        - containerPort: 4200
+          name: frontend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-lb
+  labels:
+    app: frontend
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 4200
+    name: frontend
+  selector:
+    app: frontend
+

@@ -8,7 +8,7 @@ import {UserInfo} from "../models/user-info";
 })
 export class OldUserService {
 
-  private baseUrlUsers = 'http://localhost:8080/api/v1/users';
+  private baseUrlUsers = 'http://ball.net:8080/api/v1/users';
 
   constructor(private http: HttpClient) { }
 

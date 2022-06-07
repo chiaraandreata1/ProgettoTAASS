@@ -9,7 +9,7 @@ import {TokenStorageService} from "../services/token-storage.service";
 })
 export class UserService {
 
-  private baseUrl = "http://localhost:8080/api/v1/user";
+  private baseUrl = "http://ball.net:8080/api/v1/user";
 
   private currentObs: ReplaySubject<UserInfo | undefined>;
   private currentUser?: UserInfo;

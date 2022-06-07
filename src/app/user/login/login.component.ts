@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit {
   }
 
   public static loginLink(provider: string): string {
-    return `http://localhost:8080/api/v1/user/oauth2/authorization/${provider}?redirect_uri=http://localhost:8080/login`
+    return `http://ball.net:8080/api/v1/user/oauth2/authorization/${provider}?redirect_uri=http://ball.net:8080/login`
   }
 
   logout() {

@@ -6,6 +6,7 @@ import {UserService} from "./user/user.service";
 import {Observable, tap} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {UserInfo} from "./models/user-info";
+import {TournamentsService} from "./tournaments/tournaments.service";
 
 
 declare var $: any;
@@ -33,8 +34,10 @@ export class AppComponent implements OnInit {
   constructor(
     private tokens: TokenStorageService,
     public users: UserService,
+    private tournaments: TournamentsService,
     private router: Router
   ) {
+    // tournaments.myTournaments().subscribe(console.log);
     // users.currentUserObserver().subscribe(console.log);
     // this.isManager$ = users.isManager();
   }

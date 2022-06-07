@@ -17,6 +17,7 @@ import {CoursesPendingComponent} from "./course/courses-pending/courses-pending.
 import {LoginComponent} from "./user/login/login.component";
 import {ShowUserComponent} from "./user/show-user/show-user.component";
 import {MeComponent} from "./user/me/me.component";
+import {DashboardComponent} from "./dashboard/dashboard.component";
 
 const routes: Routes = [
   { path: 'reservation-main', component: ReservationMainComponent,
@@ -31,7 +32,8 @@ const routes: Routes = [
     children: [{ path: 'completedCourses', component: CoursesCompletedComponent }, { path: 'pendingCourses', component: CoursesPendingComponent }, { path: 'createCourse', component: CreateCourseComponent }]},
   { path: 'login', component: LoginComponent},
   { path: 'user/:id', component: ShowUserComponent},
-  { path: 'me', component: MeComponent }
+  { path: 'me', component: MeComponent },
+  { path: '', component: DashboardComponent}
 ];
 
 @NgModule({

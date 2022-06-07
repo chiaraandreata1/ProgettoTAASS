@@ -1,0 +1,54 @@
+<div class="row container">
+  <div class="col-8 row gy-2">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header p-3">
+          <span class="fs-2 m-1">Upcoming tournaments</span>
+        </div>
+        <div class="card-body">
+          <app-tournaments-list *ngIf="upcoming" [tournaments]="upcoming"></app-tournaments-list>
+        </div>
+      </div>
+    </div>
+    <div class="col-12" *ngIf="user.currentUserObserver() | async">
+      <div class="card">
+        <div class="card-header p-3">
+          <span class="fs-2 m-1">My tournaments</span>
+        </div>
+        <div class="card-body">
+          <app-tournaments-list *ngIf="myTournaments" [tournaments]="myTournaments"></app-tournaments-list>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="card h-100">
+      <div class="card-header p-5">
+        <div class="fs-2 text-center">About the facility</div>
+      </div>
+      <div class="card-body row mx-5 gy-5">
+        <div class="col-12">
+          <div class="fs-2 my-3">Opening hours</div>
+          <div class="row">
+            <ng-container *ngFor="let day of days">
+              <b class="offset-1 col-5">{{day}}</b>
+              <div class="col-5"><span *ngIf="hours">{{formatHours()}}</span><span *ngIf="!hours">Loading...</span></div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="fs-2 m-2">Where are we</div>
+          <span>Via Pessinetto, 12</span><br>
+          <span>10149 Torino TO</span><br>
+          <span>Italy</span><br>
+        </div>
+        <div class="col-12">
+          <div class="fs-2 m-2">Contacts</div>
+          <span>Francesco Ciraolo</span><br>
+          <span>+39 000 0000 000</span><br>
+          <a href="mailto:francesco.ciraolo@edu.unito.it">francesco.ciraolo@edu.unito.it</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<table class="table">
+  <thead>
+  <tr class="td">
+    <th scope="col">ID</th>
+    <th scope="col">Name</th>
+    <th scope="col">Price</th>
+    <th scope="col">Prize</th>
+    <th scope="col">Status</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let t of tournaments" routerLink='/tournament/{{t.id}}'>
+    <th scope="row">{{t.id}}</th>
+    <td>{{t.name}}</td>
+    <td>{{t.price}}</td>
+    <td>{{t.prize}}</td>
+    <td>{{t.status}} <span *ngIf="t.status == 'CONFIRMED' || t.status == 'COMPLETE'">[{{t.teams.length}}
+      /{{t.maxTeamsNumber}}]</span></td>
+  </tr>
+  </tbody>
+</table>

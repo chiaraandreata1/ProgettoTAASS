@@ -7,7 +7,7 @@ import {Observable} from "rxjs";
 })
 export class CourseService {
 
-  private baseUrl = 'http://localhost:8080/api/v1/courses';
+  private baseUrl = 'http://ball.net:8080/api/v1/courses';
 
   constructor(private http: HttpClient) { }
 

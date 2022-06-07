@@ -3,19 +3,24 @@ import {HttpClient} from "@angular/common/http";
 import {Sport} from "../models/sport";
 import {map, Observable, of, tap} from "rxjs";
 import {Court} from "../models/court";
+import {FacilityHours} from "../models/facilityHours";
 
 @Injectable({
   providedIn: 'root'
 })
 export class FacilityService {
 
-  private baseUrl = 'http://localhost:8080/api/v1/facility';
+  private baseUrl = 'http://ball.net:8080/api/v1/facility';
 
   private sports: Map<number, Sport> = new Map<number, Sport>();
 
   constructor(
     private http: HttpClient
   ) {
+  }
+
+  public getHours(): Observable<FacilityHours> {
+    return this.http.get<FacilityHours>(`${this.baseUrl}/hours`);
   }
 
   public getSport(id: number): Observable<Sport> {
