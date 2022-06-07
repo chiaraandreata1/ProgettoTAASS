@@ -23,10 +23,12 @@ export class SlotReservationButtonComponent implements OnInit {
   @Input() minDate!: Date;
   @Input() dateToReserve!: Date;
   @Input() sportToReserve!: number;
+  @Input() numberPlayers!: number;
   users!: Observable<any>
   finalReservation!: Reservation;
+  isError = false;
 
-  @Output() done: EventEmitter<void> = new EventEmitter<void>();
+  @Output() done: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() EventUserInfos = new EventEmitter<Observable<UserInfo[]>>()
   @Output() EventReservetionOutput = new EventEmitter<Reservation>()
 
@@ -41,16 +43,22 @@ export class SlotReservationButtonComponent implements OnInit {
     console.log(this.finalReservation)
     let body = Reservation.toJSON(this.finalReservation);
     this.reservationService.createReservation(body)
-      .subscribe(data => console.log(data), error => console.log(error));
-    this.done.emit()
-    let users = this.userService.getUsers(this.finalReservation.players)
-    this.EventUserInfos.emit(users)
-    this.EventReservetionOutput.emit(this.finalReservation);
+      .subscribe(data => {
+          this.done.emit(false)
+          let users = this.userService.getUsers(this.finalReservation.players)
+          this.EventUserInfos.emit(users)
+          this.EventReservetionOutput.emit(this.finalReservation);
+          console.log(data);
+        }, error => {
+        this.done.emit(true);
+        console.log(error)
+      });
   }
 
   createReservation()
   {
-    let players = this.allPlayers.players;
+    let players = new Array()
+    for (let i = 0; i<this.numberPlayers; i++) players.push(this.allPlayers.players[i]);
     if (!this.isAdmin)
       players.push(this.userID);
     let date = new Date(this.dateToReserve)
