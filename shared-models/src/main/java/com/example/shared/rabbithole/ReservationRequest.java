@@ -17,16 +17,6 @@ public class ReservationRequest implements Serializable {
     private Long courtID;
     private Long ownerID;
 
-    // TODO courtID, remove name
-
-    public ReservationRequest(String date, ReservationOwnerType ownerType, Integer hoursCount, Long courtID, Long ownerID) {
-        this.date = date;
-        this.ownerType = ownerType;
-        this.hoursCount = hoursCount;
-        this.courtID = courtID;
-        this.ownerID = ownerID;
-    }
-
     public ReservationRequest(String date, ReservationOwnerType ownerType, Integer hoursCount, Long courtID, Long ownerID, Long sportID) {
         this.date = date;
         this.ownerType = ownerType;
