@@ -62,6 +62,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { TournamentsListComponent } from './tournaments-list/tournaments-list.component';
 import { PlayersReservationComponent } from './reservation/players-reservation/players-reservation.component';
 import { SlotReservationButtonComponent } from './reservation/slot-reservation-button/slot-reservation-button.component';
+import { CoursesListComponent } from './courses-list/courses-list.component';
 
 @NgModule({
   declarations: [
@@ -104,6 +105,7 @@ import { SlotReservationButtonComponent } from './reservation/slot-reservation-b
     MatchBoxComponent,
     PlayersReservationComponent,
     SlotReservationButtonComponent,
+    CoursesListComponent,
   ],
   imports: [
     BrowserModule,

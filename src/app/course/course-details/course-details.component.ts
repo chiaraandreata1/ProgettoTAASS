@@ -25,6 +25,7 @@ export class CourseDetailsComponent implements OnInit {
 
   sport = '';
   stringPlayers='';
+  instructor = '';
 
   formInputPendingCourse = new FormControl('',this.validatePlayer);
   candidates = new Array()
@@ -36,6 +37,10 @@ export class CourseDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.userService.getUsers([this.course.instructor]).toPromise().then(data => {
+      let users = <Array<UserInfo>>data;
+      this.instructor = users[0].displayName;
+    })
     this.sport=(this.course.sporttype == 2 ? 'TENNIS' : 'PADEL');
     if (this.course.players.length>0)
       this.userService.getUsers(this.course.players).toPromise().then(data => {

@@ -1,35 +1,41 @@
-<h2>COMPLETE COURSES</h2>
-<!--ROW 1--->
-<div class="mb-2 row">
-  <div class="col-4">
-    <div [class.card]=true class="mb-3">
-      <div class="card-header">SPORT RESERVATION</div>
-      <mat-radio-group class="row card-body" required [(ngModel)]="sportCourse" (ngModelChange)="findCompleteCoursesBySportAndYear()" name='valueSport' aria-label="SPORT RESERVATION">
-        <mat-radio-button class="col-4" value="2">Tennis</mat-radio-button>
-        <mat-radio-button class="col-4" [value]="4">Padel</mat-radio-button>
-      </mat-radio-group>
+<div class="card mb-3">
+  <div class="card-header bg-primary text-white">
+    <h2>COMPLETE COURSES</h2>
+  </div>
+  <div class="card-body">
+    <!--ROW 1--->
+    <div class="mb-2 row">
+      <div class="col-4">
+        <div [class.card]=true class="mb-3">
+          <div class="card-header">SPORT RESERVATION</div>
+          <mat-radio-group class="row card-body" required [(ngModel)]="sportCourse" (ngModelChange)="findCompleteCoursesBySportAndYear()" name='valueSport' aria-label="SPORT RESERVATION">
+            <mat-radio-button class="col-4" value="2">Tennis</mat-radio-button>
+            <mat-radio-button class="col-4" [value]="4">Padel</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+      <div class="col-4">
+        <mat-form-field appearance="fill">
+          <mat-label>Year course</mat-label>
+          <mat-select [(ngModel)]="yearCourse" (ngModelChange)="findCompleteCoursesBySportAndYear()" name="yearCourse">
+            <mat-option *ngFor="let year of rangeYears" [value]="year">
+              {{year}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div *ngIf="yearCourse && sportCourse!=0">
+      <mat-tab-group>
+        <mat-tab *ngFor="let level of levels" label="{{level}}">
+          <ng-container *ngFor="let course of completeCourses | async">
+            <course-details *ngIf="course.levelCourse==level" [course]='course' [isPending]=false></course-details>
+          </ng-container>
+        </mat-tab>
+      </mat-tab-group>
     </div>
   </div>
-  <div class="col-4">
-    <mat-form-field appearance="fill">
-      <mat-label>Year course</mat-label>
-      <mat-select [(ngModel)]="yearCourse" (ngModelChange)="findCompleteCoursesBySportAndYear()" name="yearCourse">
-        <mat-option *ngFor="let year of rangeYears" [value]="year">
-          {{year}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-</div>
-
-<div *ngIf="yearCourse && sportCourse!=0">
-  <mat-tab-group>
-    <mat-tab *ngFor="let level of levels" label="{{level}}">
-      <ng-container *ngFor="let course of completeCourses | async">
-        <course-details *ngIf="course.levelCourse==level" [course]='course' [isPending]=false></course-details>
-      </ng-container>
-    </mat-tab>
-  </mat-tab-group>
 </div>
 
 <!--DEBUG BUTTON

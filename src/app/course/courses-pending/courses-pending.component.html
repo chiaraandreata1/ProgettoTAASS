@@ -1,24 +1,29 @@
 <div [formGroup]=formsInputPendingCourses>
-  <h2>PENDING COURSES</h2>
-  <div class="col-4">
-    <div [class.card]=true class="mb-3">
-      <div class="card-header">SPORT RESERVATION</div>
-      <mat-radio-group class="row card-body" required [formControl]="sportCourse" (ngModelChange)="reloadData()" name='valueSportCourse' aria-label="SPORT RESERVATION COURSE">
-        <mat-radio-button class="col-4" [value]="2">Tennis</mat-radio-button>
-        <mat-radio-button class="col-4" [value]="4">Padel</mat-radio-button>
-      </mat-radio-group>
+  <div class="card mb-3">
+    <div class="card-header bg-primary text-white">
+       <h2>PENDING COURSES</h2>
+    </div>
+    <div class="card-body">
+      <div class="col-4">
+        <div [class.card]=true class="mb-3">
+          <div class="card-header">SPORT RESERVATION</div>
+          <mat-radio-group class="row card-body" required [formControl]="sportCourse" (ngModelChange)="reloadData()" name='valueSportCourse' aria-label="SPORT RESERVATION COURSE">
+            <mat-radio-button class="col-4" [value]="2">Tennis</mat-radio-button>
+            <mat-radio-button class="col-4" [value]="4">Padel</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+      <ng-container *ngIf="pendingCourses">
+        <mat-tab-group>
+          <mat-tab *ngFor="let level of levels" label="{{level}}">
+            <ng-container *ngFor="let course of pendingCourses | async; let i = index" style="width: 300px;">
+              <course-details *ngIf="course.levelCourse==level" [course]='course' [isPending]=true [isAdmin]="isAdmin"></course-details>
+            </ng-container>
+          </mat-tab>
+        </mat-tab-group>
+      </ng-container>
     </div>
   </div>
-  <ng-container *ngIf="pendingCourses">
-    <mat-tab-group>
-      <mat-tab *ngFor="let level of levels" label="{{level}}">
-        <ng-container *ngFor="let course of pendingCourses | async; let i = index" style="width: 300px;">
-          <course-details *ngIf="course.levelCourse==level" [course]='course' [isPending]=true [isAdmin]="isAdmin"></course-details>
-        </ng-container>
-      </mat-tab>
-    </mat-tab-group>
-  </ng-container>
-
 </div>
 
 <!--DEBUG BUTTON

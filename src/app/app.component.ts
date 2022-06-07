@@ -29,6 +29,9 @@ export class AppComponent implements OnInit {
   me: any;
   a: any;
 
+  isLogged=false;
+  isAdmin=false;
+
   // public isManager$: Observable<boolean>;
 
   constructor(
@@ -48,6 +51,11 @@ export class AppComponent implements OnInit {
         // console.log(user);
         this.user = user;
         // console.log(this.user);
+        if (this.user){
+          this.isLogged=true;
+          this.isAdmin = this.user.type=="ADMIN"? true : false;
+        }
+        else this.isAdmin = false
       }
     )
   }
@@ -57,6 +65,7 @@ export class AppComponent implements OnInit {
     this.users.logout().subscribe(() => {
       this.tokens.signOut();
       this.router.navigate([""]);
+      this.isLogged=false;
     })
   }
 

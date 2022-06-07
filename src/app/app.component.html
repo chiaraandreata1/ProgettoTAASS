@@ -18,11 +18,14 @@
 
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-          <li class="nav-item">
-            <button class="btn btn-link nav-link active" [routerLink]="['reservation-main']">Reservations</button>
-          </li>
-          <li class="nav-item">
-            <button class="btn btn-link nav-link active" [routerLink]="['board-main']">Board</button>
+          <li *ngIf="isLogged" class="nav-item dropdown">
+            <button class="btn btn-link nav-link dropdown-toggle active" id="reservationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Reservations
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="reservationsDropdown">
+              <li><button class="btn btn-link dropdown-item" [routerLink]="['/', 'reservation-main', 'reservation']">Watch reservations</button></li>
+              <li><button class="btn btn-link dropdown-item" [routerLink]="['/', 'reservation-main', 'addReservation']">Create a reservation</button></li>
+            </ul>
           </li>
           <li class="nav-item dropdown">
             <button class="btn btn-link nav-link dropdown-toggle active" id="tournamentsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -38,8 +41,15 @@
           <li class="nav-item">
             <button class="btn btn-link nav-link active" [routerLink]="['tournaments']">Tournaments</button>
           </li>
-          <li class="nav-item">
-            <button class="btn btn-link nav-link active" [routerLink]="['course-main']">Courses</button>
+          <li class="nav-item dropdown">
+            <button class="btn btn-link nav-link dropdown-toggle active" id="coursesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Courses
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="coursesDropdown">
+              <li><button class="btn btn-link dropdown-item" [routerLink]="['/', 'course-main', 'completedCourses']">Watch completed courses</button></li>
+              <li><button class="btn btn-link dropdown-item" [routerLink]="['/', 'course-main', 'pendingCourses']">Watch pending courses</button></li>
+              <li *ngIf="isAdmin"><button class="btn btn-link dropdown-item" [routerLink]="['/', 'course-main', 'createCourse']">Create a course</button></li>
+            </ul>
           </li>
           <li class="dropdown-divider nav-switch-collapsed"></li>
           <li class="nav-item nav-switch-collapsed">
