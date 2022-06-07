@@ -40,6 +40,6 @@ spec:
     spec:
       containers:
         - name: facility
-          image: facility-server #bisogna usare la propria immagine nel proprio repository
+          image: facility-service #bisogna usare la propria immagine nel proprio repository
           imagePullPolicy: "IfNotPresent"
       restartPolicy: Always
