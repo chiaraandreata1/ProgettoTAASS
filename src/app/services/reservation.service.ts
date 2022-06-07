@@ -8,23 +8,19 @@ import { Observable } from 'rxjs';
 export class ReservationService {
 
   private baseUrlReservations = 'http://ball.net:8080/api/v1/reservations';
-  private baseUrlCourts = 'http://ball.net:8080/api/v1/reservations/courts';
 
   constructor(private http: HttpClient) { }
 
-
   getUserLoggedReservationsBySport(userLoggedId: number, sport: number): Observable<any> {
-    let isTennis = sport==2 ? true : false;
+    let isTennis = (sport==2 || sport==3);
     return this.http.get(`${this.baseUrlReservations}/isTennis/${isTennis}/user/${userLoggedId}`);
   }
 
   getReservationByDateAndSportAndHour(date: string, sport: number, hour: number): Observable<any> {
-    return this.http.get(`${this.baseUrlReservations}/date/${date}/sport/${sport}/hour/${hour}`);
+    let isTennis = (sport==2 || sport==3);
+    return this.http.get(`${this.baseUrlReservations}/date/${date}/isTennis/${isTennis}/hour/${hour}`);
   }
 
-  getReservationByDateAndSport(date: string, sport: number): Observable<any> {
-    return this.http.get(`${this.baseUrlReservations}/date/${date}/sport/${sport}`);
-  }
 
   getReservationByDateAndSportIsTennis(date: string, isTennis: boolean): Observable<any> {
     return this.http.get(`${this.baseUrlReservations}/date/${date}/isTennis/${isTennis}`);
@@ -36,18 +32,6 @@ export class ReservationService {
 
   deleteReservation(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrlReservations}/${id}`, { responseType: 'text' });
-  }
-
-  getReservationsList(): Observable<any> {
-    return this.http.get(`${this.baseUrlReservations}`);
-  }
-
-  getCourtsListByType(sport: string): Observable<any> {
-    return this.http.get(`${this.baseUrlCourts}/sport/${sport}`)
-  }
-
-  deleteAllReservations(): Observable<any> {
-    return this.http.delete(`${this.baseUrlReservations}` + `/delete`, { responseType: 'text' });
   }
 
   getReservationsByIds(ids: number[]){

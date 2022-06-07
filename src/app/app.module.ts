@@ -100,7 +100,7 @@ import { SlotReservationButtonComponent } from './reservation/slot-reservation-b
     TeamComponent,
     MatchBoxComponent,
     DashboardComponent,
-    TournamentsListComponent
+    TournamentsListComponent,
     MatchBoxComponent,
     PlayersReservationComponent,
     SlotReservationButtonComponent,

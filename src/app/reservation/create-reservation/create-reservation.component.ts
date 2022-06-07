@@ -12,6 +12,7 @@ import {Serialization} from "../../utilities/serialization";
 import {Team} from "../../models/tournament";
 import {Court} from "../../models/court";
 import {UserInfo} from "../../models/user-info";
+import {Sport} from "../../models/sport";
 
 interface TypeMatchTennis {
   idsport: number,
@@ -66,6 +67,8 @@ export class CreateReservationComponent implements OnInit {
   PlayersReserved!: Observable<UserInfo[]>;
   CourtReserved = 0;
 
+  error = false;
+
 
   constructor(private reservationService: ReservationService, private facilityService: FacilityService, private userService: UserService) {
     let id:number = this.userService.getCurrentUser()?.id || 0;
@@ -99,6 +102,7 @@ export class CreateReservationComponent implements OnInit {
   //FUNZIONI PER MANIPOLARE LA CLASSE RESERVATION-------------------------------------------
   newReservation(): void{
     this.submitted = false;
+    this.error = false;
     this.dateReservation.reset();
   }
 
@@ -145,7 +149,7 @@ export class CreateReservationComponent implements OnInit {
       return false;
     }
     for (let i = 0; i<this.allPlayers.players.length; i++)
-      if (!this.allPlayers.players[i])
+      if (!this.allPlayers.players[i] && i<this.numberplayers)
         return false;
     return true;
   }
@@ -175,10 +179,15 @@ export class CreateReservationComponent implements OnInit {
           for (let i=0; i<this.hoursAvailable.length; i++)
           {
             let arr = new Array();
-
+            if (i == this.hoursAvailable.length-1)
+              console.log(this.hoursAvailable[i])
             for (let j = 0; j<reservationsNOTAvailableNOTobs.length; j++)
             {
-              if (Serialization.deserializeDate(reservationsNOTAvailableNOTobs[j].date).getHours() - 1 == this.hoursAvailable[i]) //TODO: risistemare quando verrà serializzato reservationsNOTAvailableNOTobs[j].date.getHours() - 1 == this.hoursAvailable[i]
+              if (i == this.hoursAvailable.length-1){
+                console.log(reservationsNOTAvailableNOTobs[j].date)
+                console.log(Serialization.deserializeDate(reservationsNOTAvailableNOTobs[j].date).getHours() )
+              }
+              if (Serialization.deserializeDate(reservationsNOTAvailableNOTobs[j].date).getHours() == this.hoursAvailable[i])
                 arr.push(reservationsNOTAvailableNOTobs[j]);
             }
             this.arrNOTAvailableForHours.push(arr);
@@ -202,11 +211,7 @@ export class CreateReservationComponent implements OnInit {
 
 //bottone debugging
   show() {
-    console.log(this.allPlayers)
-    console.log(this.dateReservation.value)
-    console.log(this.checkAllPlayers())
-    console.log(this.listplayersready)
-    console.log(this.isTennis)
+    console.log(this.error)
   }
 }
 

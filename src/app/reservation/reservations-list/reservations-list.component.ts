@@ -56,17 +56,6 @@ export class ReservationsListComponent implements OnInit {
     this.subscription = this.userService.isAdmin().subscribe(data => { this.isAdmin = data; });
   }
 
-  deleteReservations() {
-    this.reservationService.deleteAllReservations()
-      .subscribe(
-        data => {
-          console.log(data);
-          //this.reservationsAdmin = new Array();
-          this.reloadData();
-        },
-        error => console.log('ERROR: ' + error));
-  }
-
   reloadData() {
     this.reservationsForHour = new Array();
     let date = new Date(this.dateReservation.value);

@@ -57,7 +57,8 @@
                                          [minDate]="minDate"
                                          [dateToReserve]="this.dateReservation.value"
                                          [sportToReserve]="sportReservation"
-                                         (done)="submitted=true; searchready=false;"
+                                         [numberPlayers]="numberplayers"
+                                         (done)="submitted=true; searchready=false; this.error=$event"
                                          (EventUserInfos)="PlayersReserved=$event"
                                          (EventReservetionOutput)="CourtReserved=$event.courtReserved; DateReserved=$event.date; "
             ></app-slot-reservation-button>
@@ -71,7 +72,7 @@
   <button mat-raised-button color="secondary" (click)='show()' >See</button>
 
 
- <div [hidden]="!submitted">
+ <div *ngIf="submitted && !error">
    <mat-card>
      <mat-card-title-group>
        <mat-card-title>RESERVATION DONE!</mat-card-title>
@@ -84,3 +85,16 @@
      </mat-card-actions>
    </mat-card>
  </div>
+
+  <div *ngIf="submitted && error">
+    <mat-card>
+      <mat-card-title-group>
+        <mat-card-title>SOMETHING'S WRONG!</mat-card-title>
+      </mat-card-title-group>
+      <mat-card-content>Someone has already reserved the court.</mat-card-content>
+      <mat-divider inset></mat-divider>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" type="submit" (click)="newReservation()">Add new</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>

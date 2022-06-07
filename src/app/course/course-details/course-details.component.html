@@ -1,64 +1,52 @@
-<div *ngIf="course">
-  <mat-card class="courtcard" *ngIf="course">
-    <mat-card-title-group>
-      <mat-card-title> {{sport}} COURSE </mat-card-title>
-      <mat-card-subtitle>
-        Instructor: {{course.instructor}}
-      </mat-card-subtitle>
-    </mat-card-title-group>
-    <mat-card-content>
-      Athletes registrated: <ng-container *ngIf="course.players.length==0">nobody</ng-container> {{stringPlayers}}
-      <mat-divider inset></mat-divider>
-      Price: {{course.priceCourse}}
-      <mat-divider inset></mat-divider>
-      The course take place on  {{course.daycourse}} at {{course.hourlesson}}:00 for {{course.numberweeks}} weeks on court {{course.courtCourse}}
-      <div *ngIf="isPending" class="row">
-        <div class="col-5" style="text-align: left">
-          <mat-form-field appearance="fill">
-            <mat-label>NEW PLAYER</mat-label>
-            <input type="text" matInput [formControl]="formInputPendingCourse" [matAutocomplete]="auto" (input)="onInput($event)" required>
-            <mat-icon *ngIf="formInputPendingCourse.value" matSuffix (click)="formInputPendingCourse.reset(); formInputPendingCourse.enable()">close</mat-icon>
-            <mat-error *ngIf="formInputPendingCourse.hasError('userInvalid')">Select one suggestion</mat-error>
-            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-              <ng-container *ngIf="formInputPendingCourse.value && formInputPendingCourse.value.length>1">
-                <mat-option style="line-height: 13px" *ngFor="let candidate of candidates" [value]="candidate" (onSelectionChange)="formInputPendingCourse.disable()">
-                  <span>{{candidate.displayName}}</span> <br>
-                  <small style="font-size: 10px">{{candidate.email}}</small>
-                </mat-option>
-              </ng-container>
-            </mat-autocomplete>
-          </mat-form-field>
-          <ng-container *ngIf="formInputPendingCourse.value; then ButtonAvailable else ButtonNotAvailable"></ng-container>
-          <ng-template #ButtonAvailable>
-            <button mat-raised-button color="secondary" style="height: 6.5vh; width: 10vw;" (click)="addNewPlayer()">Add player</button>
-          </ng-template>
-          <ng-template #ButtonNotAvailable>
-            <button mat-raised-button color="secondary" style="height: 6.5vh; width: 10vw;" [disabled]="true">Add player</button>
-          </ng-template>
-        </div>
-        <div class="col" style="text-align: right;">
-          <button mat-raised-button  color="warn" style="height: 6vh; width: 20vw;" (click)='deleteCourse()'>DELETE</button> <!-- prima nell'if c'era anche isAdmin -->
-        </div>
-      </div>
-      <ng-container *ngIf="!isPending">
-        <mat-divider inset></mat-divider>
-        <div [class.card]=true class="mb-3">
-          <div class="card-header">COURSE RESERVATIONS</div>
-          <ng-container  class="row card-body" *ngFor="let reservation of reservations | async">
-              <reservation-details [reservation]="reservation"></reservation-details>
-          </ng-container>
-        </div>
-        <!--
-        <div [class.card]=true class="mb-3">
-          <div class="card-header">COURSE RESERVATIONS</div>
-          <ng-container  class="row" *ngFor="let row of arrReservations">
-            <ng-container class="col" *ngFor="let reservation of row">
-              <reservation-details [reservation]="reservation"></reservation-details>
+<mat-card class="courtcard" *ngIf="course">
+  <mat-card-title-group>
+    <mat-card-title> {{sport}} COURSE </mat-card-title>
+    <mat-card-subtitle>
+      Instructor: {{course.instructor}}
+    </mat-card-subtitle>
+  </mat-card-title-group>
+  <mat-card-content>
+    Athletes registrated: <ng-container *ngIf="course.players.length==0">nobody</ng-container> {{stringPlayers}}
+    <mat-divider inset></mat-divider>
+    Price: {{course.priceCourse}}
+    <mat-divider inset></mat-divider>
+    The course take place on  {{course.daycourse}} at {{course.hourlesson}}:00 for {{course.numberweeks}} weeks on court {{course.courtCourse}}
+    <div *ngIf="isPending && isAdmin" class="row">
+      <div class="col-5" style="text-align: left">
+        <mat-form-field appearance="fill">
+          <mat-label>NEW PLAYER</mat-label>
+          <input type="text" matInput [formControl]="formInputPendingCourse" [matAutocomplete]="auto" (input)="onInput($event)" required>
+          <mat-icon *ngIf="formInputPendingCourse.value" matSuffix (click)="formInputPendingCourse.reset(); formInputPendingCourse.enable()">close</mat-icon>
+          <mat-error *ngIf="formInputPendingCourse.hasError('userInvalid')">Select one suggestion</mat-error>
+          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+            <ng-container *ngIf="formInputPendingCourse.value && formInputPendingCourse.value.length>1">
+              <mat-option style="line-height: 13px" *ngFor="let candidate of candidates" [value]="candidate" (onSelectionChange)="formInputPendingCourse.disable()">
+                <span>{{candidate.displayName}}</span> <br>
+                <small style="font-size: 10px">{{candidate.email}}</small>
+              </mat-option>
             </ng-container>
-          </ng-container>
-        </div> -->
-      </ng-container>
-
-    </mat-card-content>
-  </mat-card>
-</div>
+          </mat-autocomplete>
+        </mat-form-field>
+        <ng-container *ngIf="formInputPendingCourse.value; then ButtonAvailable else ButtonNotAvailable"></ng-container>
+        <ng-template #ButtonAvailable>
+          <button mat-raised-button color="secondary" style="height: 6.5vh; width: 10vw;" (click)="addNewPlayer()">Add player</button>
+        </ng-template>
+        <ng-template #ButtonNotAvailable>
+          <button mat-raised-button color="secondary" style="height: 6.5vh; width: 10vw;" [disabled]="true">Add player</button>
+        </ng-template>
+      </div>
+      <div class="col" style="text-align: right;">
+        <button mat-raised-button  color="warn" style="height: 6vh; width: 20vw;" (click)='deleteCourse()'>DELETE</button> <!-- prima nell'if c'era anche isAdmin -->
+      </div>
+    </div>
+    <ng-container *ngIf="!isPending">
+      <mat-divider inset></mat-divider>
+      <div [class.card]=true class="mb-3">
+        <div class="card-header">COURSE RESERVATIONS</div>
+        <ng-container  class="row card-body" *ngFor="let reservation of reservations | async">
+            <reservation-details [reservation]="reservation"></reservation-details>
+        </ng-container>
+      </div>
+    </ng-container>
+  </mat-card-content>
+</mat-card>
