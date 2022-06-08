@@ -1,0 +1,22 @@
+<table class="table">
+  <thead>
+  <tr class="td">
+    <th scope="col">ID</th>
+    <th scope="col">Level</th>
+    <th scope="col">Price</th>
+    <th scope="col">Court</th>
+    <th scope="col">Day lesson</th>
+    <th scope="col">Number weeks</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let c of courses | async">
+    <th scope="row">{{c.id}}</th>
+    <td>{{c.levelCourse}}</td>
+    <td>{{c.priceCourse}}</td>
+    <td>{{c.courtCourse}}</td>
+    <td>{{c.daycourse}}</td>
+    <td>{{c.numberweeks}}</td>
+  </tr>
+  </tbody>
+</table>
