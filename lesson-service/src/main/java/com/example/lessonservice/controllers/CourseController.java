@@ -39,14 +39,6 @@ public class CourseController {
     }
 
     Course checkCourse(Course course) {
-        /*
-        String[] weekday = {"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
-        Calendar cal = Calendar.getInstance(); cal.setTime(course.getFirstDayLesson()); int day = cal.get(Calendar.DAY_OF_WEEK);
-        //CONTROLLO TIME
-        if (!(course.getFirstDayLesson().getHours()<24 && course.getFirstDayLesson().getHours()>8)
-                    || ArrayUtils.indexOf(weekday, course.getDaycourse().toLowerCase())+1!=day)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Time variables are not correct");
-        */
         //CONTROLLO COURT CORRETTO
         SportInfo sportInfo = facilityRabbitClient.getSportInfo(course.getSporttype());
         List<Long> courtIDs = sportInfo.getCourtIDs();
@@ -83,13 +75,6 @@ public class CourseController {
         StringBuilder endDateTime = new StringBuilder();
         startDateTime.append("01-01-").append(year.toString());
         endDateTime.append("31-12-").append(year);
-        /*
-        try {
-            return courseRepository.findAllByEndDateRegistrationBetweenAndPlayersIsLessThanEqual(DAY_TIME_DATE_FORMAT.parse(startDateTime.toString()), DAY_TIME_DATE_FORMAT.parse(endDateTime.toString()), 3);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-         */
         try {
             List<Course> allCoursesByYear = courseRepository.findAllByDateCourseCreatedBetweenAndSporttype(DAY_TIME_DATE_FORMAT.parse(startDateTime.toString()), DAY_TIME_DATE_FORMAT.parse(endDateTime.toString()), sport);
             List<Course> allCourses = new ArrayList<>();

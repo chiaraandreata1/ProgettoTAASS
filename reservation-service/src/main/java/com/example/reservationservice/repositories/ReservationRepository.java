@@ -10,11 +10,11 @@ import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    List<Reservation> findAllByDateAndSportReservation(Date startDateTime, Long sportReservation);
+    List<Reservation> findAllByDateAndCourtReservedIn(Date startDateTime, List<Long> courtIds);
 
     List<Reservation> findAllByDateBetweenAndSportReservation(Date startDateTime, Date endDateTime, Long sportReservation);
 
-    List<Reservation> findAllByDateBetween(Date startDateTime, Date endDateTime);
+    List<Reservation> findAllByDateBetweenAndCourtReservedIn(Date startDateTime, Date endDateTime, List<Long> courtIds);
 
     @Query("select p from Reservation p WHERE p.id IN (:Ids)")
     List<Reservation> findReservationsByIds(List<Long> Ids);

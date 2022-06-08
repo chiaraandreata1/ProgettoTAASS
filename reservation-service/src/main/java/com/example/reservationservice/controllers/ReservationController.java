@@ -43,44 +43,29 @@ public class ReservationController {
     }
     //---------------------------------------------------------------------------------------------
 
-    @GetMapping("/date/{date}/isTennis/{isTennis}/hour/{hour}")
-    public List<Reservation> findByDateAndIstennisAndHours(@PathVariable String date, @PathVariable boolean isTennis, @PathVariable Integer hour) {
+    @GetMapping("/date/{date}/sport/{sport}/hour/{hour}")
+    public List<Reservation> findByDateAndSportAndHours(@PathVariable String date, @PathVariable Long sport, @PathVariable Integer hour) {
+        SportInfo sportInfo = facilityRabbitClient.getSportInfo(sport);
         SimpleDateFormat DAY_TIME_DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         StringBuilder dateString = new StringBuilder();
         dateString.append(date).append(" ").append(hour).append(":00");
         try {
-            if (isTennis) {
-                List<Reservation> singleTennis = reservationRepository.findAllByDateAndSportReservation(DAY_TIME_DATE_FORMAT.parse(dateString.toString()), new Long(2));
-                List<Reservation> doubleTennis = reservationRepository.findAllByDateAndSportReservation(DAY_TIME_DATE_FORMAT.parse(dateString.toString()), new Long(3));
-                return Stream.concat(singleTennis.stream(), doubleTennis.stream()).collect(Collectors.toList());
-            }
-            else return reservationRepository.findAllByDateAndSportReservation(DAY_TIME_DATE_FORMAT.parse(dateString.toString()), new Long(4));
+            return reservationRepository.findAllByDateAndCourtReservedIn(DAY_TIME_DATE_FORMAT.parse(dateString.toString()), sportInfo.getCourtIDs());
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
     }
 
-    @GetMapping("/date/{date}/isTennis/{isTennis}")
-    public List<Reservation> findByDateAndSportIsTennis(@PathVariable String date, @PathVariable Boolean isTennis) {
+    @GetMapping("/date/{date}/sport/{sport}")
+    public List<Reservation> findByDateAndSport(@PathVariable String date, @PathVariable Long sport) {
         FacilityHours hours = facilityRabbitClient.getHours();
         SimpleDateFormat DAY_TIME_DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         StringBuilder startDateTime = new StringBuilder(); StringBuilder endDateTime = new StringBuilder();
         startDateTime.append(date).append(" ").append(hours.getOpeningTime()).append(":00");
         endDateTime.append(date).append(" ").append(hours.getClosingTime()).append(":00");
         try {
-            List<Reservation> finalList = new ArrayList<>(); Long idSport;
-            if (isTennis){
-                List<Reservation> reservationsByDateSingle = reservationRepository.findAllByDateBetweenAndSportReservation(DAY_TIME_DATE_FORMAT.parse(startDateTime.toString()), DAY_TIME_DATE_FORMAT.parse(endDateTime.toString()), new Long(2));
-                List<Reservation> reservationsByDateDouble = reservationRepository.findAllByDateBetweenAndSportReservation(DAY_TIME_DATE_FORMAT.parse(startDateTime.toString()), DAY_TIME_DATE_FORMAT.parse(endDateTime.toString()), new Long(3));
-                finalList = Stream.concat(reservationsByDateSingle.stream(), reservationsByDateDouble.stream()).collect(Collectors.toList()); idSport = new Long(2);
-            }
-            else {
-                idSport = new Long(4);
-                finalList = reservationRepository.findAllByDateBetweenAndSportReservation(DAY_TIME_DATE_FORMAT.parse(startDateTime.toString()), DAY_TIME_DATE_FORMAT.parse(endDateTime.toString()), idSport);
-
-            }
-            SportInfo sportInfo = facilityRabbitClient.getSportInfo(idSport);
-            List<Long> courtIDs = sportInfo.getCourtIDs();
+            List<Long> courtIDs = facilityRabbitClient.getSportInfo(sport).getCourtIDs();
+            List<Reservation> finalList = reservationRepository.findAllByDateBetweenAndCourtReservedIn(DAY_TIME_DATE_FORMAT.parse(startDateTime.toString()), DAY_TIME_DATE_FORMAT.parse(endDateTime.toString()), courtIDs);
             List<Reservation> reservationsByDateAndCourts = new ArrayList<>();
             for (Reservation res : finalList){
                 if (courtIDs.contains(res.getCourtReserved())) {
@@ -106,25 +91,17 @@ public class ReservationController {
     }
 
 
-    @GetMapping("/isTennis/{isTennis}/user/{userLoggedId}")
-    public List<Reservation> findByPlayerAndDateAndSport(@PathVariable boolean isTennis, @PathVariable Long userLoggedId) {
+    @GetMapping("/sport/{sport}/user/{userLoggedId}")
+    public List<Reservation> findByPlayerAndDateAndSport(@PathVariable Long sport, @PathVariable Long userLoggedId) {
+        SportInfo sportInfo = facilityRabbitClient.getSportInfo(sport);
         Date today = new Date(); Calendar c = Calendar.getInstance(); c.setTime(today); c.add(Calendar.WEEK_OF_MONTH,2);
         Date endDate = c.getTime();
-        List<Reservation> reservationsByDate = reservationRepository.findAllByDateBetween(today, endDate);
-        List<Reservation> finalList = new ArrayList<>();
-        for (Reservation res : reservationsByDate){
-            if (isTennis && (res.getSportReservation()==2 || res.getSportReservation()==3) && res.getPlayers().contains(userLoggedId))
-                finalList.add(res);
-            else if (!isTennis && res.getSportReservation()==4 && res.getPlayers().contains(userLoggedId))
-                finalList.add(res);
-        }
-        return finalList;
+        return reservationRepository.findAllByDateBetweenAndCourtReservedIn(today, endDate, sportInfo.getCourtIDs());
     }
 
     boolean checkIntersection(Reservation reservation){
         String dateReservation = DateSerialization.serializeDate(reservation.getDate()).replace('/', '-');
-        boolean isTennis = (reservation.getSportReservation() == 2 || reservation.getSportReservation() == 3) ? true : false;
-        List<Reservation> reservationsForDay = findByDateAndSportIsTennis(dateReservation, isTennis);
+        List<Reservation> reservationsForDay = findByDateAndSport(dateReservation, reservation.getSportReservation());
         List<Integer> hoursReservation = new ArrayList<>();
         for (Integer i = 0; i < reservation.getnHours(); i++) {
             Integer firstHour = reservation.getDate().getHours();
@@ -155,7 +132,7 @@ public class ReservationController {
         SportInfo sportInfo = facilityRabbitClient.getSportInfo(reservation.getSportReservation());
         List<Long> courtIDs = sportInfo.getCourtIDs();
         if (!courtIDs.contains(reservation.getCourtReserved()))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sport Reservations and Sport Court are not the same");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This sport doesn't have this court");
         //CONTROLLO INTERSEZIONE CON ALTRE RESERVATIONS
         if (checkIntersection(reservation))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Your reservation intersect with the other reservations of the same day. Someone play in that court");
