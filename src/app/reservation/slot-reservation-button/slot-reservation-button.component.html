@@ -4,7 +4,7 @@
 </ng-template>
 <ng-template #ButtonNotAvailable>
   <button *ngIf="reservationInput && reservationInput.typeReservation=='USER'" mat-raised-button class="reservationbutton" color="primary" [disabled]="true">
-    Court{{court}} reserved by:<br><div *ngFor="let user of users | async">{{user.displayName}}</div>(PRIVATE RESERVATION)
+    Court {{court}} reserved by:<br><div *ngFor="let user of users | async">{{user.displayName}}</div>(PRIVATE RESERVATION)
   </button>
   <button *ngIf="reservationInput && reservationInput.typeReservation=='TOURNAMENT_MATCH'" mat-raised-button class="reservationbutton" color="primary" [disabled]="true">Court {{court}} (TORUNAMENT)</button>
   <button *ngIf="reservationInput && reservationInput.typeReservation=='COURSE'" mat-raised-button class="reservationbutton" color="primary" [disabled]="true">Court {{court}} (COURSE)</button>

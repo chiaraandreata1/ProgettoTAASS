@@ -72,32 +72,6 @@ export class ReservationsListComponent implements OnInit {
         for (let i = 0; i<this.HoursAvailable.length; i++)
             this.reservationsForHour.push(this.reservationService.getReservationByDateAndSportAndHour(stringDate, this.sportReservation, this.HoursAvailable[i]));
       }
-
-        /*
-        this.reservationService.getReservationByDateAndSport(stringDate, this.sportReservation).toPromise()
-            .then(
-                data => {
-                    let reservationsObs = <Array<Reservation>>data;
-                    console.log(reservationsObs)
-                    let i = 0, arrRow = new Array(), hour = 8;
-                    while (hour < 24 && i<reservationsObs.length) {
-                        console.log(hour); console.log(i);
-                        if (hour == reservationsObs[i].date.getHours())
-                        {
-                            arrRow.push(reservationsObs[i]);  i++;
-                        }
-                        else {
-                            if (arrRow.length!=0) {
-                                this.reservationsAdmin.push(arrRow);
-                                arrRow = new Array();
-                            }
-                            hour++;
-                        }
-                        if (i==reservationsObs.length && arrRow.length!=0) this.reservationsAdmin.push(arrRow);
-                    }
-                })
-
-         */
     }
 
   }

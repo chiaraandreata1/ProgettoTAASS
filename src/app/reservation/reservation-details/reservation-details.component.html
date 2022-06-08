@@ -12,9 +12,10 @@
   <mat-card-content *ngIf="reservation.players.length!=0">
     {{playersString}} are going to play
   </mat-card-content>
-
-  <mat-divider inset></mat-divider>
-  <mat-card-actions>
-    <button *ngIf="isLoggedReservation || isAdmin" mat-raised-button  color="warn" style="align-self: end" (click)='deleteReservation()'>DELETE</button>
-  </mat-card-actions>
+  <ng-container *ngIf="isLoggedReservation || isAdmin">
+    <mat-divider inset></mat-divider>
+    <mat-card-actions>
+      <button mat-raised-button  color="warn" style="align-self: end" (click)='deleteReservation()'>DELETE</button>
+    </mat-card-actions>
+  </ng-container>
 </mat-card>

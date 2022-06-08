@@ -169,7 +169,7 @@ export class CreateReservationComponent implements OnInit {
       let stringDate = `${d < 10 ? '0' : ''}${d}-${m < 10 ? '0' : ''}${m}-${y}`;
       //----------------------------------------------
       console.log('doing the GET operation')
-      this.reservationsNOTAvailable = this.reservationService.getReservationByDateAndSportIsTennis(stringDate, this.isTennis.value)
+      this.reservationsNOTAvailable = this.reservationService.getReservationByDateAndSport(stringDate, this.sportReservation)
       this.reservationsNOTAvailable.toPromise()
       .then(
         data => {
