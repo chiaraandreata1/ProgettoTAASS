@@ -2,16 +2,10 @@ spring:
   application:
     name: tournament-service
 
-  rabbitmq:
-    host: rabbitmq
-    port: 5672
-    username: default_user_66m1znNBWhzukr0ncY7
-    password: nmg9O-oVV0N12V2-cUqCaSeDZUVP6NMC
-
   datasource:
     #NO DOCKER : jdbc:postgresql://localhost:5432/tournaments
     #CON DOCKER: jdbc:postgresql://dbtournaments:5432/tournaments
-    url: jdbc:postgresql://dbtournaments:5432/tournaments
+    url: jdbc:postgresql://localhost:5432/tournaments
     driver-class-name: org.postgresql.Driver
     username: taass
     password: asd
@@ -39,7 +33,7 @@ session:
   datasource:
     #NO DOCKER : jdbc:postgresql://localhost:5432/session
     #CON DOCKER: jdbc:postgresql://dbsession:5432/session
-    url: jdbc:postgresql://dbsession:5432/session
+    url: jdbc:postgresql://localhost:5432/session
     driver-class-name: org.postgresql.Driver
     username: taass
     password: asd
@@ -112,6 +106,20 @@ rabbit:
     exchange-name: rpc.users
     get-info:
       key: users.info
+---
+spring:
+  profiles: "prod"
+
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: default_user_ZDs90OlN6xwqFDLviH7
+    password: oFRsk_sA9KKcUFgL6tDwJ8HOU2qdu7GC
+
+  datasource:
+    #NO DOCKER : jdbc:postgresql://localhost:5432/tournaments
+    #CON DOCKER: jdbc:postgresql://dbtournaments:5432/tournaments
+    url: jdbc:postgresql://dbtournaments:5432/tournaments
 
 eureka:
   instance:
@@ -124,3 +132,10 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://eureka-0.eureka.default.svc.cluster.local:8761/eureka,http://eureka-1.eureka.default.svc.cluster.local:8761/eureka,http://eureka-2.eureka.default.svc.cluster.local:8761/eureka
+
+
+session:
+  datasource:
+    #NO DOCKER : jdbc:postgresql://localhost:5432/session
+    #CON DOCKER: jdbc:postgresql://dbsession:5432/session
+    url: jdbc:postgresql://dbsession:5432/session

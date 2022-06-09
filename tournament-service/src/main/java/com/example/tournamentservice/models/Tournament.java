@@ -1,10 +1,15 @@
 package com.example.tournamentservice.models;
 
+import com.example.shared.tools.DateSerialization;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.Columns;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -45,6 +50,22 @@ public class Tournament {
     @OneToMany(cascade = CascadeType.ALL)
     @OrderBy("id asc")
     private List<TournamentRound> rounds;
+
+    @Formula("(select min(date)\n" +
+            "from matches\n" +
+            "         right join rounds_matches rm on matches.id = rm.matches_id\n" +
+            "         right join rounds r on r.id = rm.tournament_round_id\n" +
+            "         right join tournament_rounds tr on r.id = tr.rounds_id\n" +
+            "where tr.tournament_id = id)")
+    private Date startingDate;
+
+    @Formula("(select max(date)\n" +
+            "from matches\n" +
+            "         right join rounds_matches rm on matches.id = rm.matches_id\n" +
+            "         right join rounds r on r.id = rm.tournament_round_id\n" +
+            "         right join tournament_rounds tr on r.id = tr.rounds_id\n" +
+            "where tr.tournament_id = id)")
+    private Date endingDate;
 
     public Tournament() {}
 
@@ -166,5 +187,15 @@ public class Tournament {
         if (!(teams instanceof ArrayList))
             teams = new ArrayList<>(teams);
         teams.add(team);
+    }
+
+    @JsonSerialize(using = DateSerialization.DateSerialize.class)
+    public Date getStartingDate() {
+        return startingDate;
+    }
+
+    @JsonSerialize(using = DateSerialization.DateSerialize.class)
+    public Date getEndingDate() {
+        return endingDate;
     }
 }

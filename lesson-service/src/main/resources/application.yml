@@ -3,18 +3,12 @@ spring:
   application:
     name: lesson-service
 
-  rabbitmq:
-    host: rabbitmq
-    port: 5672
-    username: default_user_66m1znNBWhzukr0ncY7
-    password: nmg9O-oVV0N12V2-cUqCaSeDZUVP6NMC
-
   datasource:
     #NO DOCKER : jdbc:postgresql://localhost:5432/lessons
     #CON DOCKER: jdbc:postgresql://dblessons:5432/lessons
+    url: jdbc:postgresql://localhost:5432/lessons
     driver-class-name: org.postgresql.Driver
     username: taass
-    url: jdbc:postgresql://dblessons:5432/lessons
     password: asd
 
   jpa:
@@ -33,7 +27,7 @@ session:
   datasource:
     #NO DOCKER : jdbc:postgresql://localhost:5432/session
     #CON DOCKER: jdbc:postgresql://dbsession:5432/session
-    url: jdbc:postgresql://dbsession:5432/session
+    url: jdbc:postgresql://localhost:5432/session
     driver-class-name: org.postgresql.Driver
     username: taass
     password: asd
@@ -70,6 +64,26 @@ rabbit:
       key: reservation.reserve
     delete:
       key: reservation.delete
+---
+spring:
+  profiles: "prod"
+
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: default_user_ZDs90OlN6xwqFDLviH7
+    password: oFRsk_sA9KKcUFgL6tDwJ8HOU2qdu7GC
+
+  datasource:
+    #NO DOCKER : jdbc:postgresql://localhost:5432/lessons
+    #CON DOCKER: jdbc:postgresql://dblessons:5432/lessons
+    url: jdbc:postgresql://dblessons:5432/lessons
+
+session:
+  datasource:
+    #NO DOCKER : jdbc:postgresql://localhost:5432/session
+    #CON DOCKER: jdbc:postgresql://dbsession:5432/session
+    url: jdbc:postgresql://dbsession:5432/session
 
 eureka:
   instance:
@@ -82,3 +96,4 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://eureka-0.eureka.default.svc.cluster.local:8761/eureka,http://eureka-1.eureka.default.svc.cluster.local:8761/eureka,http://eureka-2.eureka.default.svc.cluster.local:8761/eureka
+

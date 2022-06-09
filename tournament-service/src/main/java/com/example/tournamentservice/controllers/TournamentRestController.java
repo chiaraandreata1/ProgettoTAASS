@@ -17,23 +17,24 @@ import com.example.tournamentservice.rabbithole.ReservationRabbitClient;
 import com.example.tournamentservice.rabbithole.UserRabbitClient;
 import com.example.tournamentservice.repositories.MatchesRepository;
 import com.example.tournamentservice.repositories.TournamentRepository;
-import org.apache.catalina.User;
-import org.apache.juli.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.*;
 import java.util.*;
-import java.util.function.IntSupplier;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @RestController
 @CrossOrigin(origins = "*")
 public class TournamentRestController {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private FacilityRabbitClient facilityRabbitClient;
@@ -136,7 +137,7 @@ public class TournamentRestController {
         return tournamentRepository.save(tournament);
     }
 
-    private static final ReservationDeleteRequest.DeleteCouple converter(Match match) {
+    private static ReservationDeleteRequest.DeleteCouple converter(Match match) {
         return new ReservationDeleteRequest.DeleteCouple(match.getReservationID(), match.getId());
     }
 
@@ -179,23 +180,16 @@ public class TournamentRestController {
     Controller's methods
      */
 
-//    @GetMapping("get")
-    @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("hasRole('USER')")
-    public Tournament get(@RequestParam Long id, @CurrentUser UserDetails userDetails) {
-        Tournament tournament = getTournament(id);
-
-        LogFactory.getLog(TournamentRestController.class).error(RequestContextHolder.getRequestAttributes() != null ? RequestContextHolder.getRequestAttributes().getSessionId() : null);
-        if (tournament.getStatus() == Tournament.Status.DRAFT
-                && (userDetails == null || !Objects.equals(userDetails.getId(), tournament.getOwner())))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Draft tournament, for owner only");
-
-        return tournament;
+    @GetMapping("by-player")
+    public Object findAllByPlayer(@RequestParam Long playerID) {
+        List<Long> ids = tournamentRepository.findTournamentIdsByPlayer(playerID);
+        List<Tournament> tournaments = tournamentRepository.findAllByIdIn(ids);
+        return tournamentRepository.findTournamentByPlayer(playerID);
     }
 
     @GetMapping("get")
 //    @PreAuthorize("hasRole('USER')")
-    public Tournament me(@RequestParam Long id, @CurrentUser UserDetails userDetails) {
+    public Tournament get(@RequestParam Long id, @CurrentUser UserDetails userDetails) {
         Tournament tournament = getTournament(id);
 
         if (tournament.getStatus() == Tournament.Status.DRAFT
@@ -290,11 +284,14 @@ public class TournamentRestController {
     public Tournament closeRegistrations(@RequestParam Long id, @CurrentUser UserDetails userDetails) {
         Tournament tournament = getTournament(id, Tournament.Status.CONFIRMED, userDetails.getId());
 
-        if (tournament.getTeams().size() < 2) {
-            tournament.setStatus(Tournament.Status.CANCELLED);
-        } else {
-            complete(tournament);
-        }
+        if (tournament.getTeams().size() < 2)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Too few teams");
+
+//        if (tournament.getTeams().size() < 2) {
+//            tournament.setStatus(Tournament.Status.CANCELLED);
+//        } else {
+//        }
+        subTest(tournament);
 
         return tournamentRepository.save(tournament);
     }
@@ -434,6 +431,10 @@ public class TournamentRestController {
             }
         }
 
+        for (int i = 0, l = tournament.getRounds().size(); i < l; i++)
+            for (int j = 0; j < tournament.getRound(i).getMatches().size(); j++)
+                tournament.getRound(i).getMatch(j).setRound(i);
+
         Collections.shuffle(teams);
 
         for (int i = 0; i < teams.size(); i += 2) {
@@ -468,8 +469,8 @@ public class TournamentRestController {
                                           @RequestParam(required = false) Integer limit,
                                           @RequestParam(required = false) Integer offset) {
 
-        if (limit == null || limit > 5)
-            limit = 5;
+        if (limit == null || limit > 50)
+            limit = 50;
 
         if (offset == null)
             offset = 0;
@@ -478,7 +479,8 @@ public class TournamentRestController {
         UserType type = userDetails.toUserInfo().getType();
 
         if (type == UserType.PLAYER) {
-            tournaments = Collections.emptyList();
+            List<Long> ids = tournamentRepository.findTournamentIdsByPlayer(userDetails.getId());
+            tournaments = tournamentRepository.findAllByIdIn(ids);
         } else if (type == UserType.ADMIN || type == UserType.TEACHER) {
             tournaments = tournamentRepository.findAllByOwnerIs(userDetails.getId());
         } else
@@ -492,6 +494,157 @@ public class TournamentRestController {
 //        Collections.reverse(tournaments);
 
         return tournaments;
+    }
+
+    @GetMapping(value = "get-tournaments", params = {"statuses", "fromDate", "toDate"})
+    public List<Tournament> getTournaments(@CurrentUser UserDetails userDetails,
+                                           @RequestParam(required = false) Integer limit,
+                                           @RequestParam(required = false, defaultValue = "0") Integer offset,
+                                           @RequestParam(name = "statuses") List<String> statusStrings,
+                                           @RequestParam(name = "fromDate") String fromDateString,
+                                           @RequestParam(name = "toDate") String toDateString) {
+        if (limit == null || limit > 50)
+            limit = 50;
+
+        List<Tournament.Status> statuses = statusStrings.stream().map(String::toUpperCase).map(
+                s -> {
+
+                    Tournament.Status status;
+                    try {
+                        status = Tournament.Status.valueOf(s);
+                    } catch (IllegalArgumentException ex) {
+                        status = null;
+                    }
+
+                    return status;
+                }
+        ).filter(Objects::nonNull).collect(Collectors.toList());
+
+        Date fromDate = DateSerialization.deserializeDate(fromDateString);
+        Date toDate = DateSerialization.deserializeDate(toDateString);
+
+        return tournamentRepository.findAllByDateRangeAndStatus(fromDate, toDate, statuses)
+                .stream().sorted((o1, o2) -> (int) (o2.getId() - o1.getId()))
+                .skip(offset)
+                .limit(limit)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "get-tournaments", params = {"statuses", "fromDate"})
+    public List<Tournament> getTournamentsAfter(@CurrentUser UserDetails userDetails,
+                                           @RequestParam(required = false) Integer limit,
+                                           @RequestParam(required = false, defaultValue = "0") Integer offset,
+                                           @RequestParam(name = "statuses") List<String> statusStrings,
+                                           @RequestParam(name = "fromDate") String fromDateString) {
+        if (limit == null || limit > 50)
+            limit = 50;
+
+        List<Tournament.Status> statuses = statusStrings.stream().map(String::toUpperCase).map(
+                s -> {
+
+                    Tournament.Status status;
+                    try {
+                        status = Tournament.Status.valueOf(s);
+                    } catch (IllegalArgumentException ex) {
+                        status = null;
+                    }
+
+                    return status;
+                }
+        ).filter(Objects::nonNull).collect(Collectors.toList());
+
+        Date fromDate = DateSerialization.deserializeDate(fromDateString);
+
+        return tournamentRepository.findAllAfterDateAndStatus(fromDate, statuses)
+                .stream().sorted((o1, o2) -> (int) (o2.getId() - o1.getId()))
+                .skip(offset)
+                .limit(limit)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "get-tournaments", params = {"statuses", "toDate"})
+    public List<Tournament> getTournamentsBefore(@CurrentUser UserDetails userDetails,
+                                           @RequestParam(required = false) Integer limit,
+                                           @RequestParam(required = false, defaultValue = "0") Integer offset,
+                                           @RequestParam(name = "statuses") List<String> statusStrings,
+                                           @RequestParam(name = "toDate") String toDateString) {
+        if (limit == null || limit > 50)
+            limit = 50;
+
+        List<Tournament.Status> statuses = statusStrings.stream().map(String::toUpperCase).map(
+                s -> {
+
+                    Tournament.Status status;
+                    try {
+                        status = Tournament.Status.valueOf(s);
+                    } catch (IllegalArgumentException ex) {
+                        status = null;
+                    }
+
+                    return status;
+                }
+        ).filter(Objects::nonNull).collect(Collectors.toList());
+
+        Date toDate = DateSerialization.deserializeDate(toDateString);
+
+        return tournamentRepository.findAllBeforeDateAndStatus(toDate, statuses)
+                .stream().sorted((o1, o2) -> (int) (o2.getId() - o1.getId()))
+                .skip(offset)
+                .limit(limit)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "get-tournaments", params = {"fromDate", "toDate"})
+    public List<Tournament> getTournaments(@CurrentUser UserDetails userDetails,
+                                           @RequestParam(required = false) Integer limit,
+                                           @RequestParam(required = false, defaultValue = "0") Integer offset,
+                                           @RequestParam(name = "fromDate") String fromDateString,
+                                           @RequestParam(name = "toDate") String toDateString) {
+        if (limit == null || limit > 50)
+            limit = 50;
+
+        Date fromDate = DateSerialization.deserializeDate(fromDateString);
+        Date toDate = DateSerialization.deserializeDate(toDateString);
+
+        return tournamentRepository.findAllByDateRange(fromDate, toDate)
+                .stream().sorted((o1, o2) -> (int) (o2.getId() - o1.getId()))
+                .skip(offset)
+                .limit(limit)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "get-tournaments", params = {"toDate"})
+    public List<Tournament> getTournamentsBefore(@CurrentUser UserDetails userDetails,
+                                           @RequestParam(required = false) Integer limit,
+                                           @RequestParam(required = false, defaultValue = "0") Integer offset,
+                                           @RequestParam(name = "toDate") String toDateString) {
+        if (limit == null || limit > 50)
+            limit = 50;
+
+        Date toDate = DateSerialization.deserializeDate(toDateString);
+
+        return tournamentRepository.findAllBeforeDate(toDate)
+                .stream().sorted((o1, o2) -> (int) (o2.getId() - o1.getId()))
+                .skip(offset)
+                .limit(limit)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "get-tournaments", params = {"fromDate"})
+    public List<Tournament> getTournamentsAfter(@CurrentUser UserDetails userDetails,
+                                           @RequestParam(required = false) Integer limit,
+                                           @RequestParam(required = false, defaultValue = "0") Integer offset,
+                                           @RequestParam(name = "fromDate") String fromDateString) {
+        if (limit == null || limit > 50)
+            limit = 50;
+
+        Date fromDate = DateSerialization.deserializeDate(fromDateString);
+
+        return tournamentRepository.findAllAfterDate(fromDate)
+                .stream().sorted((o1, o2) -> (int) (o2.getId() - o1.getId()))
+                .skip(offset)
+                .limit(limit)
+                .collect(Collectors.toList());
     }
 
 }
