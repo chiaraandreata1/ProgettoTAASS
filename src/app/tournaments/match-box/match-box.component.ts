@@ -45,4 +45,10 @@ export class MatchBoxComponent implements OnInit {
       this.selected.emit(this.match);
   }
 
+  prettyStatus() {
+    if (this.match?.status == 'WAITING')
+      return "Scheduled";
+    else
+      return `${this.match?.status.charAt(0)}${this.match?.status.substring(1).toLocaleLowerCase()}`;
+  }
 }

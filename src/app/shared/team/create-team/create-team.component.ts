@@ -25,6 +25,7 @@ export class CreateTeamComponent implements OnInit, OnChanges {
   @Input() playersCount!: number;
   @Input() selectedPlayers: number[] = [];
   @Input() team?: Team;
+  @Input() currentPlayer?: UserInfo;
 
   @Output() created: EventEmitter<Team> = new EventEmitter<Team>();
   @Output() updated: EventEmitter<Team> = new EventEmitter<Team>();
@@ -63,8 +64,12 @@ export class CreateTeamComponent implements OnInit, OnChanges {
     if (this.team)
       this.userService.getUsers(this.team.players)
         .subscribe(players => this.users = players);
-    else
+    else {
       this.users = new Array<UserInfo>(this.playersCount);
+      if (this.currentPlayer && this.currentPlayer.type == 'PLAYER') {
+        this.users[0] = this.currentPlayer;
+      }
+    }
 
     this.touched = new Array<boolean>(this.playersCount).fill(false);
   }
@@ -203,5 +208,18 @@ export class CreateTeamComponent implements OnInit, OnChanges {
 
   close() {
     this.closed.emit();
+  }
+
+  isCancelable(i: number) {
+    let userA = this.users[i];
+    if (userA != undefined) {
+      let idA = userA.id;
+      let userB = this.currentPlayer;
+      if (userB) {
+        return idA != userB.id;
+      }
+      return true;
+    } else
+      return false;
   }
 }

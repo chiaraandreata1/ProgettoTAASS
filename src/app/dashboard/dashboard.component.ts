@@ -5,11 +5,6 @@ import {UserService} from "../user/user.service";
 import {FacilityHours} from "../models/facilityHours";
 import {FacilityService} from "../services/facility.service";
 
-class Hours {
-  public Opening!: number;
-  public Closing!: number;
-}
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -38,64 +33,18 @@ export class DashboardComponent implements OnInit {
 
     this.facility.getHours().subscribe(v => this.hours = v);
 
-    // @ts-ignore
-    this.upcoming = [
-      new Tournament(1398, "CANCELLED", 1, "D", 22, 5, 5, [],
-        // @ts-ignore
-        ['a', 'b'],
-        18),
-      new Tournament(1398, "DONE", 1, "D", 22, 5, 5, [],
-        // @ts-ignore
-        ['a', 'b'],
-        8),
-      new Tournament(1398, "COMPLETED", 1, "D", 22, 5, 5, [],
-        // @ts-ignore
-        ['a', 'b'],
-        18),
-      new Tournament(1398, "CONFIRMED", 1, "D", 22, 5, 5, [],
-        // @ts-ignore
-        ['a', 'b'],
-        18),
-      new Tournament(1398, "CONFIRMED", 1, "D", 22, 5, 5, [],
-        // @ts-ignore
-        ['a', 'b'],
-        18),
-    ]
-
-    // @ts-ignore
-    this.myTournaments = [
-      new Tournament(1398, "CANCELLED", 1, "D", 22, 5, 5, [],
-        // @ts-ignore
-        ['a', 'b'],
-        18),
-      new Tournament(1398, "DONE", 1, "D", 22, 5, 5, [],
-        // @ts-ignore
-        ['a', 'b'],
-        8),
-      new Tournament(1398, "COMPLETED", 1, "D", 22, 5, 5, [],
-        // @ts-ignore
-        ['a', 'b'],
-        18),
-      new Tournament(1398, "CONFIRMED", 1, "D", 22, 5, 5, [],
-        // @ts-ignore
-        ['a', 'b'],
-        18),
-      new Tournament(1398, "CONFIRMED", 1, "D", 22, 5, 5, [],
-        // @ts-ignore
-        ['a', 'b'],
-        18),
-    ]
-
-    // this.tournamentService.upcomingTournaments()
-    //   .subscribe(value => this.tournaments = value);
+    this.tournamentService.upcomingTournaments()
+      .subscribe(value => {
+        this.upcoming = value;
+      })
 
     this.user.currentUserObserver().subscribe(
-      // user => {
-      //   if (user) {
-      //     this.tournamentService.myTournaments()
-      //       .subscribe(value => this.tournaments = value);
-      //   }
-      // }
+      user => {
+        if (user) {
+          this.tournamentService.myTournaments()
+            .subscribe(value => this.myTournaments = value);
+        }
+      }
     )
   }
 

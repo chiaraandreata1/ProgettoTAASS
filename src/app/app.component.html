@@ -28,20 +28,6 @@
             </ul>
           </li>
           <li class="nav-item dropdown">
-            <button class="btn btn-link nav-link dropdown-toggle active" id="tournamentsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Tournaments
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="tournamentsDropdown">
-              <li><button class="btn btn-link dropdown-item">Upcoming</button></li>
-              <li><button class="btn btn-link dropdown-item">In progress</button></li>
-              <li><button class="btn btn-link dropdown-item">Mine</button></li>
-              <li *ngIf="users.isManager$ | async"><button class="btn btn-link dropdown-item" [routerLink]="['/', 'tournaments', 'create']">Create</button></li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <button class="btn btn-link nav-link active" [routerLink]="['tournaments']">Tournaments</button>
-          </li>
-          <li class="nav-item dropdown">
             <button class="btn btn-link nav-link dropdown-toggle active" id="coursesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Courses
             </button>
@@ -49,6 +35,16 @@
               <li><button class="btn btn-link dropdown-item" [routerLink]="['/', 'course-main', 'completedCourses']">Watch completed courses</button></li>
               <li><button class="btn btn-link dropdown-item" [routerLink]="['/', 'course-main', 'pendingCourses']">Watch pending courses</button></li>
               <li *ngIf="isAdmin"><button class="btn btn-link dropdown-item" [routerLink]="['/', 'course-main', 'createCourse']">Create a course</button></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <button class="btn btn-link nav-link dropdown-toggle active" id="tournamentsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Tournaments
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="tournamentsDropdown">
+              <li><button class="btn btn-link dropdown-item" [routerLink]="['/', 'tournaments', 'upcoming']">Upcoming</button></li>
+              <li><button class="btn btn-link dropdown-item" [routerLink]="['/', 'tournaments', 'mine']">Mine</button></li>
+              <li *ngIf="users.isManager$ | async"><button class="btn btn-link dropdown-item" [routerLink]="['/', 'tournaments', 'create']">Create</button></li>
             </ul>
           </li>
           <li class="dropdown-divider nav-switch-collapsed"></li>

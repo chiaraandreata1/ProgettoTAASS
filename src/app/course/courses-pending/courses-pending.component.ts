@@ -2,11 +2,8 @@ import {Component, Injectable, OnInit} from '@angular/core';
 import {Observable, Subscription} from "rxjs";
 import {Course} from "../../models/course";
 import {CourseService} from "../../services/course.service";
-import {AbstractControl, FormControl, FormGroup} from "@angular/forms";
+import {FormControl, FormGroup} from "@angular/forms";
 import {ReservationService} from "../../services/reservation.service";
-import {User} from "../../models/user";
-import {DummyCourt} from "../../models/dummyCourt";
-import {Reservation} from "../../models/reservation";
 import {UserService} from "../../user/user.service";
 
 @Component({

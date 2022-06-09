@@ -1,4 +1,4 @@
-<div class="card-header">{{match.status}} {{isDone}} {{isReady}} Round {{match.round}} - Match {{match.roundHeight}}</div>
+<div class="card-header">Round {{match.round}} - Match {{match.roundHeight}}</div>
 <!--<div class="card-body" *ngIf="!done">-->
 <!--  <div class="row">-->
 <!--    <label class="col-3">Number of sets</label>-->
@@ -23,7 +23,7 @@
     <hr>
     <div class="row">
       <div [class.col-9]="!isDone" class="d-flex">
-        <div class="ps-3 align-self-center">{{match.date }} - Court {{match.court}}</div>
+        <div class="ps-3 align-self-center">{{match.date }} - Court {{match.courtID}}</div>
       </div>
       <div class="col-3" *ngIf="!isDone">
         <label>Number of sets</label>

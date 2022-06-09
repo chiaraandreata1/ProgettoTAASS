@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {TournamentBuilding} from "../models/tournament-building";
 import {catchError, Observable, of, tap} from "rxjs";
 import {Match, Tournament} from "../models/tournament";
 import {TournamentDefinition} from "../models/tournament-definition";
+import {Serialization} from "../utilities/serialization";
 
 @Injectable({
   providedIn: 'root'
@@ -38,12 +38,6 @@ export class TournamentsService {
       );
   }
 
-  createTournament(tournament: TournamentBuilding): Observable<Tournament> {
-    return this.http.post<Tournament>(`${this.baseUrl}/create`, TournamentBuilding.toJSON(tournament)).pipe(
-      catchError(this.handleError<Tournament>("create"))
-    );
-  }
-
   confirm(id: number): Observable<Tournament> {
     return this.http.get<Tournament>(`${this.baseUrl}/confirm`, {params: {id: id}}).pipe(
       // catchError(this.handleError<Tournament>("confirm"))
@@ -61,6 +55,10 @@ export class TournamentsService {
     return this.http.get<Tournament>(`${this.baseUrl}/register-players`, {params: {id: tournamentID, players: ids}});
   }
 
+  join(tournamentID: number, ids: number[]): Observable<Tournament> {
+    return this.http.get<Tournament>(`${this.baseUrl}/join`, {params: {id: tournamentID, players: ids}});
+  }
+
   cancel(tournamentID: number): Observable<Tournament> {
     return this.http.get<Tournament>(`${this.baseUrl}/cancel`, {params: {id: tournamentID}})
   }
@@ -69,8 +67,9 @@ export class TournamentsService {
     return this.http.get<Tournament>(`${this.baseUrl}/close-registrations`, {params: {id: tournamentID}})
   }
 
-  myTournaments(): Observable<Tournament[]> {
-    return this.http.get<Tournament[]>(`${this.baseUrl}/my-tournaments`);
+  myTournaments(page: number = 0, limit: number = 5): Observable<Tournament[]> {
+    console.log({params: {limit: limit, offset: page * limit}});
+    return this.http.get<Tournament[]>(`${this.baseUrl}/my-tournaments`, {params: {limit: limit, offset: page * limit}});
   }
 
   matchResults(tournamentID: number, match: Match): Observable<Tournament> {
@@ -84,7 +83,14 @@ export class TournamentsService {
     })
   }
 
-  upcomingTournaments(): Observable<Tournament[]> {
-    return this.http.get<Tournament[]>(`${this.baseUrl}/upcoming`);
+  upcomingTournaments(page: number = 0, limit: number = 5): Observable<Tournament[]> {
+    return this.http.get<Tournament[]>(`${this.baseUrl}/get-tournaments?`, {
+      params: {
+        limit: limit,
+        offset: page * limit,
+        statuses: ["CONFIRMED", "COMPLETED"],
+        fromDate: Serialization.serializeDate(new Date())
+      }
+    });
   }
 }

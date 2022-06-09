@@ -18,15 +18,18 @@ import {LoginComponent} from "./user/login/login.component";
 import {ShowUserComponent} from "./user/show-user/show-user.component";
 import {MeComponent} from "./user/me/me.component";
 import {DashboardComponent} from "./dashboard/dashboard.component";
+import {MineComponent} from "./tournaments/mine/mine.component";
 
 const routes: Routes = [
   { path: 'reservation-main', component: ReservationMainComponent,
     children: [{ path: 'reservation', component: ReservationsListComponent }, { path: 'addReservation', component: CreateReservationComponent }]},
   { path: 'board-main', component: BoardMainComponent,
     children: [{ path: 'board', component: BoardsListComponent },  { path: 'addBoard', component: CreateBoardComponent }, { path: 'yourBoards', component: BoardPersonalComponent }]},
-  { path: 'tournaments', component: TournamentsMainComponent },
+  // { path: 'tournaments', component: TournamentsMainComponent },
   { path: 'tournaments/create', component: CreateTournamentComponent },
   { path: 'tournaments/info', component: ShowTournamentComponent },
+  { path: 'tournaments/mine', component: MineComponent },
+  { path: 'tournaments/upcoming', component: MineComponent },
   { path: 'tournament/:id', component: ShowTournamentComponent },
   { path: 'course-main', component: CourseMainComponent,
     children: [{ path: 'completedCourses', component: CoursesCompletedComponent }, { path: 'pendingCourses', component: CoursesPendingComponent }, { path: 'createCourse', component: CreateCourseComponent }]},

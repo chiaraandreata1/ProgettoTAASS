@@ -23,7 +23,7 @@
           disabled
           value="{{users[i]?.displayName}}"
         >
-        <button *ngIf="users[i]" class="btn btn-outline-secondary input-append" (click)="deselect(i)">X</button>
+        <button *ngIf="isCancelable(i)" class="btn btn-outline-secondary input-append" (click)="deselect(i)">X</button>
         <mat-autocomplete #auto="matAutocomplete">
           <mat-option style="line-height: 13px" *ngFor="let candidate of candidates" [value]="candidate" (onSelectionChange)="selected(i, candidate, $event)">
             <span>{{candidate.displayName}}</span> <br>

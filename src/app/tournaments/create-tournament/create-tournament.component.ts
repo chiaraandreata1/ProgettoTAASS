@@ -1,9 +1,8 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {Sport} from "../../models/sport";
-import {TournamentBuilding} from "../../models/tournament-building";
 import {UserInfo} from "../../models/user-info";
 import {TournamentsService} from "../tournaments.service";
-import {Match, Team, Tournament, TournamentRound} from "../../models/tournament";
+import {Tournament} from "../../models/tournament";
 import {Router} from "@angular/router";
 import {FacilityService} from "../../services/facility.service";
 import {TournamentDefinition} from "../../models/tournament-definition";

@@ -6,8 +6,8 @@
 <div class="match-spacer" [class.invisible]="!match"></div>
 <div class="match-info" [class.invisible]="!match">
   <div>{{match ? match.date : "A"}}</div>
-  <div *ngIf="match">Court {{match.court}}</div>
-  <div *ngIf="match">{{match.status}}</div>
+<!--  <div *ngIf="match">Court {{match.courtID}}</div>-->
+  <div *ngIf="match">{{prettyStatus()}}</div>
 <!--  <div *ngIf="match">{{match.id}} @ {{match.round}} x {{match.roundHeight}}</div>-->
   <div *ngIf="!match">A</div>
 

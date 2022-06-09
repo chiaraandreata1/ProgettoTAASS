@@ -43,7 +43,7 @@
 
       <ul class="col-12">
         <li class="list-group" *ngFor="let team of tournament.teams">
-          <app-team class="list-group-item" [team]="team"></app-team>
+          <app-team class="list-group-item" [class.bg-light]="isActiveTeam(team)" [team]="team"></app-team>
         </li>
       </ul>
 
@@ -114,7 +114,7 @@
     <div class="btn-group">
       <ng-container *ngIf="userService.isManager$ | async">
         <button class="btn btn-success" *ngIf="tournament.status === 'DRAFT'" (click)="confirm()">Confirm</button>
-        <button class="btn btn-success" *ngIf="tournament.status === 'CONFIRMED'" (click)="complete()">Complete</button>
+        <button class="btn btn-success" *ngIf="tournament.status === 'CONFIRMED' && tournament.teams.length > 1" (click)="complete()">Complete</button>
         <button class="btn btn-primary" *ngIf="tournament.status === 'CONFIRMED'" (click)="addTeam()"
                 [disabled]="create_team">Add team
         </button>
@@ -123,7 +123,7 @@
                 (click)="cancel()">Cancel
         </button>
       </ng-container>
-      <button class="btn btn-primary" *ngIf="tournament.status === 'CONFIRMED' && (userService.isPlayer$ | async)">
+      <button class="btn btn-primary" *ngIf="showJoin(userService.getCurrentUser())" (click)="join()">
         Join
       </button>
     </div>
@@ -131,10 +131,11 @@
 </div>
 
 <app-create-team
-  *ngIf="create_team && sport != undefined"
+  *ngIf="create_team && sport != undefined && !waiting"
   [playersCount]="sport.playersPerTeam"
   (created)="onTeamCreate($event)"
   [selectedPlayers]="alreadySelected()"
+  [currentPlayer]="userService.getCurrentUser()"
   (closed)="create_team = false"
 >
 

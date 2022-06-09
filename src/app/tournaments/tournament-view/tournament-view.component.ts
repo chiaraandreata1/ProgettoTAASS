@@ -94,20 +94,54 @@ export class TournamentViewComponent implements OnInit {
     this.create_team = true;
   }
 
-  onTeamCreate(team: Team) {
-    this.waiting = true;
-    this.tournamentService.addPlayers(this.tournament.id, team.players)
-      .subscribe({
-        next: t => {
-          this.tournament = t;
-          this.create_team = false;
-          this.waiting = false;
-        },
-        error: msg => {
-          this.error = msg.error.message;
-          this.waiting = false;
+  join() {
+    if (this.userService.getCurrentUser()) {
+      let id = this.userService.getCurrentUser()?.id;
+      if (id) {
+        if (this.sport?.playersPerTeam == 1) {
+          this.onTeamCreate(new Team([id]))
+        } else {
+          this.create_team = true;
         }
-      })
+      }
+    }
+  }
+
+  onTeamCreate(team: Team) {
+    let type = this.userService.getCurrentUser()?.type;
+
+    if (type) {
+      if (type == 'ADMIN' || type == 'TEACHER') {
+        this.waiting = true;
+        this.tournamentService.addPlayers(this.tournament.id, team.players)
+          .subscribe({
+            next: t => {
+              this.tournament = t;
+              this.create_team = false;
+              this.waiting = false;
+            },
+            error: msg => {
+              this.error = msg.error.message;
+              this.waiting = false;
+            }
+          })
+      }
+      if (type == 'PLAYER') {
+        this.waiting = true;
+        this.tournamentService.join(this.tournament.id, team.players)
+          .subscribe({
+            next: t => {
+              this.tournament = t;
+              this.create_team = false;
+              this.waiting = false;
+            },
+            error: msg => {
+              this.error = msg.error.message;
+              this.waiting = false;
+            }
+          })
+      }
+    }
   }
 
   cancel() {
@@ -154,5 +188,29 @@ export class TournamentViewComponent implements OnInit {
           this.waiting = false;
         }
       });
+  }
+
+  showJoin(user?: UserInfo): boolean {
+    if (!user || user.type != 'PLAYER')
+      return false;
+
+    let show = true;
+    let teams = this.tournament.teams;
+
+    for (const team of teams)
+      show = show && !team.players.includes(user?.id);
+
+    if (show)
+      show = this.tournament.status == 'CONFIRMED';
+
+    return show;
+  }
+
+  isActiveTeam(team: Team): boolean {
+    let user = this.userService.getCurrentUser();
+    if (user && user.id) {
+      return team.players.includes(user.id);
+    }
+    return false;
   }
 }

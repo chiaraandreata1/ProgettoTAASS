@@ -1,10 +1,9 @@
-<table class="table">
+<table class="table table-hover">
   <thead>
-  <tr class="td">
-    <th scope="col">ID</th>
+  <tr>
+    <th scope="col">#</th>
     <th scope="col">Name</th>
-    <th scope="col">Price</th>
-    <th scope="col">Prize</th>
+    <th scope="col">Starting date</th>
     <th scope="col">Status</th>
   </tr>
   </thead>
@@ -12,10 +11,14 @@
   <tr *ngFor="let t of tournaments" routerLink='/tournament/{{t.id}}'>
     <th scope="row">{{t.id}}</th>
     <td>{{t.name}}</td>
-    <td>{{t.price}}</td>
-    <td>{{t.prize}}</td>
+    <td>{{t.startingDate}}</td>
     <td>{{t.status}} <span *ngIf="t.status == 'CONFIRMED' || t.status == 'COMPLETE'">[{{t.teams.length}}
       /{{t.maxTeamsNumber}}]</span></td>
+  </tr>
+  <tr *ngIf="tournaments && tournaments.length === 0">
+    <td class="text-center" colspan="5">
+      No tournaments!
+    </td>
   </tr>
   </tbody>
 </table>
