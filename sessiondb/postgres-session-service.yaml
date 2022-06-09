@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dbsession
+  labels:
+    app: dbsession
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+  selector:
+    app: dbsession

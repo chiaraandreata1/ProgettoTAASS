@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dbsession
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dbsession
+  template:
+    metadata:
+      labels:
+        app: dbsession
+    spec:
+      containers:
+        - name: dbsession
+          image: sessiondb
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: postgres-session-config
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/12/data1/session
+              name: gateway
+      volumes:
+        - name: gateway
+          persistentVolumeClaim:
+            claimName: postgres-session-pv-claim
